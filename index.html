@@ -1,10 +1,175 @@
 <!DOCTYPE html>
 <html>
+
 	<head>
 		<meta charset="utf-8" />
-		<title></title>
+		<title>后台管理页面参考</title>
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
+		<link rel="stylesheet" href="css/index.css" />
+		<style>
+			.el-header,
+			.el-footer {
+				background: gainsboro;
+				font-size: 30px;
+			}
+			
+			.el-menu {
+				border: 0px;
+			}
+			.glyphicon{
+				margin-right: 10px;
+				
+			}
+		</style>
 	</head>
+
 	<body>
-		
+		<div id="indxApp">
+			<el-container style='height:95vh; border: 1px solid #eee'>
+				<el-header style='height:10%;'>
+					<el-row>
+						<el-col :span="6">
+							<h1>德召文汽修管理系统</h1>
+						</el-col>
+						<el-col :span="2" :offset="16">
+							<el-dropdown :hide-on-click="false">
+							  <span class="el-dropdown-link">
+							    <i class="glyphicon glyphicon-user"></i><i class="el-icon-arrow-down el-icon--right"></i>
+							  </span>
+							  <el-dropdown-menu slot="dropdown">
+							    <el-dropdown-item>用户名：张三</el-dropdown-item>
+							    <el-dropdown-item><span @click="exitLogin">退出登录</span></el-dropdown-item>
+							  </el-dropdown-menu>
+							</el-dropdown>
+						</el-col>
+					</el-row>
+				</el-header>
+				<el-container>
+					<el-aside width="220px" style="border: 1px solid #CCCCCC;">
+						<el-menu style="height:100vh;width:230px;float:left;overflow-y:auto;">
+							<el-submenu index="1">
+								<template slot="title">
+									<i class="glyphicon glyphicon-file"></i>
+									<span>客户档案</span>
+								</template>
+								<el-menu-item-group>
+									<el-menu-item index="1-1"  @click="showView('网页名.html')"><i class="glyphicon glyphicon-envelope"></i>客户资料</el-menu-item>
+									<el-menu-item index="1-2"  @click="showView('网页名.html')"><i class="glyphicon glyphicon-envelope"></i>车辆资料</el-menu-item>
+								</el-menu-item-group>
+							</el-submenu>
+							
+							<el-submenu index="2">
+								<template slot="title">
+									<span class="glyphicon glyphicon-wrench"></span>
+									<span>维修救援</span>
+								</template>
+								<el-menu-item-group>
+									<el-menu-item index="2-1" @click="showView('网页名.html')"><i class="glyphicon glyphicon-link"></i>维修接车</el-menu-item>
+									<el-menu-item index="2-2" @click="showView('网页名.html')"><i class="glyphicon glyphicon-saved"></i>竣工检验</el-menu-item>
+								</el-menu-item-group>
+							</el-submenu>
+							
+							<el-submenu index="3">
+								<template slot="title">
+									<span class="glyphicon glyphicon-signal"></span>
+									<span>主数据</span>
+								</template>
+								<el-menu-item-group>
+									<el-menu-item index="3-1" @click="showView('网页名.html')"><i class="glyphicon glyphicon-fire"></i>发动机品牌</el-menu-item>
+									<el-menu-item index="3-2" @click="showView('网页名.html')"><i class="glyphicon glyphicon-file"></i>车型档案</el-menu-item>
+									<el-menu-item index="3-3" @click="showView('网页名.html')"><i class="glyphicon glyphicon-wrench"></i>维修项目</el-menu-item>
+									<el-menu-item index="3-4" @click="showView('网页名.html')"><i class="glyphicon glyphicon-shopping-cart"></i>商品资料</el-menu-item>
+									<el-menu-item index="3-5" @click="showView('网页名.html')"><i class="glyphicon glyphicon-send"></i>供货单位</el-menu-item>
+								</el-menu-item-group>
+							</el-submenu>
+							<el-submenu index="4">
+								<template slot="title">
+									<span class="glyphicon glyphicon-jpy"></span>
+									<span>前台结算</span>
+								</template>
+								<el-menu-item-group>
+									<el-menu-item index="4-1" @click="showView('网页名.html')"><i class="glyphicon glyphicon-check"></i>结算中心</el-menu-item>
+									<el-menu-item index="4-2" @click="showView('网页名.html')"><i class="glyphicon glyphicon-modal-window"></i>会员卡充值</el-menu-item>
+								</el-menu-item-group>
+							</el-submenu>
+							<el-submenu index="5">
+								<template slot="title">
+									<span class="glyphicon glyphicon-sunglasses"></span>
+									<span>权限控制</span>
+								</template>
+								<el-menu-item-group>
+									<el-menu-item index="5-1" @click="showView('网页名.html')"><i class="glyphicon glyphicon-globe"></i>员工角色控制</el-menu-item>
+									<el-menu-item index="5-2" @click="showView('网页名.html')"><i class="glyphicon glyphicon-globe"></i>员工权限控制</el-menu-item>
+								</el-menu-item-group>
+							</el-submenu>
+							<el-submenu index="6">
+								<template slot="title">
+									<span class="glyphicon glyphicon-user"></span>
+									<span>人事</span>
+								</template>
+								<el-menu-item-group>
+									<el-menu-item index="6-1" @click="showView('网页名.html')"><i class="glyphicon glyphicon-th-large"></i>组织机构</el-menu-item>
+									<el-menu-item index="6-2" @click="showView('网页名.html')"><i class="glyphicon glyphicon-tasks"></i>岗位定义</el-menu-item>
+									<el-menu-item index="6-1" @click="showView('网页名.html')"><i class="glyphicon glyphicon-export	"></i>离职登记</el-menu-item>
+									<el-menu-item index="6-2" @click="showView('网页名.html')"><i class="glyphicon glyphicon-earphone"></i>通讯名录</el-menu-item>
+								</el-menu-item-group>
+							</el-submenu>
+							<el-submenu index="7">
+								<template slot="title">
+									<span class="glyphicon glyphicon-list"></span>
+									<span>技工管理</span>
+								</template>
+								<el-menu-item-group>
+									<el-menu-item index="7-1" @click="showView('网页名.html')"><i class="glyphicon glyphicon-star-empty"></i>技工星级</el-menu-item>
+									<el-menu-item index="7-2" @click="showView('网页名.html')"><i class="glyphicon glyphicon-align-center"></i>班组技工</el-menu-item>
+									<el-menu-item index="7-2" @click="showView('网页名.html')"><i class="glyphicon glyphicon-bed"></i>外勤车辆</el-menu-item>
+								</el-menu-item-group>
+							</el-submenu>
+						</el-menu>
+					</el-aside>
+					<el-main>
+						<div id="cnt"></div>
+					</el-main>
+				</el-container>
+				<el-footer style='height:10%;'>
+					<div align="center" style="font-size: 12px; margin-top: 10px;">
+						关于德召文 | 诚征英才 | 联系我们 | International Business | About DeZhaoWen <br />
+						ICP证：京ICP备12046672号-1 
+					</div>
+				</el-footer>
+			</el-container>
+			
+		</div>
 	</body>
+	<script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/index.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/jquery-1.12.4.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/jq_ajax_config.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+	<script>
+		var indexApp = new Vue({
+			data: {
+				isShow: false
+			},
+			methods: {
+				showView(url) {
+					$('#cnt').load(url);
+				},
+				exitLogin(){
+					this.$confirm("是否退出？","系统提示",{
+						confirmButtonText: '确定',
+						cancelButtonText: '取消',
+						type: 'warning'
+					}).then(()=>{
+						window.sessionStorage.setItem("user","");
+						location.href="login.html";
+					}).cath(()=>{});
+				}
+			},
+			mounted() {
+				this.showView('welcome.html');
+			}
+		}).$mount('#indxApp');
+	</script>
+
 </html>
