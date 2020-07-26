@@ -1,10 +1,83 @@
 <!DOCTYPE html>
 <html>
+
 	<head>
 		<meta charset="UTF-8">
 		<title></title>
 		<link rel="stylesheet" href="css/index.css" />
 	</head>
+
 	<body>
+		<div id="AppBrand">
+			<el-row :gutter='10'>
+				<h1>发动机品牌</h1>
+				<el-col :md='5' :offset='6'>
+					<el-input v-model='textType' placeholder="发动机品牌昵称" clearable></el-input>
+				</el-col>
+				<el-button type="primary" icon='el-icon-search'><b>查询</b></el-button>
+				<el-button type="success" @click="dialogVisible = true" icon='el-icon-edit-outline'><b>添加</b>
+
+					<el-dialog title="提示" :visible.sync="dialogVisible" width="30%" :before-close="handleClose">
+						<span>这是一段信息</span>
+						<span slot="footer" class="dialog-footer">
+						    <el-button @click="dialogVisible = false">取 消</el-button>
+						    <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+						  	</span>
+					</el-dialog>
+
+				</el-button>
+				<el-button type="info" icon='el-icon-printer'><b>导出</b></el-button>
+				<el-button type="danger" icon='el-icon-switch-button'><b>关闭</b>
+
+				</el-button>
+			</el-row>
+
+			<el-row>
+				<el-col :md='10'>
+					<template>
+						<el-table :data='TypeBrand' stripe width='100%'>
+							<el-table-column prop='tpid' label="id" width='150'></el-table-column>
+							<el-table-column prop='tpname' label="昵称" width='150'></el-table-column>
+							<el-table-column label="操作" width="100">
+								<template slot-scope="scope">
+									<el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
+									<el-button type="text" size="small">编辑</el-button>
+								</template>
+							</el-table-column>
+						</el-table>
+					</template>
+				</el-col>
+			</el-row>
+		</div>
 	</body>
+	<script>
+		var vmBrand = new Vue({
+			data() {
+				return {
+					dialogVisible: false,
+					textType: '',
+					TypeBrand: [{
+						tpid: '100',
+						tpname: 'J'
+					}, {
+						tpid: '101',
+						tpname: 'X'
+					}, {
+						tpid: '102',
+						tpname: 'C'
+					}]
+				};
+			},
+			methods: {
+				handleClose(done) {
+					this.$confirm('确认关闭？')
+						.then(_ => {
+							done();
+						})
+						.catch(_ => {});
+				}
+			}
+		}).$mount("#AppBrand")
+	</script>
+
 </html>
