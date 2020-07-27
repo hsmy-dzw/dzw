@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" href="css/index.css" />
+		<style>
+			.splist {
+				border: 1px solid;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="AppBrand">
+			<el-row :gutter='10'>
+				<h1>发动机品牌</h1>
+				<el-col :md='5' :offset='6'>
+					<el-input v-model='Fdjb.name' placeholder="发动机品牌昵称" clearable></el-input>
+				</el-col>
+				<el-button type="primary" icon='el-icon-search'><b>查询</b></el-button>
+				<el-button type="success" @click="giao" icon='el-icon-edit-outline'><b>添加</b>
+				</el-button>
+				<el-button type="info" icon='el-icon-printer'><b>导出</b></el-button>
+				<el-button type="danger" icon='el-icon-switch-button'><b>关闭</b>
+
+				</el-button>
+			</el-row>
+
+			<el-row>
+				<el-col :md='14' :offset='5'>
+					<template>
+						<el-table :data='pageInfo.list' stripe width='100%'>
+							<el-table-column label="序号" width='200'>
+								<template slot-scope="re">
+									{{re.$index+1}}
+								</template>
+							</el-table-column>
+							<el-table-column prop='fbname' label="发动机" width='160'></el-table-column>
+							<el-table-column prop='fdjpp' label="品牌" width='160'></el-table-column>
+							<el-table-column label="操作" width="200">
+								<template slot-scope='scope'>
+									<el-button @click='updeBrand(scope.row.fdjid)'>修改</el-button>
+									<el-button @click='delBrand(scope.row.fdjid)'>删除</el-button>
+								</template>
+
+							</el-table-column>
+						</el-table>
+					</template>
+				</el-col>
+
+			</el-row>
+			<!--新增模态框-->
+			<el-dialog title="提示" :visible.sync="dialogVisible" width="50%" :before-close="handleClose">
+
+				<el-form v-model='Fdjb' label-width="150px">
+
+					<el-form-item label="发动机编号">
+						<el-col :md='18'>
+							<el-input v-model='Fdjb.fdjid'></el-input>
+						</el-col>
+					</el-form-item>
+
+					<el-form-item label="发动机昵称">
+						<el-col :md='18'>
+							<el-input v-model='Fdjb.fbname'></el-input>
+						</el-col>
+					</el-form-item>
+
+					<el-form-item label="发动机品牌">
+						<el-col :md='18'>
+							<el-input v-model='Fdjb.fdjpp'></el-input>
+						</el-col>
+					</el-form-item>
+				</el-form>
+				<span slot="footer" class="dialog-footer">
+						    <el-button @click="dialogVisible = false">取 消</el-button>
+						    <el-button type="primary" @click="iner">确 定</el-button>
+						  	</span>
+			</el-dialog>
+		<!--	
+			修改模态框-->
+				<el-dialog title="提示" :visible.sync="dialogVisible2" width="50%" :before-close="handleClose">
+
+				<el-form v-model='Fdjb' label-width="150px">
+
+					<el-form-item label="发动机编号">
+						<el-col :md='18'>
+							<el-input v-model='Fdjb.fdjid'  :disabled="true"></el-input>
+						</el-col>
+					</el-form-item>
+
+					<el-form-item label="发动机昵称">
+						<el-col :md='18'>
+							<el-input v-model='Fdjb.fbname'></el-input>
+						</el-col>
+					</el-form-item>
+
+					<el-form-item label="发动机品牌">
+						<el-col :md='18'>
+							<el-input v-model='Fdjb.fdjpp'></el-input>
+						</el-col>
+					</el-form-item>
+				</el-form>
+				<span slot="footer" class="dialog-footer">
+						    <el-button @click="dialogVisible2 = false">取 消</el-button>
+						    <el-button type="primary" @click="updeBrand2">确 定</el-button>
+						  	</span>
+			</el-dialog>
+		</div>
+	</body>
+	<script>
+		var vmBrand = new Vue({
+			data() {
+				return {
+					dialogVisible: false,
+					dialogVisible2:false,
+					pageInfo: {},
+					Fdjb: {
+						fbname: '',
+						fdjpp: '',
+						fdjid: 0,
+						pageSize: 6,
+						PageNum: 1,
+						name: ''
+					}
+				};
+			},
+			methods: {
+				giao(){
+					this.dialogVisible=true;
+					this.gc();
+				},
+				gc(){
+				this.Fdjb.fbname='';
+				this.Fdjb.fdjpp='';
+				this.Fdjb.fdjid='';
+				},
+				page() {
+					let name = this.textType = null;
+					let _this = this;
+					$.ajax({
+						type: "post",
+						url: 'http://localhost:8080/api/brand/pagename',
+						data: JSON.stringify(_this.Fdjb),
+						dataType: 'json',
+						contentType: 'application/json',
+						success: function(g) {
+							_this.pageInfo = g;
+						}
+					});
+
+				},
+				handleClose(done) {
+					this.$confirm('确认关闭？')
+						.then(_ => {
+							done();
+						})
+						.catch(_ => {});
+				},
+				updeBrand(id) {
+					this.dialogVisible2= true;
+					let _this = this;
+						$.ajax({
+						type: "get",
+						url: "http://localhost:8080/api/brand/updashow/"+id,
+						success: function(g) {
+							if(g.code == '200') {
+								_this.Fdjb.fbname=g.data.fbname;
+								_this.Fdjb.fdjpp=g.data.fdjpp;
+								_this.Fdjb.fdjid=g.data.fdjid;
+								_this.dialogVisible = false;
+							}
+						}
+					});
+				},
+				updeBrand2() {
+					let _this = this;
+						$.ajax({
+						type: "put",
+						url: "http://localhost:8080/api/brand/updateNill",
+						data: JSON.stringify(_this.Fdjb),
+						dataType: 'json',
+						contentType: 'application/json',
+						success: function(g) {
+							if(g.code == '200') {
+								_this.$alert("修改成功");
+								_this.dialogVisible = false;
+								_this.gc();
+								_this.page();
+							}else _this.$alert("修改失败");
+						}
+					});
+				},
+				delBrand(id) {
+					this.$confirm('确认要删除吗?').then(_ => {
+						let _this = this;
+						$.ajax({
+						type: "get",
+						url: "http://localhost:8080/api/brand/del/"+id,
+						success: function(g) {
+							if(g.code == '200') {
+								_this.$alert("删除成功");
+								_this.page();
+								_this.dialogVisible = false;
+							}
+						}
+					});
+					}).catch(_ => {
+						//this.$alert("false");
+					});
+				},
+				iner() {
+					let _this = this;
+					$.ajax({
+						type: "post",
+						url: "http://localhost:8080/api/brand/inser",
+						data: JSON.stringify(_this.Fdjb),
+						dataType: 'json',
+						contentType: 'application/json',
+						success: function(g) {
+							if(g.code == '200') {
+								_this.$alert("成功");
+								_this.page();
+								_this.gc();
+								_this.dialogVisible = false;
+							}
+						}
+					});
+				}
+			},
+			mounted() {
+				this.page();
+			}
+
+		}).$mount("#AppBrand")
+	</script>
+
+</html>
