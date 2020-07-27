@@ -19,7 +19,7 @@
 				<el-col :md='5' :offset='6'>
 					<el-input v-model='Fdjb.name' placeholder="发动机品牌昵称" clearable></el-input>
 				</el-col>
-				<el-button type="primary" icon='el-icon-search'><b>查询</b></el-button>
+				<el-button type="primary" @click='page(1,6)' icon='el-icon-search'><b>查询</b></el-button>
 				<el-button type="success" @click="giao" icon='el-icon-edit-outline'><b>添加</b>
 				</el-button>
 				<el-button type="info" icon='el-icon-printer'><b>导出</b></el-button>
@@ -32,11 +32,7 @@
 				<el-col :md='14' :offset='5'>
 					<template>
 						<el-table :data='pageInfo.list' stripe width='100%'>
-							<el-table-column label="序号" width='200'>
-								<template slot-scope="re">
-									{{re.$index+1}}
-								</template>
-							</el-table-column>
+							<el-table-column prop='fdjid' label="序号" width='200'> </el-table-column>
 							<el-table-column prop='fbname' label="发动机" width='160'></el-table-column>
 							<el-table-column prop='fdjpp' label="品牌" width='160'></el-table-column>
 							<el-table-column label="操作" width="200">
@@ -79,15 +75,15 @@
 						    <el-button type="primary" @click="iner">确 定</el-button>
 						  	</span>
 			</el-dialog>
-		<!--	
+			<!--	
 			修改模态框-->
-				<el-dialog title="提示" :visible.sync="dialogVisible2" width="50%" :before-close="handleClose">
+			<el-dialog title="提示" :visible.sync="dialogVisible2" width="50%" :before-close="handleClose">
 
 				<el-form v-model='Fdjb' label-width="150px">
 
 					<el-form-item label="发动机编号">
 						<el-col :md='18'>
-							<el-input v-model='Fdjb.fdjid'  :disabled="true"></el-input>
+							<el-input v-model='Fdjb.fdjid' :disabled="true"></el-input>
 						</el-col>
 					</el-form-item>
 
@@ -108,38 +104,61 @@
 						    <el-button type="primary" @click="updeBrand2">确 定</el-button>
 						  	</span>
 			</el-dialog>
+
+			<!--分也配置和设置-->
+			<el-row>
+				<el-col :span="10" :offset='8'>
+
+					<el-pagination v-if="pageInfo.total !=0" :background="true" :pager-count="4" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageInfo.pageNum" :page-size="pageInfo.pageSize" :total="pageInfo.total" :page-sizes="[3,6]" layout="total, sizes, prev, pager, next, jumper">
+					</el-pagination>
+
+				</el-col>
+			</el-row>
 		</div>
 	</body>
 	<script>
 		var vmBrand = new Vue({
 			data() {
+				var validateName = (rule, value, callback) => {
+					if(value === '') {
+						callback(new Error('请输入昵称'));
+					} else {
+						callback();
+					}
+				};
+
 				return {
 					dialogVisible: false,
-					dialogVisible2:false,
+					dialogVisible2: false,
 					pageInfo: {},
 					Fdjb: {
 						fbname: '',
 						fdjpp: '',
 						fdjid: 0,
-						pageSize: 6,
-						PageNum: 1,
+						pageSize: 0,
+						PageNum: 0,
 						name: ''
-					}
+					},rules:[
+						fbname:[]
+					]
 				};
 			},
 			methods: {
-				giao(){
-					this.dialogVisible=true;
+				giao() {
+					this.dialogVisible = true;
 					this.gc();
 				},
-				gc(){
-				this.Fdjb.fbname='';
-				this.Fdjb.fdjpp='';
-				this.Fdjb.fdjid='';
+				gc() {
+					this.Fdjb.fbname = '';
+					this.Fdjb.fdjpp = '';
+					this.Fdjb.fdjid = '';
 				},
-				page() {
+				page(n, s) {
 					let name = this.textType = null;
 					let _this = this;
+
+					this.Fdjb.PageNum = n;
+					this.Fdjb.pageSize = s;
 					$.ajax({
 						type: "post",
 						url: 'http://localhost:8080/api/brand/pagename',
@@ -160,16 +179,16 @@
 						.catch(_ => {});
 				},
 				updeBrand(id) {
-					this.dialogVisible2= true;
+					this.dialogVisible2 = true;
 					let _this = this;
-						$.ajax({
+					$.ajax({
 						type: "get",
-						url: "http://localhost:8080/api/brand/updashow/"+id,
+						url: "http://localhost:8080/api/brand/updashow/" + id,
 						success: function(g) {
 							if(g.code == '200') {
-								_this.Fdjb.fbname=g.data.fbname;
-								_this.Fdjb.fdjpp=g.data.fdjpp;
-								_this.Fdjb.fdjid=g.data.fdjid;
+								_this.Fdjb.fbname = g.data.fbname;
+								_this.Fdjb.fdjpp = g.data.fdjpp;
+								_this.Fdjb.fdjid = g.data.fdjid;
 								_this.dialogVisible = false;
 							}
 						}
@@ -177,7 +196,7 @@
 				},
 				updeBrand2() {
 					let _this = this;
-						$.ajax({
+					$.ajax({
 						type: "put",
 						url: "http://localhost:8080/api/brand/updateNill",
 						data: JSON.stringify(_this.Fdjb),
@@ -186,10 +205,10 @@
 						success: function(g) {
 							if(g.code == '200') {
 								_this.$alert("修改成功");
-								_this.dialogVisible = false;
+								_this.dialogVisible2 = false;
 								_this.gc();
-								_this.page();
-							}else _this.$alert("修改失败");
+								_this.page(_this.Fdjb.PageNum, _this.Fdjb.pageSize);
+							} else _this.$alert("修改失败");
 						}
 					});
 				},
@@ -197,16 +216,16 @@
 					this.$confirm('确认要删除吗?').then(_ => {
 						let _this = this;
 						$.ajax({
-						type: "get",
-						url: "http://localhost:8080/api/brand/del/"+id,
-						success: function(g) {
-							if(g.code == '200') {
-								_this.$alert("删除成功");
-								_this.page();
-								_this.dialogVisible = false;
+							type: "get",
+							url: "http://localhost:8080/api/brand/del/" + id,
+							success: function(g) {
+								if(g.code == '200') {
+									_this.$alert("删除成功");
+									_this.page(_this.Fdjb.PageNum, _this.Fdjb.pageSize);
+									_this.dialogVisible = false;
+								}
 							}
-						}
-					});
+						});
 					}).catch(_ => {
 						//this.$alert("false");
 					});
@@ -216,22 +235,28 @@
 					$.ajax({
 						type: "post",
 						url: "http://localhost:8080/api/brand/inser",
-						data: JSON.stringify(_this.Fdjb),
+						data: JSON.stringify(this.Fdjb),
 						dataType: 'json',
 						contentType: 'application/json',
 						success: function(g) {
 							if(g.code == '200') {
 								_this.$alert("成功");
-								_this.page();
+								_this.page(_this.Fdjb.PageNum, _this.Fdjb.pageSize);
 								_this.gc();
 								_this.dialogVisible = false;
 							}
 						}
 					});
+				},
+				handleSizeChange(val) {
+					this.page(this.pageInfo.pageNum, val);
+				},
+				handleCurrentChange(val) {
+					this.page(val, this.pageInfo.pageSize);
 				}
 			},
 			mounted() {
-				this.page();
+				this.page(1, 6);
 			}
 
 		}).$mount("#AppBrand")
