@@ -75,7 +75,7 @@
 									<span>主数据</span>
 								</template>
 								<el-menu-item-group>
-									<el-menu-item index="3-1" @click="showView('网页名','发动机品牌')"><i class="glyphicon glyphicon-fire"></i>发动机品牌</el-menu-item>
+									<el-menu-item index="3-1" @click="showView('clbrand','发动机品牌')"><i class="glyphicon glyphicon-fire"></i>发动机品牌</el-menu-item>
 									<el-menu-item index="3-2" @click="showView('网页名','车型档案')"><i class="glyphicon glyphicon-file"></i>车型档案</el-menu-item>
 									<el-menu-item index="3-3" @click="showView('网页名','维修项目')"><i class="glyphicon glyphicon-wrench"></i>维修项目</el-menu-item>
 									<el-menu-item index="3-4" @click="showView('网页名','商品资料')"><i class="glyphicon glyphicon-shopping-cart"></i>商品资料</el-menu-item>
@@ -129,10 +129,10 @@
 					</el-aside>
 					<el-main>
 						<el-row>
-							<el-tabs v-model="editableTabsValue" @tab-click="goTabs" @tab-remove="removeTab" closable type="card" >
-							  <el-tab-pane :key="item.name" v-for="(item, index) in editableTabs" :label="item.title" :name="item.name">
-							    {{item.content}}
-							  </el-tab-pane>
+							<el-tabs v-model="editableTabsValue" @tab-click="goTabs" @tab-remove="removeTab" closable type="card">
+								<el-tab-pane :key="item.name" v-for="(item, index) in editableTabs" :label="item.title" :name="item.name">
+									{{item.content}}
+								</el-tab-pane>
 							</el-tabs>
 						</el-row>
 						<el-row>
@@ -158,23 +158,23 @@
 		var indexApp = new Vue({
 			data: {
 				isShow: false,
-				editableTabsValue : "",
-				tabIndex : 1,
-				editableTabs : [
+				editableTabsValue: "",
+				tabIndex: 1,
+				editableTabs: [
 
 				]
 			},
 			methods: {
-				showView(url,ti) {
+				showView(url, ti) {
 					let _this = this;
 					let tab = {
-						title : ti,
-						name : url
+						title: ti,
+						name: url
 					};
-					let items=this.editableTabs.filter(function(temp){
-						return temp.name == url;//过滤条件
+					let items = this.editableTabs.filter(function(temp) {
+						return temp.name == url; //过滤条件
 					});
-					if(items.length <= 0){
+					if(items.length <= 0) {
 						_this.editableTabs.push(tab);
 					}
 					_this.editableTabsValue = url;
@@ -191,31 +191,31 @@
 					}).cath(() => {});
 				},
 				removeTab(targetName) {
-			        let tabs = this.editableTabs;
-			        let activeName = this.editableTabsValue;
-			        if (activeName === targetName) {
-			          tabs.forEach((tab, index) => {
-			            if (tab.name === targetName) {
-			              let nextTab = tabs[index + 1] || tabs[index - 1];
-			              if (nextTab) {
-			                activeName = nextTab.name;
-			              	this.showView(nextTab.name,nextTab.title);
-			              }
-			            }
-			          });
-			        }
-			        this.editableTabsValue = activeName;
-			        this.editableTabs = tabs.filter(tab => tab.name !== targetName);
-			    	if(this.editableTabs.length == 0){
-			    		$('#cnt').load("hot.html");
-			    	}
+					let tabs = this.editableTabs;
+					let activeName = this.editableTabsValue;
+					if(activeName === targetName) {
+						tabs.forEach((tab, index) => {
+							if(tab.name === targetName) {
+								let nextTab = tabs[index + 1] || tabs[index - 1];
+								if(nextTab) {
+									activeName = nextTab.name;
+									this.showView(nextTab.name, nextTab.title);
+								}
+							}
+						});
+					}
+					this.editableTabsValue = activeName;
+					this.editableTabs = tabs.filter(tab => tab.name !== targetName);
+					if(this.editableTabs.length == 0) {
+						$('#cnt').load("hot.html");
+					}
 				},
-				goTabs(){	
-					$('#cnt').load(this.editableTabsValue+".html");
+				goTabs() {
+					$('#cnt').load(this.editableTabsValue + ".html");
 				}
 			},
 			mounted() {
-				this.showView('welcome','首页');
+				this.showView('welcome', '首页');
 			}
 		}).$mount('#indxApp');
 	</script>
