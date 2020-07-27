@@ -44,21 +44,21 @@
 						<el-input v-model="person.kb5" ></el-input>
 					</el-col>
 				</el-form-item>
-				<el-form-item label="用户类型" prop="vid">
+				<el-form-item label="支付密码" prop="zhifupwd">
 					
 					<el-col :span="6">
 						<!--非常重要-->
-						<el-input  v-model="person.vidname"></el-input>
+						<el-input  v-model="person.zhifupwd"></el-input>
 					</el-col>
 					
-					<el-dropdown @command="handleCommand">
+					<!--<el-dropdown @command="handleCommand">
 					<span class="el-dropdown-link">
     					选择用户类型<i class="el-icon-arrow-down el-icon--right"></i>
  					</span>
 					<el-dropdown-menu slot="dropdown">
 						
 						<el-dropdown-item command="2">vip用户</el-dropdown-item>
-					</el-dropdown-menu>
+					</el-dropdown-menu>-->
 				</el-dropdown>
 				</el-form-item>
 				<el-form-item label="身份证号码" prop="kremark">
@@ -146,7 +146,7 @@
 				person: {
 					//<!--`kid``vid``id``kname``kphone``kaddres``kbirthday``kremark``kb1``kb2``kb3``kb4``kb5``kb6`-->
 					kid: "",
-					vid: "",
+					
 					id: "",
 					kname:"",
 					kphone: "",
@@ -160,7 +160,8 @@
 					kb5: "",
 					kb6: "",
 					ksex:"",
-					vidname:""
+					vidname:"",
+					zhifupwd:""
 				},
 				sexs: ['男', '女'],
 				personRules: {

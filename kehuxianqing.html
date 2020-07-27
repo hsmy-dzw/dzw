@@ -33,11 +33,11 @@
 						<el-input v-model="person.kb5" ></el-input>
 					</el-col>
 				</el-form-item>
-				<el-form-item label="用户类型" prop="vid">
+				<el-form-item label="支付密码" prop="vid">
 					
 					<el-col :span="6">
 						<!--非常重要-->
-						<el-input  v-model="ggname"></el-input>
+						<el-input  v-model="person.zhifupwd"></el-input>
 					</el-col>
 					
 					<!--<el-dropdown @command="handleCommand">
@@ -91,8 +91,8 @@
 				radio : "0",
 				person: {
 					kid: "",
-					vid: "",
-					id: "",
+					
+					
 					kname:"",
 					kphone: "",
 					kaddres: "",
@@ -105,7 +105,8 @@
 					kb5: "",
 					kb6: "",
 					ksex:"",
-					vidname:"vip用户"
+					
+					zhifupwd:""
 				},
 				sexs: ['男','女'],
 				personRules: {
@@ -143,7 +144,7 @@
 			methods: {
 				goBack() {
 					personApp.isShow=false;//非常重要
-					indexApp.showView('person.html');//调用主页的vm引擎方法,跳页面
+					indexApp.showView('kehuxinxizhuye.html');//调用主页的vm引擎方法,跳页面
 				},
 				updatePerson() {
 					let _this = this;

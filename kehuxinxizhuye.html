@@ -35,15 +35,15 @@
 				 
 				</div>
 				
-				<el-row>
+				<el-row >
 					<el-col :span="12"><div class="grid-content bg-purple-light"><label style="font-size: 20px;margin-top: 5px;;">客户信息</label></div></el-col>
   					<el-col :span="12"><div class="grid-content bg-purple"><el-button type="primary" :span="12" icon="el-icon-edit" @click="showDialog2">新增客户信息</el-button></div></el-col>
   					
   					
 				</el-row>
-					<el-table  :default-sort="{prop: 'pdate', order: 'descending'}" :data="this.pageInfo.list" border>
+					<el-table   :default-sort="{prop: 'pdate', order: 'descending'}" :data="this.pageInfo.list" border>
 						
-						<el-table-column width="100" label="序号">
+						<el-table-column width="100" label="序号" >
 							<template slot-scope="temp">
 								{{temp.$index+1}}
 							</template>
@@ -55,26 +55,24 @@
 						</el-table-column>
 						<el-table-column width="100" prop="kaddres" label="地址">
 						</el-table-column>
-						<el-table-column width="100" label="用户类型">
-							<template slot-scope="temp">
-								{{temp.row.vid | filterVip}}
-							</template>
-						</el-table-column>
-						<el-table-column width="100" label="性别">
+						
+						<el-table-column width="50" label="性别">
 							<template slot-scope="temp">
 								{{temp.row.ksex | filterSex}}
 							</template>
 						</el-table-column>
 						
-						<el-table-column width="150" prop="kbirthday" label="生日" sortable>
+						<el-table-column width="160" prop="kbirthday" label="生日" sortable>
 						</el-table-column>
-						<el-table-column label="操作">
+						<el-table-column label="操作" >
 							<template slot-scope="temp">
-								<el-button icon="el-icon-edit" size="mini" type="info" @click="showDialog(temp.row.kid)">查看详情</el-button>
+								<el-button icon="el-icon-edit" size="mini" type="info"  @click="showDialog(temp.row.kid)">查看用户详情</el-button>
 								<!--<el-button icon="el-icon-edit" size="mini" type="primary" @click="showInfo(temp.row.pid)">查看明细</el-button>-->
-								<el-button icon="el-icon-delete" size="mini" type="danger" @click="delInfo(temp.row.kid)">移除</el-button>
+								<el-button icon="el-icon-delete" size="mini" type="danger"  @click="delInfo(temp.row.kid)">移除</el-button>
+								<el-button icon="el-icon-delete" size="mini" type="danger"  @click="khclxxchaxun(temp.row.kid)">查看用户车辆</el-button>
 							</template>
 						</el-table-column>
+						
 						<!--<el-table-column width="150" prop="gyl" label="權限" sortable>
 						</el-table-column>
 						<el-table-column label="操作">
@@ -93,6 +91,10 @@
 					</el-pagination>
 				</el-col>
 			</el-row>
+			
+			<!--客户车辆信息 -->
+			
+			
 			<!--模态框-->
 			<el-dialog :destroy-on-close="true" @opened="handlOpen" title="客户信息" :visible.sync="isShow" :before-close="handleClose" center>
 				<div id="modalcnt"></div>
@@ -112,9 +114,21 @@
 				pageInfo: {},
 				loading: true,
 				isShow:false,
-				isShow2:false
+				isShow2:false,
+				pageInfo2:{}
 			},
 			methods: {
+				khclxxchaxun(kid){
+					alert(kid);
+					/*let _this = this;
+					this.loading = true;
+					//ajax
+					$.getJSON(`http://localhost:8080/api/khclb/${p}/${s}/{kid}`, function(pg) {
+						_this.pageInfo2 = pg;
+						_this.loading = false;
+					});*/
+					
+				},
 				xuezje(name){
 					window.sessionStorage.setItem("name", name);
 		            done(); 
@@ -190,6 +204,7 @@
 			},
 			mounted() {
 				this.goToPage(1, 3);
+				
 			},
 			filters: {
 				filterSex(val) {
