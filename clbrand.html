@@ -50,23 +50,23 @@
 			<!--新增模态框-->
 			<el-dialog title="提示" :visible.sync="dialogVisible" width="50%" :before-close="handleClose">
 
-				<el-form v-model='Fdjb' label-width="150px">
+				<el-form :model="Fdjb" :rules="rules" status-icon ref="Fdjb" label-width="100px" class="demo-ruleForm">
 
-					<el-form-item label="发动机编号">
+					<el-form-item label="发动机编号" prop='fdjid'>
 						<el-col :md='18'>
-							<el-input v-model='Fdjb.fdjid'></el-input>
+							<el-input v-model='Fdjb.fdjid' autocomplete="off"></el-input>
 						</el-col>
 					</el-form-item>
 
-					<el-form-item label="发动机昵称">
+					<el-form-item label="发动机昵称" prop="fbname">
 						<el-col :md='18'>
-							<el-input v-model='Fdjb.fbname'></el-input>
+							<el-input v-model="Fdjb.fbname" autocomplete="off"></el-input>
 						</el-col>
 					</el-form-item>
 
-					<el-form-item label="发动机品牌">
+					<el-form-item label="发动机品牌" prop='fdjpp'>
 						<el-col :md='18'>
-							<el-input v-model='Fdjb.fdjpp'></el-input>
+							<el-input v-model='Fdjb.fdjpp' autocomplete="off"></el-input>
 						</el-col>
 					</el-form-item>
 				</el-form>
@@ -81,19 +81,19 @@
 
 				<el-form v-model='Fdjb' label-width="150px">
 
-					<el-form-item label="发动机编号">
+					<el-form-item label="发动机编号" prop='fdjid'>
 						<el-col :md='18'>
 							<el-input v-model='Fdjb.fdjid' :disabled="true"></el-input>
 						</el-col>
 					</el-form-item>
 
-					<el-form-item label="发动机昵称">
+					<el-form-item label="发动机昵称" prop='fbname'>
 						<el-col :md='18'>
 							<el-input v-model='Fdjb.fbname'></el-input>
 						</el-col>
 					</el-form-item>
 
-					<el-form-item label="发动机品牌">
+					<el-form-item label="发动机品牌" prop='fdjpp'>
 						<el-col :md='18'>
 							<el-input v-model='Fdjb.fdjpp'></el-input>
 						</el-col>
@@ -107,9 +107,9 @@
 
 			<!--分也配置和设置-->
 			<el-row>
-				<el-col :span="10" :offset='8'>
+				<el-col :span="10" :offset='6'>
 
-					<el-pagination v-if="pageInfo.total !=0" :background="true" :pager-count="4" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageInfo.pageNum" :page-size="pageInfo.pageSize" :total="pageInfo.total" :page-sizes="[3,6]" layout="total, sizes, prev, pager, next, jumper">
+					<el-pagination v-if="pageInfo.total !=0" :background="true" :pager-count="4" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageInfo.pageNum" :pager-count="3" :page-size="pageInfo.pageSize" :total="pageInfo.total" :page-sizes="[3,6]" layout="total, sizes, prev, pager, next, jumper">
 					</el-pagination>
 
 				</el-col>
@@ -121,15 +121,42 @@
 			data() {
 				var validateName = (rule, value, callback) => {
 					if(value === '') {
-						callback(new Error('请输入昵称'));
+						callback(new Error('请输入发动机昵称'));
 					} else {
+
 						callback();
+					}
+				};
+
+				var validatefdjpp = (rule, value, callback) => {
+					if(value === '') {
+						callback(new Error('请输入发动机品牌'));
+					} else {
+
+						callback();
+					}
+				};
+
+				var validatefdjid = (rule, value, callback) => {
+					if(value === '') {
+
+						callback(new Error('请输入发动机编号'));
+					} else {
+						this.sle(value);
+						
+						if(fdj) {
+							callback(new Error('该编号已存在！'));
+						} else {
+							callback();
+						}
+						/*callback();*/
 					}
 				};
 
 				return {
 					dialogVisible: false,
 					dialogVisible2: false,
+					fdj: false,
 					pageInfo: {},
 					Fdjb: {
 						fbname: '',
@@ -138,9 +165,21 @@
 						pageSize: 0,
 						PageNum: 0,
 						name: ''
-					},rules:[
-						fbname:[]
-					]
+					},
+					rules: {
+						fbname: [{
+							validator: validateName,
+							trigger: 'blur'
+						}],
+						fdjid: [{
+							validator: validatefdjid,
+							trigger: 'blur'
+						}],
+						fdjpp: [{
+							validator: validatefdjpp,
+							trigger: 'blur'
+						}]
+					}
 				};
 			},
 			methods: {
@@ -253,6 +292,17 @@
 				},
 				handleCurrentChange(val) {
 					this.page(val, this.pageInfo.pageSize);
+				},
+				sle(id) {
+					let _this = this;
+					$.getJSON('http://localhost:8080/api/brand/updashow/' + id, (mag) => {
+						console.log(mag.code);
+						if(mag.code == '200') {
+							_this.fdj = true;
+						} else {
+							_this.fdj = false;
+						}
+					})
 				}
 			},
 			mounted() {
