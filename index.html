@@ -165,6 +165,9 @@
 				]
 			},
 			methods: {
+				showViewwc(url) {
+					$('#cnt').load(url);
+				},
 				showView(url, ti) {
 					let _this = this;
 					let tab = {
