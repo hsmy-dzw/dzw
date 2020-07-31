@@ -1,43 +1,43 @@
 <!DOCTYPE html>
 <html>
-
 	<head>
 		<meta charset="UTF-8">
-		<title>另外一个页面s</title>
+		<title></title>
 	</head>
-
+	
 	<body>
 		<div id="infoApp">
+				<!--`cid``xid``pid2``kid``cnumber``cbrand``cmodel``cdriver``cphone``cbirthday`-->
 			<el-form :model="person" ref="personForm" :rules="personRules" label-width="100px">
-				<el-form-item label="客户名称" prop="kname">
+				<el-form-item label="车辆牌号" prop="cnumber">
 					<el-col :span="6">
 						<!--非常重要-->
-						<el-input v-model.number="person.kname"></el-input>
+						<el-input v-model.number="person.cnumber"></el-input>
 					</el-col>
 				</el-form-item>
 				
-				<el-form-item label="地址" prop="kaddres">
+				<el-form-item label="车辆品牌" prop="cbrand">
 					<el-col :span="6">
-						<el-input v-model="person.kaddres" ></el-input>
+						<el-input v-model="person.cbrand" ></el-input>
 					</el-col>
 				</el-form-item>
 				
-				<el-form-item label="电话号码" prop="kphone">
+				<el-form-item label="车辆型号" prop="cmodel">
 					<el-col :span="6">
-						<el-input v-model="person.kphone" ></el-input>
+						<el-input v-model="person.cmodel" ></el-input>
 					</el-col>
 				</el-form-item>
 				
-				<el-form-item label="充值金额" prop="kb5">
+				<el-form-item label="驾驶人" prop="cdriver">
 					<el-col :span="6">
-						<el-input v-model="person.kb5" ></el-input>
+						<el-input v-model="person.cdriver" ></el-input>
 					</el-col>
 				</el-form-item>
-				<el-form-item label="支付密码" prop="vid">
+				<el-form-item label="电话" prop="cphone">
 					
 					<el-col :span="6">
 						<!--非常重要-->
-						<el-input  v-model="person.zhifupwd"></el-input>
+						<el-input  v-model="person.cphone"></el-input>
 					</el-col>
 					
 					<!--<el-dropdown @command="handleCommand">
@@ -47,38 +47,15 @@
 					<el-dropdown-menu slot="dropdown">
 						
 						<el-dropdown-item command="2">vip用户</el-dropdown-item>
-					</el-dropdown-menu>
-				</el-dropdown>-->
-				</el-form-item>
-				<el-form-item label="身份证号码" prop="kremark">
-					<el-col :span="6">
-						<el-input v-model="person.kremark" ></el-input>
-					</el-col>
-				</el-form-item>
+					</l-dropdown-menu>-->
 				
-				<el-form-item label="性别">
-					<el-col :span="6">
-						<el-radio-group v-model="person.ksex">
-							<el-radio :label="0">男</el-radio>
-   							<el-radio :label="1">女</el-radio>
-						</el-radio-group>
-					</el-col>
 				</el-form-item>
-
-				<el-form-item label="注册日期" prop="kbirthday">
-					<el-col :span="6">
-						<el-date-picker v-model="person.kbirthday" type="date" placeholder="选择日期时间">
-						</el-date-picker>
-					</el-col>
-				</el-form-item>
-
-				</el-dropdown-menu>
-				</el-dropdown>
-				
-				<el-form-item>
-					<el-button type="primary" @click="updatePerson">保存</el-button>
+				 <el-form-item>
+					
+					<el-button type="primary" @click="updatePerson">修改</el-button>
 					<el-button type="danger" @click="goBack">取消</el-button>
 				</el-form-item>
+			
 			</el-form>
 		</div>
 	</body>
@@ -92,21 +69,10 @@
 				person: {
 					kid: "",
 					
-					
-					kname:"",
-					kphone: "",
-					kaddres: "",
-					kbirthday: "",
-					kremark: "",
-					kb1: "",
-					kb2: "",
-					kb3: "",
-					kb4: "",
-					kb5: "",
-					kb6: "",
-					ksex:"",
-					
-					zhifupwd:""
+					cnumber: "",
+					cbrand:"",
+					cdriver: "",
+					cphone: ""
 				},
 				sexs: ['男','女'],
 				personRules: {
@@ -143,9 +109,11 @@
 			},
 			methods: {
 				goBack() {
-					personApp.isShow=false;
-					//kid=window.sessionStorage.getItem("kid");
-					personApp.goToPage(1,3)//调用主页的vm引擎方法
+					personApp.isShow6=false;//非常重要
+					
+					kid=window.sessionStorage.getItem("kid");
+					personApp.khclxxchaxun(1,3,kid)//调用主页的vm引擎方法
+					//indexApp.showViewwc('kehuxinxizhuye.html');//调用主页的vm引擎方法,跳页面
 				},
 				updatePerson() {
 					let _this = this;
@@ -162,7 +130,7 @@
 							//延迟2秒，模拟网络延迟
 							setTimeout(() => {
 								//传送对象
-								$.ajax('http://localhost:8080/api/khb/person', {
+								$.ajax('http://localhost:8080/api/khclb/person', {
 									type: 'put',
 									data: JSON.stringify(this.person),
 									dataType: 'json',
@@ -186,7 +154,7 @@
 					});
 				},
 				
-				loadPeson(pid) {
+				loadPeson(cid) {
 					
 					//自定义加载块
 					const loading = this.$loading({
@@ -197,7 +165,7 @@
 					});
 					let _this = this;
 					setTimeout(() => {
-						$.getJSON(`http://localhost:8080/api/khb/person/${pid}`, function(person) {
+						$.getJSON(`http://localhost:8080/api/khclb/person/${cid}`, function(person) {
 							loading.close();
 							_this.person = person;
 							
@@ -206,13 +174,11 @@
 				}
 			},
 			mounted() {
-				let pid = sessionStorage.getItem('pid');
-				if(pid) {
-					this.loadPeson(pid);
+				let cid = sessionStorage.getItem('cid');
+				if(cid) {
+					this.loadPeson(cid);
 				}
 
 			}
 		});
 	</script>
-
-</html>

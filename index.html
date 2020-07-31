@@ -64,8 +64,9 @@
 									<span>维修救援</span>
 								</template>
 								<el-menu-item-group>
-									<el-menu-item index="2-1" @click="showView('网页名','维修接车')"><i class="glyphicon glyphicon-link"></i>维修接车</el-menu-item>
-									<el-menu-item index="2-2" @click="showView('网页名','竣工检验')"><i class="glyphicon glyphicon-saved"></i>竣工检验</el-menu-item>
+									<el-menu-item index="2-1" @click="showView('jiechezhuye','维修接车')"><i class="glyphicon glyphicon-link"></i>维修接车</el-menu-item>
+									<el-menu-item index="2-2" @click="showView('info','竣工检验')"><i class="glyphicon glyphicon-saved"></i>竣工检验</el-menu-item>
+									<el-menu-item index="2-1" @click="showView('zhanneiweijiu','站内维修')"><i class="glyphicon glyphicon-link"></i>站内维修</el-menu-item>
 								</el-menu-item-group>
 							</el-submenu>
 
@@ -154,6 +155,7 @@
 	<script src="js/jquery-1.12.4.js" type="text/javascript" charset="utf-8"></script>
 	<script src="js/jq_ajax_config.js" type="text/javascript" charset="utf-8"></script>
 	<script src="js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/dialog.js" type="text/javascript" charset="utf-8"></script>
 	<script>
 		var indexApp = new Vue({
 			data: {
@@ -165,6 +167,9 @@
 				]
 			},
 			methods: {
+				showViewwc(url) {
+					$('#cnt').load(url);
+				},
 				showView(url, ti) {
 					let _this = this;
 					let tab = {

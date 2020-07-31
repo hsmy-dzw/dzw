@@ -35,12 +35,14 @@
 				 
 				</div>
 				
-				<el-row >
+				<!--<el-row >
 					<el-col :span="12"><div class="grid-content bg-purple-light"><label style="font-size: 20px;margin-top: 5px;;">客户信息</label></div></el-col>
-  					<el-col :span="12"><div class="grid-content bg-purple"><el-button type="primary" :span="12" icon="el-icon-edit" @click="showDialog2">新增客户信息</el-button></div></el-col>
   					
   					
-				</el-row>
+  					
+				</el-row>-->
+				<h2>客户信息</h2>
+					
 					<el-table   :default-sort="{prop: 'pdate', order: 'descending'}" :data="this.pageInfo.list" border>
 						
 						<el-table-column width="100" label="序号" >
@@ -64,12 +66,15 @@
 						
 						<el-table-column width="160" prop="kbirthday" label="生日" sortable>
 						</el-table-column>
-						<el-table-column label="操作" >
+						<el-table-column  >
+							<template  slot="header" slot-scope="scope" >
+									<el-col :span="12"><el-button type="primary" size="mini" :span="12" icon="el-icon-edit" @click="showDialog2" >新增客户信息</el-button></el-col>
+							</template>
 							<template slot-scope="temp">
 								<el-button icon="el-icon-edit" size="mini" type="info"  @click="showDialog(temp.row.kid)">查看用户详情</el-button>
 								<!--<el-button icon="el-icon-edit" size="mini" type="primary" @click="showInfo(temp.row.pid)">查看明细</el-button>-->
 								<el-button icon="el-icon-delete" size="mini" type="danger"  @click="delInfo(temp.row.kid)">移除</el-button>
-								<el-button icon="el-icon-delete" size="mini" type="danger"  @click="khclxxchaxun(temp.row.kid)">查看用户车辆</el-button>
+								<el-button size="mini" type="primary" icon="el-icon-search"  @click="khclxxchaxun(1,3,temp.row.kid)">查看用户车辆</el-button>
 							</template>
 						</el-table-column>
 						
@@ -91,8 +96,84 @@
 					</el-pagination>
 				</el-col>
 			</el-row>
+			<!--`cid``xid``pid2``kid``cnumber``cbrand``cmodel``cdriver``cphone``cbirthday`-->
+			<br />
+			<br />
+			<br />
+			
 			
 			<!--客户车辆信息 -->
+			<div v-if="this.pageInfo2.total!=null">
+			<hr />
+			<h2>客户车辆信息</h2>
+			<el-table :data="this.pageInfo2.list" style="width: 100%">
+				<el-table-column
+       			width="100"
+        		 label="序号"
+       			>
+       			 <template slot-scope="temp">
+       			 	{{temp.$index+1}}
+       			 </template>
+      			</el-table-column>
+				
+				<el-table-column
+       			 prop="cnumber"
+        		 label="车牌号"
+        		 width="100"
+       			>
+      			</el-table-column>
+      			<el-table-column
+       			 prop="cbrand"
+        		 label="车辆品牌"
+        		 width="100"
+       			 >
+       			 
+       			  
+       			 </el-table-column>
+      			<el-table-column
+       			prop="cmodel"
+        		 label="车辆型号"
+        		 width="100"
+       			 >
+       			 
+       			 </el-table-column>
+      			<el-table-column
+       			prop="cdriver"
+        		 label="驾驶人"
+        		 width="100"
+       			 >
+      			</el-table-column>
+      			<el-table-column
+       			prop="cphone"
+        		 label="电话"
+        		 width="100"
+       			 >
+      			
+      			</el-table-column>
+      			
+      			<el-table-column
+       			
+        		 label="操作"
+        		 
+        		 
+       			>
+       			<template  slot="header" slot-scope="scope" >
+									<el-col :span="12"><el-button type="primary" size="mini" :span="12" icon="el-icon-edit" @click="showDialog5" >新增客户车辆信息</el-button></el-col>
+							</template>
+       			 <template slot-scope="temp">
+       			 <el-button icon="el-icon-edit" size="mini" type="info"  @click="showDialog6(temp.row.cid)">修改车辆详情</el-button>
+								<!--<el-button icon="el-icon-edit" size="mini" type="primary" @click="showInfo(temp.row.pid)">查看明细</el-button>-->
+								<el-button icon="el-icon-delete" size="mini" type="danger"  @click="delInfo2(temp.row.cid)">移除车辆信息</el-button>
+       			 </template>
+			</el-table>
+			
+			<el-row >
+				<el-col :span="24" >
+					<el-pagination  :background="true"  @size-change="handleSizeChange2" @current-change="handleCurrentChange2" :current-page="pageInfo2.pageNum" :page-size="pageInfo2.pageSize" :total="pageInfo2.total" :page-sizes="[3,6]"  layout="total, sizes, prev, pager, next, jumper">
+					</el-pagination>
+				</el-col>
+			</el-row>
+			</div>
 			
 			
 			<!--模态框-->
@@ -103,6 +184,18 @@
 			<!--模态框-->
 			<el-dialog :destroy-on-close="true" @opened="handlOpen2" title="客户信息录入" :visible.sync="isShow2" :before-close="handleClose" center>
 				<div id="modalcnt2"></div>
+			</el-dialog>
+			
+			
+			<!--模态框-->
+			<el-dialog :destroy-on-close="true" @opened="handlOpen5" title="新增客户车辆信息" :visible.sync="isShow5" :before-close="handleClose" center>
+				<div id="modalcnt5"></div>
+			</el-dialog>
+			
+			
+			<!--模态框-->
+			<el-dialog :destroy-on-close="true" @opened="handlOpen6" title="修改客户车辆信息" :visible.sync="isShow6" :before-close="handleClose" center>
+				<div id="modalcnt6"></div>
 			</el-dialog>
 		</div>
 	</body>
@@ -115,23 +208,34 @@
 				loading: true,
 				isShow:false,
 				isShow2:false,
+				isShow5:false,
+				isShow6:false,
 				pageInfo2:{}
+				
 			},
 			methods: {
-				khclxxchaxun(kid){
-					alert(kid);
-					/*let _this = this;
+				
+				khclxxchaxun(p,s,kid){
+					
+					window.sessionStorage.setItem("kid", kid);
+					let _this = this;
 					this.loading = true;
 					//ajax
-					$.getJSON(`http://localhost:8080/api/khclb/${p}/${s}/{kid}`, function(pg) {
+					$.getJSON(`http://localhost:8080/api/khclb/${p}/${s}/${kid}`, function(pg) {
 						_this.pageInfo2 = pg;
 						_this.loading = false;
-					});*/
+					});
 					
 				},
 				xuezje(name){
 					window.sessionStorage.setItem("name", name);
 		            done(); 
+				},
+				handlOpen6(){
+					$("#modalcnt6").load('cheliangxingxixiugai.html');
+				},
+				handlOpen5(){
+					$("#modalcnt5").load('xingzhengkehucheliang.html');
 				},
 				handlOpen2(){
 					$("#modalcnt2").load('kehuxinxiadd.html');
@@ -149,13 +253,54 @@
 					this.isShow=true;
 					sessionStorage.setItem('pid', pid);
 				}
+				
 				,
+				
+				showDialog6(cid) {
+					sessionStorage.setItem('cid', cid);
+					this.isShow6=true;
+					
+				},
+				showDialog5() {
+					this.isShow5=true;
+					
+				},
 				showDialog2() {
 					this.isShow2=true;
 				},
 				showInfo(pid) {
 					//indexApp.showView('kehuxinxizhuye.html);
 					sessionStorage.setItem('pid', pid);
+				},
+				delInfo2(cid) {
+					let _this = this;
+					this.$confirm('是否移除会员信息?', '系统提示', {
+						confirmButtonText: '确定',
+						cancelButtonText: '取消',
+						type: 'warning'
+					}).then(() => {
+						$.ajax(`http://localhost:8080/api/khclb/person/${cid}`, {
+							type: 'delete',
+							dataType: 'json',
+							success(msg) {
+								if(msg.code == "200") {
+									_this.$message({
+										type: 'success',
+										message: '删除成功!'
+									});
+									_this.loading = true;
+									kid=window.sessionStorage.getItem("kid");
+									_this.khclxxchaxun(1, _this.pageInfo2.pageSize,kid);
+								}
+							}
+						});
+
+					}).catch(() => {
+						this.$message({
+							type: 'info',
+							message: '已取消删除'
+						});
+					});
 				},
 				delInfo(pid) {
 					let _this = this;
@@ -191,6 +336,15 @@
 				},
 				handleCurrentChange(val) {
 					this.goToPage(val, this.pageInfo.pageSize);
+				},
+				
+				handleSizeChange2(val) {
+					kid=window.sessionStorage.getItem("kid");
+					this.khclxxchaxun(this.pageInfo2.pageNum, val,kid);
+				},
+				handleCurrentChange2(val) {
+					kid=window.sessionStorage.getItem("kid");
+					this.khclxxchaxun(val, this.pageInfo2.pageSize,kid);
 				},
 				goToPage(p, s) {
 					let _this = this;

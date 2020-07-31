@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+
+	<body>
+		<div id="infoApp">
+			<el-form :model="person" ref="personForm" :rules="personRules" label-width="100px">、
+				<!--//`wid`,`gid`,`id`,`wstate`,`wlicense`,`wkname`,`wpheno`,`wleix`,`wkaidate`,`wyudate`,`wwandate`,`wjiedate`,`kprice`-->
+				<el-form-item label="订单号" prop="wid">
+					<el-col :span="6">
+						<!--非常重要-->
+						<el-input v-model.number="person.wid" :disabled="true"></el-input>
+					</el-col>
+				</el-form-item>
+				<el-form-item label="车牌号码" prop="wlicense">
+					<el-col :span="6">
+						<el-input v-model="person.wlicense" :disabled="true"></el-input>
+					</el-col>
+				</el-form-item>
+
+				<el-form-item label="客户姓名" prop="wkname">
+					<el-col :span="6">
+						<el-input v-model="person.wkname" :disabled="true"></el-input>
+					</el-col>
+				</el-form-item>
+
+				<el-form-item label="电话号码" prop="wpheno">
+					<el-col :span="6">
+						<el-input v-model="person.wpheno" :disabled="true"></el-input>
+					</el-col>
+				</el-form-item>
+
+				<el-form-item label="技工组" prop="wb1">
+					<el-select v-model="person.wb1" placeholder="请选择" @change="jiage">
+						<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value ">
+						</el-option>
+					</el-select>
+				</el-form-item>
+
+				<el-form-item label="添加项目" prop="wb1">
+					<el-select v-model="person.wxname" placeholder="请选择" @change="ff2">
+						<el-option v-for="item in options2" :key="item.value1" :label="item.label1" :value="item.value1 ">
+						</el-option>
+					</el-select>
+				</el-form-item>
+
+				<el-form-item label="价格" prop="kprice">
+					<el-col :span="6">
+						<el-input v-model="person.kprice" :disabled="true"></el-input>
+					</el-col>
+				</el-form-item>
+
+				<el-form-item>
+					<el-button type="primary" @click="updatePerson">保存</el-button>
+					<el-button type="danger" @click="goBack">取消</el-button>
+				</el-form-item>
+
+			</el-form>
+		</div>
+	</body>
+
+	<script>
+		var infoApp = new Vue({
+			el: "#infoApp",
+			data: {
+				options: [{
+					value: '一组',
+					label: '一组'
+				}, {
+					value: '二组',
+					label: '二组'
+				}, {
+					value: '三组',
+					label: '三组'
+				}, {
+					value: '四组',
+					label: '四组'
+				}, {
+					value: '五组',
+					label: '五组'
+				}],
+				options2: [{
+						value1: 1,
+						label1: '保养'
+					}, {
+						value1: 2,
+						label1: '大修'
+					}, {
+						value1: 3,
+						label1: '发动机修理'
+					
+				}],
+
+			person: {
+				//`wid`,`gid`,`id`,`wstate`,`wlicense`,`wkname`,`wpheno`,`wleix`,`wkaidate`,`wyudate`,`wwandate`,`wjiedate`,`kprice`
+				wid: "",
+				wlicense: "",
+				wkname: "",
+				wpheno: "",
+				wkaidate: "",
+				wjiedate: "",
+				kprice: "",
+				wb1: "",
+				wb2: ""
+
+			},
+			person2:{
+				wxname:"",
+				wid:"",
+				rvid:""
+				
+			},
+			sexs: ['男', '女'],
+			personRules: {
+				pid: [{
+						required: true,
+						message: '会员编号不能为空',
+						trigger: 'blur' //移除触发
+					},
+					{
+						type: 'number',
+						message: '会员编号为数字值',
+						trigger: 'blur'
+					}
+				],
+				pname: [{
+						required: true,
+						message: '请输入会员名称',
+						trigger: 'blur'
+					},
+					{
+						min: 2,
+						max: 5,
+						message: '长度在 2 到 5 个字符',
+						trigger: 'blur'
+					}
+				],
+				pdate: [{
+					required: true,
+					message: '请选择生日',
+					trigger: 'change'
+				}]
+
+			}
+		},
+		methods: {
+			addPerson() {
+					let _this = this;
+					_this.person2.wid = _this.person.wid;
+					
+					
+					
+					
+					$.ajax('http://localhost:8080/api/wxxm/person', {
+						type: 'post',
+						data: JSON.stringify(this.person2),
+						dataType: 'json',
+						contentType: 'application/json',
+						success(msg) {
+							
+						}
+					});
+
+				},
+			ztaixiugai() {
+				wid = sessionStorage.getItem('wid');
+				$.getJSON(`http://localhost:8080/api/wxb/updatewstate/1/${wid}`, function(pg) {
+
+				});
+			},
+			ff2(){
+				this.person2.rvid = this.person.wxname;
+				
+			},
+			jiage() {
+				if(this.person.wb1 == '一组') {
+					this.person.kprice = 1000;
+				} else {
+					this.person.kprice = 2000;
+				}
+
+			},
+			goBack() {
+				personApp.isShow = false;
+				//kid=window.sessionStorage.getItem("kid");
+				personApp.goToPage(1, 3) //调用主页的vm引擎方法
+			},
+
+			updatePerson() {
+				let _this = this;
+				this.$refs['personForm'].validate(valid => {
+					if(valid) {
+						//验证通过
+						//自定义加载块
+						const loading = this.$loading({
+							lock: true,
+							text: '努力更新中....',
+							spinner: 'el-icon-loading',
+							background: 'rgba(0, 0, 0, 0.5)'
+						});
+						//延迟2秒，模拟网络延迟
+						setTimeout(() => {
+							//传送对象
+							$.ajax('http://localhost:8080/api/wxb/person', {
+								type: 'put',
+								data: JSON.stringify(this.person),
+								dataType: 'json',
+								contentType: 'application/json',
+								success(msg) {
+									if(msg.code == "200") {
+										_this.addPerson();
+										_this.ztaixiugai();
+										loading.close(); //关闭加载块【非常重要】
+										_this.$message({
+											type: 'success',
+											message: '更新成功'
+										});
+										_this.goBack();
+									}
+								}
+							});
+						}, 2000);
+					} else {
+						//验证失败
+						this.$alert('请按格式正确填写信息', '系统提示');
+					}
+				});
+			},
+
+			loadPeson(wid) {
+
+				//自定义加载块
+				const loading = this.$loading({
+					lock: true,
+					text: '努力更新中....',
+					spinner: 'el-icon-loading',
+					background: 'rgba(0, 0, 0, 0.5)'
+				});
+				let _this = this;
+				setTimeout(() => {
+					$.getJSON(`http://localhost:8080/api/wxb/person/${wid}`, function(person) {
+						loading.close();
+						_this.person = person;
+
+					});
+				}, 500);
+			}
+		},
+		mounted() {
+			let wid = sessionStorage.getItem('wid');
+			if(wid) {
+				this.loadPeson(wid);
+			}
+
+		}
+		});
+	</script>

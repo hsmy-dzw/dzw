@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+
+		<style>
+			.list-inline a {
+				color: #000000;
+			}
+			
+			.breadcrumb a {
+				color: #000000;
+			}
+			
+			.el-header,
+			.el-footer {
+				background: gainsboro;
+				font-size: 30px;
+			}
+			
+			.el-menu {
+				border: 0px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="personApp" v-loading="loading">
+
+			<el-row>
+
+				<h2>维修信息</h2>
+				<!--`wid`,`gid`,`id`,`wstate`,`wlicense`,`wkname`,`wpheno`,`wleix`,`wkaidate`,`wyudate`,`wwandate`,`wjiedate`,`kprice`-->
+				<el-table :default-sort="{prop: 'pdate', order: 'descending'}" :data="this.pageInfo.list" border>
+
+					<el-table-column width="100" label="序号">
+						<template slot-scope="temp">
+							{{temp.$index+1}}
+						</template>
+					</el-table-column>
+					<!--`kid``vid``id``kname``kphone``kaddres``kbirthday``kremark``kb1``kb2``kb3``kb4``kb5``kb6`-->
+					<el-table-column width="100" prop="wid" label="订单号">
+					</el-table-column>
+
+					<el-table-column width="100" prop="wlicense" label="车牌号码">
+					</el-table-column>
+
+					<el-table-column width="100" prop="wkname" label="客户姓名">
+					</el-table-column>
+
+					<el-table-column width="100" prop="wpheno" label="电话号码">
+					</el-table-column>
+
+					<el-table-column width="100" prop="wb1" label="技工组">
+					</el-table-column>
+
+					<el-table-column>
+						<template slot="header" slot-scope="scope">
+							<el-col :span="12">
+								<el-button type="primary" size="mini" :span="12"  @click="tiaoz">接车维修</el-button>
+							</el-col>
+						</template>
+						<template slot-scope="temp">
+
+							<span v-if="temp.row.wstate==0">
+								<el-button  size="mini" type="primary"  @click="showDialog(temp.row.wid)" >开始维修</el-button>
+								
+								</span>
+							<span v-if="temp.row.wstate==1">
+								
+								 <el-button type="success"   size="mini" @click="updatewstate(temp.row.wstate,temp.row.wid,temp.row.wb1)">完成订单</el-button>
+								 <el-button type="primary" icon="el-icon-search" size="mini" @click="ff1(1,3,temp.row.wid)">查看维修详情</el-button>
+								</span>
+							<span v-if="temp.row.wstate==2">
+								<el-button type="primary" icon="el-icon-search" size="mini" >查看维修项目</el-button>
+							</span>
+							
+						</template>
+					</el-table-column>
+				</el-table>
+				</el-col>
+			</el-row>
+			<el-row>
+				<el-col :span="24">
+					<el-pagination v-if="pageInfo.total!=0" :background="true" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageInfo.pageNum" :page-size="pageInfo.pageSize" :total="pageInfo.total" :page-sizes="[3,6]" layout="total, sizes, prev, pager, next, jumper">
+					</el-pagination>
+				</el-col>
+			</el-row>
+			<!--`cid``xid``pid2``kid``cnumber``cbrand``cmodel``cdriver``cphone``cbirthday`-->
+			<br />
+			<br />
+			<br />
+
+			<!--客户车辆信息  v-if="this.pageInfo2.total!=null"-->
+			<div >
+				<hr />
+				<h2>客户车辆信息</h2>
+				<!--`wid`,`gid`,`id`,`wstate`,`wlicense`,`wkname`,`wpheno`,`wleix`,
+				`wkaidate`,`wyudate`,`wwandate`,`wjiedate`,`kprice``rvname``rvmoney`-->
+				<el-table :data="this.pageInfo2.list" style="width: 100%">
+					<el-table-column width="100" label="序号">
+						<template slot-scope="temp">
+							{{temp.$index+1}}
+						</template>
+					</el-table-column>
+
+					<el-table-column prop="wid" label="订单号" width="100">
+					</el-table-column>
+					<el-table-column prop="wlicense" label="牌号" width="100">
+
+					</el-table-column>
+					<el-table-column prop="wb1" label="维修组" width="100">
+
+					</el-table-column>
+					<el-table-column prop="rvname" label="项目类型" width="100">
+					</el-table-column>
+					<el-table-column  width="150">
+						<template slot-scope="temp" slot="header">
+							<el-col >
+								<el-button type="primary" size="mini"  @click="showDialog2">添加项目</el-button>
+							</el-col>
+							
+						</template>
+					</el-table-column>
+					
+					<el-table-column label="操作" width="150">
+						<template slot="header" slot-scope="temp">
+							<el-col >
+								<el-button type="primary" size="mini"  @click="showDialog2">添加材料</el-button>
+							</el-col>
+							
+						</template>
+						
+						<template slot-scope="temp">
+							<el-button icon="el-icon-edit" size="mini" type="info" @click="showDialog6(temp.row.cid)">修改车辆详情</el-button>
+							<!--<el-button icon="el-icon-edit" size="mini" type="primary" @click="showInfo(temp.row.pid)">查看明细</el-button>-->
+							<!--<el-button icon="el-icon-delete" size="mini" type="danger" @click="delInfo2(temp.row.cid)">移除车辆信息</el-button>-->
+						</template>
+				 </el-table>
+					
+					
+				<el-row>
+					<el-col :span="24">
+						<el-pagination :background="true" @size-change="handleSizeChange2" @current-change="handleCurrentChange2" :current-page="pageInfo2.pageNum" :page-size="pageInfo2.pageSize" :total="pageInfo2.total" :page-sizes="[3,6]" layout="total, sizes, prev, pager, next, jumper">
+						</el-pagination>
+					</el-col>
+				</el-row>
+			</div>
+
+			<!--模态框-->
+			<el-dialog :destroy-on-close="true" @opened="handlOpen" title="维修开单" :visible.sync="isShow" :before-close="handleClose" center>
+				<div id="modalcnt"></div>
+			</el-dialog>
+
+			<!--模态框-->
+			<el-dialog :destroy-on-close="true" @opened="handlOpen2" title="新增项目" :visible.sync="isShow2" :before-close="handleClose" center>
+				<div id="modalcnt2"></div>
+			</el-dialog>
+
+			<!--模态框-->
+			<el-dialog :destroy-on-close="true" @opened="handlOpen5" title="新增客户车辆信息" :visible.sync="isShow5" :before-close="handleClose" center>
+				<div id="modalcnt5"></div>
+			</el-dialog>
+
+			<!--模态框-->
+			<el-dialog :destroy-on-close="true" @opened="handlOpen6" title="修改客户车辆信息" :visible.sync="isShow6" :before-close="handleClose" center>
+				<div id="modalcnt6"></div>
+			</el-dialog>
+		</div>
+	</body>
+
+	<script>
+		var personApp = new Vue({
+			el: '#personApp',
+			data: {
+				wzt:"",
+				wxid: "",
+				pageInfo: {},
+				loading: true,
+				isShow: false,
+				isShow2: false,
+				isShow5: false,
+				isShow6: false,
+				pageInfo2: {}
+
+			},
+			methods: {
+				tiaoz(){
+					indexApp.showView("jiechezhuye","维修接车");
+				},
+				updatewstate(zt, wid, wb1) {
+				
+					if(wb1 == null || wb1 === "") {
+						showAlertDialog("请选择技工组！");
+						
+					} else {
+
+						if(zt == "0") {
+							this.wzt = "1";
+
+						}
+						if(zt=="1"){
+							this.wzt = "2";
+						}
+						let _this = this;
+						$.getJSON(`http://localhost:8080/api/wxb/updatewstate/${this.wzt}/${wid}`, function(pg) {
+									if(pg=="1"){
+										showAlertDialog('修改成功!');
+										_this.goToPage(1,3);
+									}
+									
+							});
+//						$.ajax('http://localhost:8080/api/wxb/updatewstate/${this.wzt}/${wid}', {
+//							type: 'get',
+//							
+//							dataType: 'json',
+//							contentType: 'application/json',
+//							success(msg) {
+//								showAlertDialog('修改成功！');
+//							}
+//						});
+					}
+
+				},
+				ff1(p,s,wid) {
+					window.sessionStorage.setItem("wid", wid); 
+					this.loading = true;
+					let _this = this;
+					$.getJSON(`http://localhost:8080/api/wxxm/${p}/${s}/${wid}`, function(pg) {
+						 _this.pageInfo2 = pg;
+						_this.loading = false;
+					});
+				},
+				khclxxchaxun(p, s, kid) {
+
+					window.sessionStorage.setItem("kid", kid); 
+					let _this = this;
+					this.loading = true;
+					//ajax
+					$.getJSON(`http://localhost:8080/api/khclb/${p}/${s}/${kid}`, function(pg) {
+						_this.pageInfo2 = pg;
+						_this.loading = false;
+					});
+
+				},
+				xuezje(name) {
+					window.sessionStorage.setItem("name", name);
+					done();
+				},
+				handlOpen6() {
+					$("#modalcnt6").load('cheliangxingxixiugai.html');
+				},
+				handlOpen5() {
+					$("#modalcnt5").load('xingzhengkehucheliang.html');
+				},
+				handlOpen2() {
+					$("#modalcnt2").load('xinzengxianmuyemian.html');
+				},
+				handlOpen() {
+					$("#modalcnt").load('weixiuxxxiugai.html');
+				},
+				handleClose(done) {
+					this.$confirm('是否关闭').then(() => {
+						done();
+					}).catch(() => {});
+				},
+				showDialog(wid) {
+					this.isShow = true;
+					sessionStorage.setItem('wid', wid);
+				}
+
+				,
+
+				showDialog6(cid) {
+					sessionStorage.setItem('cid', cid);
+					this.isShow6 = true;
+
+				},
+				showDialog5() {
+					this.isShow5 = true;
+
+				},
+				showDialog2() {
+					
+					
+					wid=sessionStorage.getItem('wid');
+					
+					alert(wid)
+					this.isShow2 = true;
+				},
+				showInfo(pid) {
+					//indexApp.showView('kehuxinxizhuye.html);
+					sessionStorage.setItem('pid', pid);
+				},
+				delInfo2(cid) {
+					let _this = this;
+					this.$confirm('是否移除会员信息?', '系统提示', {
+						confirmButtonText: '确定',
+						cancelButtonText: '取消',
+						type: 'warning'
+					}).then(() => {
+						$.ajax(`http://localhost:8080/api/khclb/person/${cid}`, {
+							type: 'delete',
+							dataType: 'json',
+							success(msg) {
+								if(msg.code == "200") {
+									_this.$message({
+										type: 'success',
+										message: '删除成功!'
+									});
+									_this.loading = true;
+									kid = window.sessionStorage.getItem("kid");
+									_this.khclxxchaxun(1, _this.pageInfo2.pageSize, kid);
+								}
+							}
+						});
+
+					}).catch(() => {
+						this.$message({
+							type: 'info',
+							message: '已取消删除'
+						});
+					});
+				},
+				delInfo(pid) {
+					let _this = this;
+					this.$confirm('是否移除会员信息?', '系统提示', {
+						confirmButtonText: '确定',
+						cancelButtonText: '取消',
+						type: 'warning'
+					}).then(() => {
+						$.ajax(`http://localhost:8080/api/khb/person/${pid}`, {
+							type: 'delete',
+							dataType: 'json',
+							success(msg) {
+								if(msg.code == "200") {
+									_this.$message({
+										type: 'success',
+										message: '删除成功!'
+									});
+									_this.loading = true;
+									_this.goToPage(1, _this.pageInfo.pageSize);
+								}
+							}
+						});
+
+					}).catch(() => {
+						this.$message({
+							type: 'info',
+							message: '已取消删除'
+						});
+					});
+				},
+				handleSizeChange(val) {
+					this.goToPage(this.pageInfo.pageNum, val);
+				},
+				handleCurrentChange(val) {
+					this.goToPage(val, this.pageInfo.pageSize);
+				},
+
+				handleSizeChange2(val) {
+					kid = window.sessionStorage.getItem("kid");
+					this.khclxxchaxun(this.pageInfo2.pageNum, val, kid);
+				},
+				handleCurrentChange2(val) {
+					kid = window.sessionStorage.getItem("kid");
+					this.khclxxchaxun(val, this.pageInfo2.pageSize, kid);
+				},
+				goToPage(p, s) {
+					let _this = this;
+					this.loading = true;
+					//ajax
+					$.getJSON(`http://localhost:8080/api/wxb/${p}/${s}`, function(pg) {
+						_this.pageInfo = pg;
+						_this.loading = false;
+					});
+				}
+			},
+			mounted() {
+				this.goToPage(1, 3);
+
+			},
+			filters: {
+				filterSex(val) {
+					return val == 0 ? '男' : '女';
+				},
+				filterVip(val) {
+					return val == 1 ? '普通用户' : 'VIP会员';
+				}
+			}
+		});
+	</script>
+
+</html>
