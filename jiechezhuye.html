@@ -23,7 +23,7 @@
 
 					</el-dropdown-menu>
 				</el-dropdown>-->
-				<el-button type="primary" size="mini" :span="12" icon="el-icon-edit" @click="urlyinr" >接车</el-button>
+				<el-button type="primary" size="mini" :span="12"  @click="urlyinr" >接车</el-button>
 				<label style="margin-left: 800px;">站内维修</label>&nbsp;&nbsp;&nbsp;<el-tooltip :content="'Switch valueg: ' + valueg" placement="top" >
 					<el-switch v-model="valueg" 
 						active-color="#13ce66" 
@@ -126,7 +126,7 @@
 				leix: "请选择业务",
 				zhi: "1",
 				options: [],
-				value: [],
+				value: "",
 				list: [],
 				loading: false,
 				//"湘B8888","湘A8888","湘c8888","湘A5322","湘A1233","湘A6653","湘A0864","湘A1234"
@@ -135,7 +135,7 @@
 					kid: "",
 					id: "",
 					kname: "",
-					kphone: "",
+					kphone:"",
 					kaddres: "",
 					kbirthday: "",
 					kremark: "",
@@ -153,17 +153,27 @@
 					cnumber: ""
 				},
 				jcbsj: {
+					id:"",
 					kid: "",
 					cid: "",
 					jname: "",
 					jmodel: "",
 					jnumber: "",
-					jliex: ""
+					jliex: "",
+					jb1:""
+				},
+				wxb1:{
+					/*`wid` `wstate``wlicense``wkname``wpheno`*/
+					wid:"",
+					wstate:"",
+					wlicense:"",
+					wkname:"",
+					wpheno:""
 				}
 
 			},
 			methods: {
-				addPerson() {
+				addPerson2() {
 					let _this = this;
 					_this.jcbsj.kid = _this.kehuxx.kid;
 					_this.jcbsj.cid = _this.kehuxx.cid;
@@ -171,6 +181,7 @@
 					_this.jcbsj.jmodel = _this.kehuxx.cmodel;
 					_this.jcbsj.jnumber = _this.kehuxx.cnumber;
 					_this.jcbsj.jliex = _this.zhi;
+					_this.jcbsj.jb1 = _this.kehuxx.kphone;
 					$.ajax('http://localhost:8080/api/jieche/person', {
 						type: 'post',
 						data: JSON.stringify(this.jcbsj),
@@ -178,7 +189,8 @@
 						contentType: 'application/json',
 						success(msg) {
 							if(msg.code == "200") {
-								alert("接车成功!")
+								
+								showAlertDialog("接车成功！");
 								/*loading.close(); //关闭加载块【非常重要】
 								_this.$message({
 									type: 'success',
@@ -190,36 +202,73 @@
 					});
 
 				},
+				addPerson() {
+					let _this = this;
+					_this.wxb1.wid = _this.jcbsj.id;
+					_this.wxb1.wstate = "0";
+					_this.wxb1.wlicense = _this.kehuxx.cnumber;
+					_this.wxb1.wkname = _this.kehuxx.kname;
+					_this.wxb1.wpheno = _this.kehuxx.kphone;
+					
+					$.ajax('http://localhost:8080/api/wxb/person', {
+						type: 'post',
+						data: JSON.stringify(this.wxb1),
+						dataType: 'json',
+						contentType: 'application/json',
+						success(msg) {
+							
+						}
+					});
+
+				},
 				urlyinr() {
 					
 					if(this.value[0] == null) {
-						alert("请先选择车辆！")
+						showAlertDialog("请选择车辆！");
 						return;
 					}
 					if(this.zhi == "1") {
-
+						
+						this.addPerson2();
 						this.addPerson();
-
-						indexApp.showView("123", "站内接车");
+						window.sessionStorage.setItem("id", this.jcbsj.id);
+						indexApp.showView("zhanneiweijiu", "站内维修");
 
 					} else if(this.zhi == "2") {
 
+						this.addPerson2();
 						this.addPerson();
-						indexApp.showView("zhanneiweijiu", "站外接车");
+						window.sessionStorage.setItem("id", this.jcbsj.id);
+						indexApp.showView("zhanneiweijiu", "站外维修");
 
 					} else {
 						alert("请先选择业务类型！")
 					}
 				},
+				kehuxingxichaxun2() {
+
+					let _this = this;
+					
+					$.getJSON(`http://localhost:8080/api/khb/person/maxid`, function(pg) {
+						//				    	
+						_this.jcbsj.id = pg;
+
+					});
+
+				},
+				
 				kehuxingxichaxun() {
 
 					let _this = this;
 					piaohao = this.value[0];
-					$.getJSON(`http://localhost:8080/api/khb/person/kehuxingxi/${piaohao}`, function(pg) {
+					if(piaohao!=null){
+						$.getJSON(`http://localhost:8080/api/khb/person/kehuxingxi/${piaohao}`, function(pg) {
 						//				    	
 						_this.kehuxx = pg;
 
 					});
+					}
+					
 
 				},ale(){
 					if(this.valueg==100){
@@ -264,6 +313,7 @@
 			},
 			mounted() {
 				this.fff2();
+				this.kehuxingxichaxun2();
 
 			}
 		});
