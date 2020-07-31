@@ -93,9 +93,9 @@
 			<br />
 
 			<!--客户车辆信息  v-if="this.pageInfo2.total!=null"-->
-			<div >
+			<div  v-if="this.pageInfo2.total!=null">
 				<hr />
-				<h2>客户车辆信息</h2>
+				<h2>维修项目信息</h2>
 				<!--`wid`,`gid`,`id`,`wstate`,`wlicense`,`wkname`,`wpheno`,`wleix`,
 				`wkaidate`,`wyudate`,`wwandate`,`wjiedate`,`kprice``rvname``rvmoney`-->
 				<el-table :data="this.pageInfo2.list" style="width: 100%">
@@ -127,17 +127,23 @@
 					<el-table-column label="操作" width="150">
 						<template slot="header" slot-scope="temp">
 							<el-col >
-								<el-button type="primary" size="mini"  @click="showDialog2">添加材料</el-button>
+								<el-button type="primary" size="mini"  @click="showDialog5">添加材料</el-button>
 							</el-col>
 							
 						</template>
+						</el-table-column>
 						
-						<template slot-scope="temp">
-							<el-button icon="el-icon-edit" size="mini" type="info" @click="showDialog6(temp.row.cid)">修改车辆详情</el-button>
-							<!--<el-button icon="el-icon-edit" size="mini" type="primary" @click="showInfo(temp.row.pid)">查看明细</el-button>-->
-							<!--<el-button icon="el-icon-delete" size="mini" type="danger" @click="delInfo2(temp.row.cid)">移除车辆信息</el-button>-->
+						<el-table-column label="操作" width="150">
+						<template slot="header" slot-scope="temp">
+							<el-col >
+								<el-button type="primary" size="mini"  @click="showDialog6">查看材料</el-button>
+							</el-col>
+							
 						</template>
+						</el-table-column>
+						
 				 </el-table>
+					
 					
 					
 				<el-row>
@@ -186,6 +192,7 @@
 
 			},
 			methods: {
+				
 				tiaoz(){
 					indexApp.showView("jiechezhuye","维修接车");
 				},
@@ -249,10 +256,10 @@
 					done();
 				},
 				handlOpen6() {
-					$("#modalcnt6").load('cheliangxingxixiugai.html');
+					$("#modalcnt6").load('chakancailiaoxx.html');
 				},
 				handlOpen5() {
-					$("#modalcnt5").load('xingzhengkehucheliang.html');
+					$("#modalcnt5").load('xingzhengchailiaobiao.html');
 				},
 				handlOpen2() {
 					$("#modalcnt2").load('xinzengxianmuyemian.html');
@@ -273,7 +280,7 @@
 				,
 
 				showDialog6(cid) {
-					sessionStorage.setItem('cid', cid);
+					
 					this.isShow6 = true;
 
 				},
@@ -360,12 +367,13 @@
 				},
 
 				handleSizeChange2(val) {
-					kid = window.sessionStorage.getItem("kid");
-					this.khclxxchaxun(this.pageInfo2.pageNum, val, kid);
+					wid = window.sessionStorage.getItem("wid");
+					alert(wid)
+					this.ff1(this.pageInfo2.pageNum, val, wid);
 				},
 				handleCurrentChange2(val) {
-					kid = window.sessionStorage.getItem("kid");
-					this.khclxxchaxun(val, this.pageInfo2.pageSize, kid);
+					wid = window.sessionStorage.getItem("wid");
+					this.ff1(val, this.pageInfo2.pageSize, wid);
 				},
 				goToPage(p, s) {
 					let _this = this;

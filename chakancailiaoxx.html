@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<body>
+		<div id="personApp1" v-loading="loading">
+			<el-row>
+				<el-col :span="24">
+					<!-- `mdmoney``mdname``wid``mdid`mdweigth``mdbrand``-->
+					
+					<el-table  :default-sort="{prop: 'pdate', order: 'descending'}" :data="this.pageInfo.list" border>
+						<el-table-column width="100" label="序号">
+							<template slot-scope="temp">
+								{{temp.$index+1}}
+							</template>
+						</el-table-column>
+						<el-table-column width="100" prop="mdname" label="商品名称">
+						</el-table-column>
+						
+						<el-table-column width="100" prop="mdmoney" label="商品价格">
+						</el-table-column>
+						
+						<el-table-column width="100" prop="mdweigth" label="重量/单位kg">
+						</el-table-column>
+						
+						<el-table-column width="100" prop="mdbrand" label="商品类型">
+						</el-table-column>
+						
+						
+						
+					</el-table>
+					
+					
+				</el-col>
+			</el-row>
+			<el-row>
+				<el-col :span="24">
+					<el-pagination v-if="pageInfo.total!=0" :background="true"  @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageInfo.pageNum" :page-size="pageInfo.pageSize" :total="pageInfo.total" :page-sizes="[3,6]"  layout="total, sizes, prev, pager, next, jumper">
+					</el-pagination>
+				</el-col>
+			</el-row>
+			
+			
+			<!--模态框-->
+			
+		</div>
+	</body>
+	<script>
+		var personApp = new Vue({
+			el: '#personApp1',
+			data: {
+				pageInfo: {},
+				loading: true,
+				isShow:false
+			},
+			methods: {
+				
+				
+				
+				
+				
+				handleSizeChange(val) {
+					wid=sessionStorage.getItem('wid');
+					this.goToPage(this.pageInfo.pageNum,val,wid);
+				},
+				handleCurrentChange(val) {
+					wid=sessionStorage.getItem('wid');
+					this.goToPage(val, this.pageInfo.pageSize,wid);
+				},
+				goToPage(p, s,wid) {
+					let _this = this;
+					this.loading = true;
+					//ajax
+					$.getJSON(`http://localhost:8080/api/clxqb/${p}/${s}/${wid}`, function(pg) {
+						_this.pageInfo = pg;
+						_this.loading = false;
+					});
+				}
+			},
+			mounted() {
+				wid=sessionStorage.getItem('wid');
+				this.goToPage(1, 3,wid);
+			}
+		
+		});
+	</script>
+
+</html>
