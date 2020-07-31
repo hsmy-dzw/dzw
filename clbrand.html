@@ -143,13 +143,13 @@
 						callback(new Error('请输入发动机编号'));
 					} else {
 						this.sle(value);
-						
-						if(fdj) {
+						console.log(this.fdj);
+						if(this.fdj) {
 							callback(new Error('该编号已存在！'));
 						} else {
 							callback();
 						}
-						/*callback();*/
+						
 					}
 				};
 

@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" href="css/index.css" />
+
+	</head>
+
+	<body>
+		<div id="appChex">
+			<el-row>
+				<el-col :xs='10' :md='10' :gutter='10'>
+					<el-row>
+						<el-col :md='10' :xs='5'>
+							<el-input placeholder='编码/品牌/首字母' v-model='page.name'></el-input>
+						</el-col>
+						<el-button @click='cx1'>查询品牌</el-button>
+						<el-button @click='inde'>新增品牌</el-button>
+
+					</el-row>
+
+					<el-row>
+						<template>
+							<el-table :data="pageInfo.list" style="width: 90%">
+								<el-table-column prop="pid2" label="品牌ID" width="80">
+								</el-table-column>
+								<el-table-column prop="pszm" label="首字母" width="80">
+								</el-table-column>
+								<el-table-column prop="pinname" label="品牌昵称" width="80">
+								</el-table-column>
+								<el-table-column label="操作">
+									<template slot-scope='stast'>
+										<el-button size='mini' @click='showPage(1,6,stast.row.pid2)' type='pimary'>选择</el-button>
+										<el-button size='mini' @click='upda(stast.row.pid2)' type='info'>修改</el-button>
+										<el-button size='mini' @click='del(stast.row.pid2)' type='danger'>删除</el-button>
+									</template>
+								</el-table-column>
+							</el-table>
+						</template>
+					</el-row>
+
+					<!--分也配置和设置-->
+					<el-row>
+						<el-col :span="10">
+
+							<el-pagination v-if="pageInfo.total !=0" :background="true" :pager-count="4" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageInfo.pageNum" :pager-count="3" :page-size="pageInfo.pageSize" :total="pageInfo.total" :page-sizes="[3,6]" layout="total, sizes, prev, pager, next, jumper">
+							</el-pagination>
+
+						</el-col>
+					</el-row>
+
+				</el-col>
+
+				<el-col :md='14' :xs='10'>
+					<el-row :span='5'>
+						<el-col :md='10' :xs='10' :offset='4'>
+							<el-input v-model='pageName' placeholder='车型/发动机/编码/品牌'></el-input>
+						</el-col>
+						<el-button @click='cxbButt'>查询车型</el-button>
+						<el-button @click='showdialogVisible3'>新增车型</el-button>
+					</el-row>
+
+					<el-row>
+						<template :offset='3'>
+							<el-table :data='pageInfo2.list' style="width: 90%">
+								<el-table-column prop='xid' label="车型ID" width="110">
+								</el-table-column>
+								<el-table-column label="车辆品牌" prop='clppb.pinname' width="110">
+								</el-table-column>
+								<el-table-column label="发动机" prop='fdjb.fbname' width="110">
+								</el-table-column>
+								<el-table-column label="车型昵称" prop='cxname' width="110">
+								</el-table-column>
+								<el-table-column label="操作">
+									<template slot-scope='cxb1'>
+										<el-button size='small' @click='updaShow(cxb1.row.xid)' type='info'>修改</el-button>
+										<el-button size='small' @click='CxbDle(cxb1.row.xid)' tyep='danger'>删除</el-button>
+									</template>
+								</el-table-column>
+							</el-table>
+						</template>
+					</el-row>
+
+					<!--分也配置和设置-->
+					<el-row>
+						<el-col :span="10">
+
+							<el-pagination v-if="pageInfo2.total !=0" :background="true" :pager-count="4" @size-change="handleSizeChange2" @current-change="handleCurrentChange2" :current-page="pageInfo2.pageNum" :pager-count="3" :page-size="pageInfo2.pageSize" :total="pageInfo2.total" :page-sizes="[3,6]" layout="total, sizes, prev, pager, next, jumper">
+							</el-pagination>
+
+						</el-col>
+					</el-row>
+
+				</el-col>
+			</el-row>
+
+			<!--车牌品牌新增模态框-->
+			<el-dialog title="新增车辆品牌" :visible.sync="dialogVisible" width="30%" :before-close="handleClose">
+				<el-form :model='clppb' :rules='rules' ref='clppb' label-width="100px" class="demo-ruleForm">
+					<el-form-item label='车辆品牌ID' prop='pid2'>
+						<el-col :md='20'>
+							<el-input v-model='clppb.pid2' placeholder='车辆品牌id'></el-input>
+						</el-col>
+					</el-form-item>
+
+					<el-form-item label='车辆品牌昵称' prop='pinname'>
+						<el-col :md='20'>
+							<el-input v-model='clppb.pinname' placeholder='车辆品牌昵称'></el-input>
+						</el-col>
+					</el-form-item>
+
+					<el-form-item label='车辆首字母' prop='pszm'>
+						<el-col :md='20'>
+							<el-input v-model='clppb.pszm' placeholder='车辆首字母'></el-input>
+						</el-col>
+					</el-form-item>
+
+				</el-form>
+				<span slot="footer" class="dialog-footer">
+    <el-button @click="dialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="submitForm('clppb')">确 定</el-button>
+  </span>
+			</el-dialog>
+
+			<!--车牌品牌修改模态框-->
+			<el-dialog title="新增车辆品牌" :visible.sync="dialogVisible2" width="30%" :before-close="handleClose2">
+				<el-form :model='clppb' :rules='rules' ref='clppb' label-width="100px" class="demo-ruleForm">
+					<el-form-item label='车辆品牌ID'>
+						<el-col :md='20'>
+							<el-input v-model='clppb.pid2' placeholder='车辆品牌id' :disabled='true'></el-input>
+						</el-col>
+					</el-form-item>
+
+					<el-form-item label='车辆品牌昵称' prop='pinname'>
+						<el-col :md='20'>
+							<el-input v-model='clppb.pinname' placeholder='车辆品牌昵称'></el-input>
+						</el-col>
+					</el-form-item>
+
+					<el-form-item label='车辆首字母' prop='pszm'>
+						<el-col :md='20'>
+							<el-input v-model='clppb.pszm' placeholder='车辆首字母'></el-input>
+						</el-col>
+					</el-form-item>
+
+				</el-form>
+				<span slot="footer" class="dialog-footer">
+    <el-button @click="dialogVisible2 = false">取 消</el-button>
+    <el-button type="primary" @click="update('clppb')">确 定</el-button>
+  </span>
+			</el-dialog>
+
+			<!--车辆存档新增-->
+			<el-dialog title="新增车辆存档" :visible.sync="dialogVisible3" width="30%" :before-close="handleClose3">
+				<el-form :model='cxb' :rules='rules' ref='cxb' label-width="100px" class="demo-ruleForm">
+					<el-form-item label='车辆品牌ID' prop='xid'>
+						<el-col :md='20'>
+							<el-input v-model='cxb.xid' placeholder='车辆id'></el-input>
+						</el-col>
+					</el-form-item>
+
+					<el-form-item label='车辆存档昵称' prop='cxname'>
+						<el-col :md='20'>
+							<el-input v-model='cxb.cxname' placeholder='车辆品牌昵称'></el-input>
+						</el-col>
+					</el-form-item>
+
+					<el-form-item label='车辆品牌' prop='pid2'>
+						<el-col>
+							<template>
+								<el-select v-model="cxb.pid2" placeholder="请选择">
+									<el-option v-for="item in clppb2" :key="item.pid2" :label="item.pinname" :value="item.pid2">
+									</el-option>
+								</el-select>
+							</template>
+						</el-col>
+					</el-form-item>
+
+					<el-form-item label='发动机品牌' prop='fdjid'>
+						<el-col>
+							<template>
+								<el-select v-model="cxb.fdjid" placeholder="请选择">
+									<el-option v-for="item in this.fdjb" :key="item.fdjid" :label="item.fbname" :value="item.fdjid">
+									</el-option>
+								</el-select>
+							</template>
+						</el-col>
+					</el-form-item>
+
+				</el-form>
+				<span slot="footer" class="dialog-footer">
+    <el-button @click="dialogVisible3 = false">取 消</el-button>
+    <el-button type="primary" @click="cxbInsert('cxb')">确 定</el-button>
+  </span>
+			</el-dialog>
+			
+				<!--车辆存档修改-->
+			<el-dialog title="新增车辆存档" :visible.sync="dialogVisible4" width="30%" :before-close="handleClose4">
+				<el-form :model='cxb' :rules='rules' ref='cxb' label-width="100px" class="demo-ruleForm">
+					<el-form-item label='车辆品牌ID'>
+						<el-col :md='20'>
+							<el-input v-model='cxb.xid' placeholder='车辆id' :disabled='true'></el-input>
+						</el-col>
+					</el-form-item>
+
+					<el-form-item label='车辆存档昵称' prop='cxname'>
+						<el-col :md='20'>
+							<el-input v-model='cxb.cxname' placeholder='车辆品牌昵称'></el-input>
+						</el-col>
+					</el-form-item>
+
+					<el-form-item label='车辆品牌' prop='pid2'>
+						<el-col>
+							<template>
+								<el-select v-model="cxb.pid2" placeholder="请选择">
+									<el-option v-for="item in clppb2" :key="item.pid2" :label="item.pinname" :value="item.pid2">
+									</el-option>
+								</el-select>
+							</template>
+						</el-col>
+					</el-form-item>
+
+					<el-form-item label='发动机品牌' prop='fdjid'>
+						<el-col>
+							<template>
+								<el-select v-model="cxb.fdjid" placeholder="请选择">
+									<el-option v-for="item in this.fdjb" :key="item.fdjid" :label="item.fbname" :value="item.fdjid">
+									</el-option>
+								</el-select>
+							</template>
+						</el-col>
+					</el-form-item>
+
+				</el-form>
+				<span slot="footer" class="dialog-footer">
+    <el-button @click="dialogVisible4 = false">取 消</el-button>
+    <el-button type="primary" @click="CxbdialogVisible3('cxb')">确 定</el-button>
+  </span>
+			</el-dialog>
+		</div>
+
+	</body>
+	<script>
+		var VmChex = new Vue({
+			data() {
+
+				var validatePid2 = (rule, value, callback) => {
+					if(value === '') {
+						callback(new Error('请输入品牌id'));
+					} else {
+						this.showid(value);
+
+						setTimeout(() => {
+							if(this.status == true) {
+								console.log(2)
+								callback(new Error('该品牌id以存在请重新输入'));
+							} else {
+								console.log(1)
+								callback();
+							}
+						}, 1000);
+
+					}
+				};
+
+				var validatePszm = (rule, value, callback) => {
+					if(value === '') {
+						callback(new Error('请输入首字母'));
+					} else {
+
+						callback();
+					}
+				};
+
+				var validatePinname = (rule, value, callback) => {
+					if(value === '') {
+						callback(new Error('请输入品牌昵称'));
+					} else {
+
+						callback();
+					}
+				};
+
+				var validateCxname = (rule, value, callback) => {
+					if(value === '') {
+						callback(new Error('请输入车型存档昵称'));
+					} else {
+
+						callback();
+					}
+				};
+
+				var validateCid = (rule, value, callback) => {
+					if(value === '') {
+						callback(new Error('请输入车型存档ID'));
+					} else {
+						this.CxbCount(value);
+						setTimeout(() => {
+							if(this.status2 == true) {
+								callback(new Error('该车型存档id已存在请跟换一个'));
+							} else {
+								callback();
+							}
+						}, 1000);
+						
+					}
+				};
+
+				var validatePid2 = (rule, value, callback) => {
+					if(value === '') {
+						callback(new Error('请选择车辆品牌'));
+					} else {
+
+						callback();
+					}
+				};
+
+				var validateFdjid = (rule, value, callback) => {
+					if(value === '') {
+						callback(new Error('请选择发动机品牌'));
+					} else {
+
+						callback();
+					}
+				};
+				return {
+					status: false,
+					status2:false,
+					dialogVisible: false,
+					dialogVisible2: false,
+					dialogVisible3: false,
+					dialogVisible4: false,
+					fdjValue: '',
+					clppbValue: '',
+					pageInfo: {},
+					pageInfo2: {},
+					fdjb: {},
+					clppb2: {},
+					pageName: '',
+					page: {
+						pageSize: 0,
+						pageNum: 0,
+						name: ''
+					},
+					clppb: {
+						pid2: '',
+						pszm: '',
+						pinname: ''
+					},
+					cxb: {
+						xid: '',
+						pid2: '',
+						fdjid: '',
+						cxname: ''
+					},
+					rules: {
+						pid2: [{
+							validator: validatePid2,
+							trigger: 'blur'
+						}],
+						pszm: [{
+							validator: validatePszm,
+							trigger: 'blur'
+						}],
+						pinname: [{
+							validator: validatePinname,
+							trigger: 'blur'
+						}],
+						xid: [{
+							validator: validateCid,
+							trigger: 'blur'
+						}],
+						pid2: [{
+							required: true,
+							validator: validatePid2,
+							trigger: 'change',
+							type: 'number'
+						}],
+						fdjid: [{
+							required: true,
+							message: "行业类型不能为空",
+							trigger: ["blur", 'change']
+						}],
+						cxname: [{
+							validator: validateCxname,
+							trigger: 'blur'
+						}]
+					}
+				};
+			},
+			methods: {
+				inde() {
+					this.close();
+					this.dialogVisible = true;
+
+				},
+				close() {
+					this.clppb.pid2 = '';
+					this.clppb.pszm = '';
+					this.clppb.pinname = '';
+					this.cxb.pid2='';
+					this.cxb.cxname='';
+					this.cxb.fdjid='';
+					this.cxb.xid='';
+				},
+				handleClose(done) {
+					this.$confirm("确认要关闭吗？").then(_ => {
+						done();
+					}).catch(_ => {
+
+					})
+				},
+				handleClose2(done) {
+					this.$confirm("确认要关闭吗？").then(_ => {
+						done();
+					}).catch(_ => {
+
+					})
+				},
+				handleClose3(done) {
+					this.$confirm("确认要关闭吗？").then(_ => {
+						done();
+					}).catch(_ => {
+
+					})
+				},
+				handleClose4(done) {
+					this.$confirm("确认要关闭吗？").then(_ => {
+						done();
+					}).catch(_ => {
+
+					})
+				},
+				pages(p, s) {
+					let _this = this;
+					_this.page.pageSize = s;
+					_this.page.pageNum = p;
+					$.ajax({
+						url: 'http://localhost:8080/api/clppd/page',
+						type: 'post',
+						data: JSON.stringify(this.page),
+						dataType: 'json',
+						contentType: 'application/json',
+						success: function(mas) {
+							_this.pageInfo = mas;
+						}
+					});
+				},
+				cx1() {
+					this.pages(1, 5);
+				},
+				submitForm(formName) {
+					this.$refs[formName].validate((valid) => {
+						if(valid) {
+							let _this = this;
+							$.ajax({
+								type: "post",
+								url: "http://localhost:8080/api/clppd/insert",
+								data: JSON.stringify(this.clppb),
+								dataType: 'json',
+								contentType: 'application/json',
+								success: function(mas) {
+									if(mas.code = '200') {
+										_this.$message({
+											showClose: true,
+											message: '新增成功!',
+											type: 'success'
+										});
+										_this.dialogVisible = false;
+										_this.close();
+										_this.pages(1, 6);
+									} else {
+										_this.$message({
+											showClose: true,
+											message: '新增失败!',
+											type: 'error'
+										});
+									}
+								}
+							});
+						} else {
+							console.log('error submit!!');
+							return false;
+						}
+					});
+				},
+				del(pid2) {
+					let _this = this;
+					$.ajax({
+						url: 'http://localhost:8080/api/clppd/delect/' + pid2,
+						type: 'post',
+						success: function(mas) {
+							if(mas.code = '200') {
+								_this.$message({
+									showClose: true,
+									message: '删除成功!',
+									type: 'success'
+								});
+
+								_this.pages(1, 6);
+							} else {
+								_this.$message({
+									showClose: true,
+									message: '删除失败!',
+									type: 'error'
+								});
+							}
+						}
+					});
+				},
+				showid(id) {
+					let _this = this;
+					$.ajax({
+						url: 'http://localhost:8080/api/clppd/showid/' + id,
+						type: 'get',
+						success: function(mas) {
+							console.log(mas.code);
+							if(mas.code == '200') {
+								_this.status = true;
+							} else {
+								_this.status = false;
+							}
+						}
+					});
+				},
+				upda(id) {
+					let _this = this;
+					_this.close();
+					$.ajax({
+						url: 'http://localhost:8080/api/clppd/showClppb/' + id,
+						type: 'get',
+						success: function(mas) {
+							console.log(mas.code);
+							if(mas.code == '200') {
+								_this.clppb.pid2 = mas.data.pid2;
+								_this.clppb.pinname = mas.data.pinname;
+								_this.clppb.pszm = mas.data.pszm;
+								_this.dialogVisible2 = true;
+							}
+						}
+					});
+				},
+				update(formName) {
+					this.$refs[formName].validate((valid) => {
+						if(valid) {
+							let _this = this;
+							$.ajax({
+								type: "post",
+								url: "http://localhost:8080/api/clppd/update",
+								data: JSON.stringify(this.clppb),
+								dataType: 'json',
+								contentType: 'application/json',
+								success: function(mas) {
+									if(mas.code = '200') {
+										_this.$message({
+											showClose: true,
+											message: '修改成功!',
+											type: 'success'
+										});
+										_this.dialogVisible2 = false;
+										_this.close();
+										_this.pages(1, 6);
+									} else {
+										_this.$message({
+											showClose: true,
+											message: '修改成功!',
+											type: 'error'
+										});
+									}
+								}
+							});
+						} else {
+							console.log('error submit!!');
+							return false;
+						}
+					});
+
+				},
+				handleSizeChange(val) {
+					this.pages(this.pageInfo.pageNum, val);
+				},
+				handleCurrentChange(val) {
+					this.pages(val, this.pageInfo.pageSize);
+				},
+				showPage(p, s, id) {
+					//存档表
+
+					let _this = this;
+					_this.page.pageSize = s;
+					_this.page.pageNum = p;
+					_this.page.name = id;
+					$.ajax({
+						url: 'http://localhost:8080/api/cxb/page2',
+						type: 'post',
+						data: JSON.stringify(this.page),
+						dataType: 'json',
+						contentType: 'application/json',
+						success: function(mas) {
+							_this.pageInfo2 = mas;
+						}
+					});
+				},
+				pages2(p, s) {
+					//存档表
+					let _this = this;
+					_this.page.pageSize = s;
+					_this.page.pageNum = p;
+					_this.page.name = this.pageName;
+					$.ajax({
+						url: 'http://localhost:8080/api/cxb/page',
+						type: 'post',
+						data: JSON.stringify(this.page),
+						dataType: 'json',
+						contentType: 'application/json',
+						success: function(mas) {
+							_this.pageInfo2 = mas;
+						}
+					});
+				},
+				cxbButt() {
+					this.pages2(1, 6);
+				},
+				handleSizeChange2(val) {
+					this.pages2(this.pageInfo2.pageNum, val);
+				},
+				handleCurrentChange2(val) {
+					this.pages2(val, this.pageInfo2.pageSize);
+				},
+				showdialogVisible3() {
+					this.dialogVisible3 = true;
+				},
+				fdjbBrand() {
+					let _this = this;
+					$.getJSON('http://localhost:8080/api/brand/fdjbBrand', (fj) => {
+						_this.fdjb = fj.data;
+					})
+				},
+				clppbBrand() {
+					let _this = this;
+					$.getJSON('http://localhost:8080/api/clppd/clppbBrand', (fj) => {
+						_this.clppb2 = fj.data;
+					})
+				},cxbInsert(formName){
+						this.$refs[formName].validate((valid) => {
+						if(valid) {
+							let _this = this;
+							$.ajax({
+								type: "post",
+								url: "http://localhost:8080/api/cxb/insert",
+								data: JSON.stringify(this.cxb),
+								dataType: 'json',
+								contentType: 'application/json',
+								success: function(mas) {
+									if(mas.code = '200') {
+										_this.$message({
+											showClose: true,
+											message: '新增成功!',
+											type: 'success'
+										});
+										_this.dialogVisible3 = false;
+										_this.close();
+										_this.pages2(1, 6);
+									} else {
+										_this.$message({
+											showClose: true,
+											message: '新增失败!',
+											type: 'error'
+										});
+									}
+								}
+							});
+						} else {
+							console.log('error submit!!');
+							return false;
+						}
+					});
+				},CxbDle(xid){
+					let _this = this;
+					$.ajax({
+						url: 'http://localhost:8080/api/cxb/delect/' + xid,
+						type: 'post',
+						success: function(mas) {
+							if(mas.code = '200') {
+								_this.$message({
+									showClose: true,
+									message: '删除成功!',
+									type: 'success'
+								});
+
+								_this.pages2(1, 6);
+							} else {
+								_this.$message({
+									showClose: true,
+									message: '删除失败!',
+									type: 'error'
+								});
+							}
+						}
+					});
+				},CxbCount(id){
+					let _this = this;
+					$.ajax({
+						url: 'http://localhost:8080/api/cxb/showid/' + id,
+						type: 'get',
+						success: function(mas) {
+							console.log(mas.code);
+							if(mas.code == '200') {
+								_this.status2 = true;
+							} else {
+								_this.status2 = false;
+							}
+						}
+					});
+				},updaShow(xid){
+					let _this = this;
+					_this.close();
+					$.ajax({
+						url: 'http://localhost:8080/api/cxb/showClppb/' + xid,
+						type: 'get',
+						success: function(mas) {
+							console.log(mas.code);
+							if(mas.code == '200') {
+								_this.cxb.pid2 = mas.data.pid2;
+								_this.cxb.xid = mas.data.xid;
+								_this.cxb.fdjid = mas.data.fdjid;
+								_this.cxb.cxname = mas.data.cxname;
+								_this.dialogVisible4 = true;
+							}
+						}
+					});
+				},CxbdialogVisible3(formName){
+					this.$refs[formName].validate((valid) => {
+						if(valid) {
+							let _this = this;
+							$.ajax({
+								type: "post",
+								url: "http://localhost:8080/api/cxb/update",
+								data: JSON.stringify(this.cxb),
+								dataType: 'json',
+								contentType: 'application/json',
+								success: function(mas) {
+									if(mas.code = '200') {
+										_this.$message({
+											showClose: true,
+											message: '修改成功!',
+											type: 'success'
+										});
+										_this.dialogVisible4 = false;
+										_this.close();
+										_this.pages2(1, 6);
+									} else {
+										_this.$message({
+											showClose: true,
+											message: '修改成功!',
+											type: 'error'
+										});
+									}
+								}
+							});
+						} else {
+							console.log('error submit!!');
+							return false;
+						}
+					});
+				}
+
+			},
+			mounted() {
+				this.pages(1, 6);
+				this.pages2(1, 6);
+				this.fdjbBrand();
+				this.clppbBrand();
+			}
+		}).$mount("#appChex");
+	</script>
+
+</html>
