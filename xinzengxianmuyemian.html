@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+
+	<body>
+		<div id="addApp">
+			<el-form :model="person" ref="personForm" :rules="personRules" label-width="80px">
+				<el-form-item label="订单号" prop="pid">
+					<el-col :span="6">
+						<!--非常重要-->
+						<el-input v-model="person.wid"></el-input>
+					</el-col>
+				</el-form-item>
+
+				<el-form-item label="添加项目" prop="wb1">
+					<el-select v-model="person.rvid" placeholder="请选择" @change="ff2">
+						<el-option v-for="item in options3" :key="item.value1" :label="item.label1" :value="item.value1 ">
+						</el-option>
+					</el-select>
+				</el-form-item>
+
+				<!--<el-form-item label="会员生日" prop="pdate">
+					<el-col :span="6">
+						<el-date-picker v-model="person.pdate" type="date" placeholder="选择日期时间">
+						</el-date-picker>
+					</el-col>
+				</el-form-item>-->
+				<el-form-item>
+					<el-button type="primary" @click="addPerson">新增</el-button>
+					<el-button type="danger" @click="goBack">取消</el-button>
+				</el-form-item>
+			</el-form>
+		</div>
+	</body>
+
+	<script>
+		/******js中日期格式转换*****/
+		function dateToString(date) {
+			var year = date.getFullYear();
+			var month = (date.getMonth() + 1).toString();
+			var day = (date.getDate()).toString();
+			if(month.length == 1) {
+				month = "0" + month;
+			}
+			if(day.length == 1) {
+				day = "0" + day;
+			}
+			var dateTime = year + "-" + month + "-" + day;
+			return dateTime;
+		}
+
+		function stringToDate(dateStr, separator) {
+			if(!separator) {
+				separator = "-";
+			}
+			var dateArr = dateStr.split(separator);
+			var year = parseInt(dateArr[0]);
+			var month;
+			if(dateArr[1].indexOf("0") == 0) {
+				month = parseInt(dateArr[1].substring(1));
+			} else {
+				month = parseInt(dateArr[1]);
+			}
+			var day = parseInt(dateArr[2]);
+			var date = new Date(year, month - 1, day);
+			return date;
+		}
+
+		var date = new Date();
+		var dateStr = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
+
+		var addApp = new Vue({
+			el: "#addApp",
+			data: {
+				person: {
+					wxname: "",
+					wid: "",
+					rvid: ""
+
+				},
+				options3: [{
+					value1: 1,
+					label1: '保养'
+				}, {
+					value1: 2,
+					label1: '大修'
+				}, {
+					value1: 3,
+					label1: '发动机修理'
+
+				}],
+
+				sexs: ['男', '女'],
+				personRules: {
+					pid: [{
+							required: true,
+							message: '会员编号不能为空',
+							trigger: 'blur' //移除触发
+						},
+						{
+							type: 'number',
+							message: '会员编号为数字值',
+							trigger: 'blur'
+						}
+					],
+					pname: [{
+							required: true,
+							message: '请输入会员名称',
+							trigger: 'blur'
+						},
+						{
+							min: 2,
+							max: 5,
+							message: '长度在 2 到 5 个字符',
+							trigger: 'blur'
+						}
+					],
+					pdate: [{
+						required: true,
+						message: '请选择生日',
+						trigger: 'change'
+					}]
+
+				}
+			},
+			methods: {
+				ff2(){
+				  
+				},
+				handleClick() {
+					alert('button click');
+				},
+				clearData() {
+					this.person = {
+							pid: "",
+							pname: "",
+							psex: "",
+							pdate: dateToString(new Date())
+						},
+						this.sexs = ['男', '女'];
+				},
+				goBack() {
+					indexApp.showView('work.html'); //调用主页的vm引擎方法
+				},
+				addPerson() {
+
+					
+
+					$.ajax('http://localhost:8080/api/wxxm/person', {
+						type: 'post',
+						data: JSON.stringify(this.person),
+						dataType: 'json',
+						contentType: 'application/json',
+						success(msg) {
+							alert("新增成功！")
+						}
+					});
+
+				}
+			},
+			mounted() {
+				wid = sessionStorage.getItem('wid');
+				this.person.wid = wid;
+
+			}
+		});
+	</script>
+
+</html>
