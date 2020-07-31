@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+
+	<body>
+		<div id="updatezhiweiquanxianbyid">
+
+				<div v-for="r in list">
+						 <el-checkbox v-model="r.prboolean">{{r.text}}</el-checkbox><br />
+						<span  v-for="s in r.children">
+							<el-checkbox v-model="s.prboolean">{{s.text}}</el-checkbox>
+						</span>
+					<!--<span v-if="rs.id == r.id">
+						<template>
+							<el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">{{rs.text}}</el-checkbox>
+							<div style="margin: 15px 0;"></div>
+							<el-checkbox-group v-model="rs.children" @change="handleCheckedCitiesChange">
+								<el-checkbox v-for="city in rs.children" :label="city	" :key="city">{{city.text}}</el-checkbox>
+							</el-checkbox-group>
+						</template>
+					</span>-->
+					
+					<!--<span v-if="rs.id != r.id">
+						<template>
+							<el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">{{rs.text}}</el-checkbox>
+							<div style="margin: 15px 0;"></div>
+							<el-checkbox-group v-model="r.children" @change="handleCheckedCitiesChange">
+								<el-checkbox v-for="city in rs.children" :label="city.id" :key="city.id">{{city.text}}</el-checkbox>
+							</el-checkbox-group>
+						</template>
+					</span>-->
+				</div>
+			</div>
+			
+			
+
+		</div>
+	</body>
+
+	<script>
+		var updatezhiweiquanxianbyid = new Vue({
+			el: "#updatezhiweiquanxianbyid",
+			data: {
+				list: ""
+			},
+			methods: {
+				
+			},
+			mounted(){
+				this.list = zhiweiquanxian.updatezhiweiquanxianlist;
+				alert(JSON.stringify(this.list));
+			}
+			
+		})
+	</script>
+
+</html>
