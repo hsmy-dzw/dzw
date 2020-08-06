@@ -87,7 +87,7 @@
 						</el-form-item>
 					</el-col>
 
-					<el-col :span="8" :offset='1'>
+					<el-col :span="10" >
 						<el-form-item label="生日" prop="kbirthday">
 							<el-date-picker v-model="person.kbirthday" type="date" placeholder="选择日期时间">
 							</el-date-picker>
@@ -106,17 +106,16 @@
 							<el-input v-model.number="person2.cnumber"></el-input>
 						</el-form-item>
 					</el-col>
+					
 					<el-col :span="10">
 						
-						
-						<el-form-item label="车辆品牌" prop="cbrand">
-							<el-select v-model="person2.pid2" placeholder="请选择" @change="jiage">
-								<el-option v-for="item in options"  :value="item.pid2 " :key="item.pid2" :label="item.pinname">
-								</el-option>
-							</el-select>
+						<el-form-item label="驾驶人" prop="cdriver">
+							<el-input v-model="person.cdriver"></el-input>
 						</el-form-item>
-						
+
 					</el-col>
+
+						
 				</el-row>
 				<el-row>
 					<el-col :span="10">
@@ -127,14 +126,16 @@
 							</el-select>
 						</el-form-item>
 					</el-col>
-
-					<el-col :span="10">
-						<el-form-item label="驾驶人" prop="cdriver">
-							<el-input v-model="person.cdriver"></el-input>
+<el-col :span="10">
+						<el-form-item label="车辆品牌" prop="cbrand">
+							<el-select v-model="person2.pid2" placeholder="请选择" @change="jiage">
+								<el-option v-for="item in options"  :value="item.pid2 " :key="item.pid2" :label="item.pinname">
+								</el-option>
+							</el-select>
 						</el-form-item>
-
-					</el-col>
-
+						
+					
+					
 					</el-col>
 				</el-row>
 

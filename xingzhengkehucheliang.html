@@ -32,23 +32,7 @@
 						<el-input v-model="person.cdriver" ></el-input>
 					</el-col>
 				</el-form-item>
-				<el-form-item label="电话" prop="cphone">
-					
-					<el-col :span="6">
-						<!--非常重要-->
-						<el-input  v-model="person.cphone"></el-input>
-					</el-col>
-					
-					<!--<el-dropdown @command="handleCommand">
-					<span class="el-dropdown-link">
-    					选择用户类型<i class="el-icon-arrow-down el-icon--right"></i>
- 					</span>
-					<el-dropdown-menu slot="dropdown">
-						
-						<el-dropdown-item command="2">vip用户</el-dropdown-item>
-					</l-dropdown-menu>-->
 				
-				</el-form-item>
 				 <el-form-item>
 					
 					<el-button type="primary" @click="addPerson">新增</el-button>
