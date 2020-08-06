@@ -1,0 +1,134 @@
+<html>
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+		<style type="text/css">
+			#allmap {
+				width: 1000px;
+				margin: 0px auto;
+				height: 600px;
+				overflow: hidden;
+				margin: 0;
+				font-family: "微软雅黑";
+			}
+		</style>
+		
+		<title>计算驾车时间与距离</title>
+	</head>
+
+	<body>
+		<div style="width: 1200px;">
+			<div id="allmap"></div>
+			起点<input type="text" id="start" disabled="disabled" value="德召文软件" /> 终点
+			<input type="text" id="suggestId" /> 预计时间 <input type="text" id="timer" disabled="disabled" /> 公里数 <input type="text" id="long" disabled="disabled" />
+			<button id="cx">查询</button>
+			<div id="searchResultPanel" style="border:1px solid #C0C0C0;width:150px;height:auto; display:none;"></div>
+		</div>
+	</body>
+
+</html>
+
+
+<script type="text/javascript">
+	// 百度地图API功能
+	var map = new BMap.Map("allmap");
+	map.centerAndZoom(new BMap.Point(116.460036,40.031272), 12);
+	//	var output = "从上地到西单驾车需要";
+	var timer = "";
+	var long1 = "";
+	var searchComplete = function(results) {
+		if(transit.getStatus() != BMAP_STATUS_SUCCESS) {
+			return;
+		}
+		var plan = results.getPlan(0);
+		timer = plan.getDuration(true) + "\n"; //获取时间
+		//		output += "总路程为：" ;
+		long1 = plan.getDistance(true) + "\n"; //获取距离
+	}
+	var transit = new BMap.DrivingRoute(map, {
+		renderOptions: {
+			map: map
+		},
+		onSearchComplete: searchComplete,
+		onPolylinesSet: function() {
+			setTimeout(function() {
+				$("#timer").val(timer);
+				$("#long").val(long1);
+				var gls=$("#long").val();
+				var w=gls.indexOf("公");//w will be 2
+				gls.substr(0,w);
+		        window.localStorage.gls=gls;
+			}, "1000");
+		}
+	});
+
+	$("#cx").click(function() {
+		
+		var start = $("#start").val();
+		var end = $("#suggestId").val();
+		transit.search(start, end);
+		
+	})
+	
+	
+	
+	var ac = new BMap.Autocomplete(    //建立一个自动完成的对象
+		{"input" : "suggestId"
+		,"location" : map
+	});
+
+	ac.addEventListener("onhighlight", function(e) {  //鼠标放在下拉列表上的事件
+	var str = "";
+		var _value = e.fromitem.value;
+		var value = "";
+		if (e.fromitem.index > -1) {
+			value = _value.province +  _value.city +  _value.district +  _value.street +  _value.business;
+		}    
+		str = "FromItem<br />index = " + e.fromitem.index + "<br />value = " + value;
+		
+		value = "";
+		if (e.toitem.index > -1) {
+			_value = e.toitem.value;
+			value = _value.province +  _value.city +  _value.district +  _value.street +  _value.business;
+		}    
+		str += "<br />ToItem<br />index = " + e.toitem.index + "<br />value = " + value;
+		$("#searchResultPanel").innerHTML = str;
+	});
+
+	var myValue;
+	ac.addEventListener("onconfirm", function(e) {    //鼠标点击下拉列表后的事件
+	var _value = e.item.value;
+		myValue = _value.province +  _value.city +  _value.district +  _value.street +  _value.business;
+		$("#searchResultPanel").innerHTML ="onconfirm<br />index = " + e.item.index + "<br />myValue = " + myValue;
+	});
+
+	function setPlace(){
+		map.clearOverlays();    //清除地图上所有覆盖物
+		function myFun(){
+			var pp = local.getResults().getPoi(0).point;    //获取第一个智能搜索的结果
+			map.centerAndZoom(pp, 18);
+			map.addOverlay(new BMap.Marker(pp));    //添加标注
+		}
+		var local = new BMap.LocalSearch(map, { //智能搜索
+		  onSearchComplete: myFun
+		});
+		local.search(myValue);
+	}
+	
+	
+	
+	var top_left_control = new BMap.ScaleControl({anchor: BMAP_ANCHOR_TOP_LEFT});// 左上角，添加比例尺
+	var top_left_navigation = new BMap.NavigationControl();  //左上角，添加默认缩放平移控件
+	var top_right_navigation = new BMap.NavigationControl({anchor: BMAP_ANCHOR_TOP_RIGHT, type: BMAP_NAVIGATION_CONTROL_SMALL}); //右上角，仅包含平移和缩放按钮
+	/*缩放控件type有四种类型:
+	BMAP_NAVIGATION_CONTROL_SMALL：仅包含平移和缩放按钮；BMAP_NAVIGATION_CONTROL_PAN:仅包含平移按钮；BMAP_NAVIGATION_CONTROL_ZOOM：仅包含缩放按钮*/
+	//添加控件和比例尺
+		map.addControl(top_left_control);        
+		map.addControl(top_left_navigation);     
+		map.addControl(top_right_navigation);    
+//	//移除控件和比例尺
+//		map.removeControl(top_left_control);     
+//		map.removeControl(top_left_navigation);  
+//		map.removeControl(top_right_navigation); 
+</script>

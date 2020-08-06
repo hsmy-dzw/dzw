@@ -1,46 +1,58 @@
 <!DOCTYPE html>
 <html>
+
 	<head>
 		<meta charset="UTF-8">
 		<title></title>
-	</head>
-	<body>
-	<div id="addApp">
-			<!--`cid``xid``pid2``kid``cnumber``cbrand``cmodel``cdriver``cphone``cbirthday`-->
-			<el-form :model="person" ref="personForm" :rules="personRules" label-width="100px">
-				<el-form-item label="车辆牌号" prop="cnumber">
-					<el-col :span="6">
-						<!--非常重要-->
-						<el-input v-model.number="person.cnumber"></el-input>
-					</el-col>
-				</el-form-item>
-				
-				<el-form-item label="车辆品牌" prop="cbrand">
-					<el-col :span="6">
-						<el-input v-model="person.cbrand" ></el-input>
-					</el-col>
-				</el-form-item>
-				
-				<el-form-item label="车辆型号" prop="cmodel">
-					<el-col :span="6">
-						<el-input v-model="person.cmodel" ></el-input>
-					</el-col>
-				</el-form-item>
-				
-				<el-form-item label="驾驶人" prop="cdriver">
-					<el-col :span="6">
-						<el-input v-model="person.cdriver" ></el-input>
-					</el-col>
-				</el-form-item>
-				
-				 <el-form-item>
-					
-					<el-button type="primary" @click="addPerson">新增</el-button>
-					<el-button type="danger" @click="goBack">取消</el-button>
-				</el-form-item>
-				
-			</el-form>
+		<style>
+			.text {
+				font-size: 14px;
+			}
 			
+			.item {
+				margin-bottom: 18px;
+			}
+			
+			.clearfix:before,
+			.clearfix:after {
+				display: table;
+				content: "";
+			}
+			
+			.clearfix:after {
+				clear: both
+			}
+			
+			.box-card {
+				width: 480px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="addApp">
+			<!--`cid``xid``pid2``kid``cnumber``cbrand``cmodel``cdriver``cphone``cbirthday`-->
+
+			<el-tabs type="border-card">
+				<el-tab-pane label="反工">
+					<template>
+						<el-radio v-model="radio" label="1">乙方原因</el-radio>
+						<el-radio v-model="radio" label="2">甲方原因</el-radio>
+					</template>
+					<br />
+					<el-form :model="person" ref="personForm" :rules="personRules" label-width="100px">
+
+						<el-input type="textarea" :rows="2" placeholder="请输入反工原因" v-model="textarea">
+						</el-input>
+
+					</el-form>
+					
+					<br />
+					<el-button type="primary" size="mini" @click="addPerson2">提交反馈</el-button>
+				</el-tab-pane>
+
+			</el-tabs>
+
 			<!--模态框-->
 			<el-dialog :destroy-on-close="true" @opened="handlOpen2" title="车辆信息录入" :visible.sync="isShow2" :before-close="handleClose" center>
 				<div id="modalcnt2"></div>
@@ -88,20 +100,32 @@
 		var addApp = new Vue({
 			el: "#addApp",
 			data: {
+				radio:"1",
+				textarea:"",
+				yy:"",
 				loading: true,
 				isShow: false,
 				isShow2: false,
 				person: {
-					//<!--`cid``xid``pid2``kid``cnumber``cbrand``cmodel``cdriver``cphone``cbirthday`-->
+					//<!--`kid``vid``id``kname``kphone``kaddres``kbirthday``kremark``kb1``kb2``kb3``kb4``kb5``kb6`-->
 					kid: "",
-					
-					cnumber: "",
-					cbrand:"",
-					cdriver: "",
-					cphone: ""
-					
+
+					id: "",
+					kname: "",
+					kphone: "",
+					kaddres: "",
+					kbirthday: "",
+					kremark: "",
+					kb1: "",
+					kb2: "",
+					kb3: "",
+					kb4: "",
+					kb5: "",
+					kb6: "",
+					ksex: "",
+					vidname: "",
+					zhifupwd: ""
 				},
-				
 				sexs: ['男', '女'],
 				personRules: {
 					pid: [{
@@ -136,15 +160,41 @@
 				}
 			},
 			methods: {
-				handleCommand(command) {
-					this.person.vid=command;
-					if(command==1){
-						this.person.vidname='普通用户';
+				addPerson2() {
+					wid=sessionStorage.getItem('wid');
+					alert(this.radio)
+					alert(this.textarea)
+					if(this.radio=="1"){
+						this.yy="乙方原因"
 					}
-					if(command==2){
-						this.person.vidname='vip用户';
+					if(this.radio=="2"){
+						this.yy="甲方原因"
 					}
+					$.getJSON(`http://localhost:8080/api/wxb/updatefg/${this.yy}/${this.textarea}/${wid}`, function(pg) {
+									if(pg=="1"){
+										alert('反馈成功!');
+										_this.goToPage(1,3);
+									}
+									
+							});
+//					let _this = this;
+//					_this.person2.wid = _this.person.wid;
+//					
+//					
+//					
+//					
 					
+
+				},
+				handleCommand(command) {
+					this.person.vid = command;
+					if(command == 1) {
+						this.person.vidname = '普通用户';
+					}
+					if(command == 2) {
+						this.person.vidname = 'vip用户';
+					}
+
 				},
 				handleClose(done) {
 					this.$confirm('是否关闭').then(() => {
@@ -174,12 +224,11 @@
 						this.sexs = ['男', '女'];
 				},
 				goBack() {
-					personApp.isShow5=false;
-					kid=window.sessionStorage.getItem("kid");
-					personApp.khclxxchaxun(1,3,kid)//调用主页的vm引擎方法
+					personApp.isShow2 = false;
+					//kid=window.sessionStorage.getItem("kid");
+					personApp.goToPage(1, 3) //调用主页的vm引擎方法
 				},
 				addPerson() {
-					this.person.kid=window.sessionStorage.getItem("kid");
 					let _this = this;
 					this.$refs['personForm'].validate(valid => {
 						if(valid) {
@@ -194,7 +243,7 @@
 							//延迟2秒，模拟网络延迟
 							setTimeout(() => {
 
-								$.ajax('http://localhost:8080/api/khclb/person', {
+								$.ajax('http://localhost:8080/api/khb/person', {
 									type: 'post',
 									data: JSON.stringify(this.person),
 									dataType: 'json',
@@ -207,7 +256,6 @@
 												message: '新增成功'
 											});
 											_this.clearData(); //清除数据
-											
 										}
 									}
 								});
@@ -222,3 +270,4 @@
 		});
 	</script>
 
+</html>

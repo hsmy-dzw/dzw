@@ -20,38 +20,53 @@
 		<div id="addApp">
 			<!--`cid``xid``pid2``kid``cnumber``cbrand``cmodel``cdriver``cphone``cbirthday`-->
 			<el-form :model="person" ref="personForm" :rules="personRules" label-width="100px">
-				<el-form-item label="客户名称" prop="kname">
-					<el-col :span="6">
-						<!--非常重要-->
-						<el-input v-model.number="person.kname"></el-input>
+				<el-row>
+
+					<el-col :span="10">
+						<el-form-item label="客户名称" prop="kname">
+							<!--非常重要-->
+							<el-input v-model.number="person.kname"></el-input>
+						</el-form-item>
 					</el-col>
-				</el-form-item>
-				
-				<el-form-item label="地址" prop="kaddres">
-					<el-col :span="6">
-						<el-input v-model="person.kaddres" ></el-input>
+
+					<el-col :span="10" :offset='1'>
+						<el-form-item label="地址" prop="kaddres">
+							<el-input v-model="person.kaddres"></el-input>
+						</el-form-item>
 					</el-col>
-				</el-form-item>
-				
-				<el-form-item label="电话号码" prop="kphone">
-					<el-col :span="6">
-						<el-input v-model="person.kphone" ></el-input>
+
+				</el-row>
+				<el-row>
+					<el-col :span="10">
+						<el-form-item label="电话号码" prop="kphone">
+							<el-input v-model="person.kphone"></el-input>
+						</el-form-item>
 					</el-col>
-				</el-form-item>
-				
-				<el-form-item label="充值金额" prop="kb5">
-					<el-col :span="6">
-						<el-input v-model="person.kb5" ></el-input>
+
+					<el-col :span="10" :offset='1'>
+						<el-form-item label="充值金额" prop="kb5">
+							<el-input v-model="person.kb5"></el-input>
+						</el-form-item>
 					</el-col>
-				</el-form-item>
-				<el-form-item label="支付密码" prop="zhifupwd">
-					
-					<el-col :span="6">
-						<!--非常重要-->
-						<el-input  v-model="person.zhifupwd"></el-input>
+
 					</el-col>
-					
-					<!--<el-dropdown @command="handleCommand">
+				</el-row>
+
+				<el-row>
+					<el-col :span="10">
+						<el-form-item label="支付密码" prop="zhifupwd">
+							<!--非常重要-->
+							<el-input v-model="person.zhifupwd" show-password></el-input>
+
+						</el-form-item>
+					</el-col>
+					<el-col :span="10" :offset='1'>
+						<el-form-item label="身份证号码" prop="kremark">
+							<el-input v-model="person.kremark"></el-input>
+						</el-form-item>
+					</el-col>
+				</el-row>
+				<!--<el-dropdown @command="handleCommand">
 					<span class="el-dropdown-link">
     					选择用户类型<i class="el-icon-arrow-down el-icon--right"></i>
  					</span>
@@ -59,40 +74,81 @@
 						
 						<el-dropdown-item command="2">vip用户</el-dropdown-item>
 					</el-dropdown-menu>-->
-				</el-dropdown>
-				</el-form-item>
-				<el-form-item label="身份证号码" prop="kremark">
-					<el-col :span="6">
-						<el-input v-model="person.kremark" ></el-input>
-					</el-col>
-				</el-form-item>
-				
-				<el-form-item label="性别" prop="ksex">
-					<el-col :span="6">
-						<el-radio-group v-model="person.ksex">
-							<el-radio v-for="(temp,index) in sexs" :label="index">
-								{{temp}}
-							</el-radio>
-						</el-radio-group>
-					</el-col>
-				</el-form-item>
 
-				<el-form-item label="注册日期" prop="kbirthday">
-					<el-col :span="6">
-						<el-date-picker v-model="person.kbirthday" type="date" placeholder="选择日期时间">
-						</el-date-picker>
-					</el-col>
-				</el-form-item>
+				<el-row>
 
-				</el-dropdown-menu>
-				</el-dropdown>
-				
-				<el-form-item>
+					<el-col :span="10">
+						<el-form-item label="性别" prop="ksex">
+							<el-radio-group v-model="person.ksex">
+								<el-radio v-for="(temp,index) in sexs" :label="index">
+									{{temp}}
+								</el-radio>
+							</el-radio-group>
+						</el-form-item>
+					</el-col>
+
+					<el-col :span="10" >
+						<el-form-item label="生日" prop="kbirthday">
+							<el-date-picker v-model="person.kbirthday" type="date" placeholder="选择日期时间">
+							</el-date-picker>
+						</el-form-item>
+					</el-col>
+
+				</el-row>
+
+			</el-form>
+
+			<el-form :model="person2" ref="personForm" :rules="personRules" label-width="100px">
+				<el-row>
+					<el-col :span="10">
+						<el-form-item label="车辆牌号" prop="cnumber">
+							<!--非常重要-->
+							<el-input v-model.number="person2.cnumber"></el-input>
+						</el-form-item>
+					</el-col>
 					
+					<el-col :span="10">
+						
+						<el-form-item label="驾驶人" prop="cdriver">
+							<el-input v-model="person.cdriver"></el-input>
+						</el-form-item>
+
+					</el-col>
+
+						
+				</el-row>
+				<el-row>
+					<el-col :span="10">
+						<el-form-item label="车辆型号" prop="cbrand">
+							<el-select v-model="person2.xid" placeholder="请选择" @change="jiage2">
+								<el-option v-for="item in options2"  :value="item.xid " :key="item.xid" :label="item.cxname">
+								</el-option>
+							</el-select>
+						</el-form-item>
+					</el-col>
+<el-col :span="10">
+						<el-form-item label="车辆品牌" prop="cbrand">
+							<el-select v-model="person2.pid2" placeholder="请选择" @change="jiage">
+								<el-option v-for="item in options"  :value="item.pid2 " :key="item.pid2" :label="item.pinname">
+								</el-option>
+							</el-select>
+						</el-form-item>
+						
+					
+					
+					</el-col>
+				</el-row>
+
+				<el-row>
+					<el-col :span="6" :offset='8'>
 					<el-button type="primary" @click="addPerson">新增</el-button>
 					<el-button type="danger" @click="goBack">取消</el-button>
+					</el-col>
 				</el-form-item>
-			</el-form>
+
+			</el-row>
+
+
 			<!--模态框-->
 			<el-dialog :destroy-on-close="true" @opened="handlOpen2" title="车辆信息录入" :visible.sync="isShow2" :before-close="handleClose" center>
 				<div id="modalcnt2"></div>
@@ -146,9 +202,9 @@
 				person: {
 					//<!--`kid``vid``id``kname``kphone``kaddres``kbirthday``kremark``kb1``kb2``kb3``kb4``kb5``kb6`-->
 					kid: "",
-					
+
 					id: "",
-					kname:"",
+					kname: "",
 					kphone: "",
 					kaddres: "",
 					kbirthday: "",
@@ -159,10 +215,24 @@
 					kb4: "",
 					kb5: "",
 					kb6: "",
-					ksex:"",
-					vidname:"",
-					zhifupwd:""
+					ksex: "",
+					vidname: "",
+					zhifupwd: ""
 				},
+				person2: {
+					//<!--`cid``xid``pid2``kid``cnumber``cbrand``cmodel``cdriver``cphone``cbirthday`-->
+					kid:"",
+					cnumber:"",
+					cbrand: "",
+					cdriver: "",
+					cphone: "",
+					cmodel:"",
+					pid2:"",
+					xid:""
+
+				},
+				options:"",
+				options2:"",
 				sexs: ['男', '女'],
 				personRules: {
 					pid: [{
@@ -197,15 +267,65 @@
 				}
 			},
 			methods: {
-				handleCommand(command) {
-					this.person.vid=command;
-					if(command==1){
-						this.person.vidname='普通用户';
-					}
-					if(command==2){
-						this.person.vidname='vip用户';
-					}
+				maxkid(){
 					
+					let _this = this;
+					$.getJSON(`http://localhost:8080/api/khb/person/maxkid`, function(pg) {
+										    	
+						_this.person.kid = pg;
+						_this.person2.kid= pg;
+						alert(_this.person2.kid)
+						
+						
+					});		
+				},
+				jiage2(){
+					
+				},
+				jiage(){
+					
+					
+					pids=this.person2.pid2;
+					let _this = this;
+					$.getJSON(`http://localhost:8080/api/cxb/querAllBypid2/${pids}`, function(pg) {
+										    	
+						_this.options2 = pg;
+						
+						
+					});		
+					
+				},
+				pingpai(){
+					let _this = this;
+					$.getJSON(`http://localhost:8080/api/clppd/querAll`, function(pg) {
+										    	
+						_this.options = pg;
+						
+						
+					});		
+				},
+				xingzhengchelxx(){
+					
+						
+						alert(this.person2.cdriver)
+						$.ajax('http://localhost:8080/api/khclb/person', {
+									type: 'post',
+									data: JSON.stringify(this.person2),
+									dataType: 'json',
+									contentType: 'application/json',
+									success(msg) {
+									}
+								});
+				},
+				handleCommand(command) {
+					this.person.vid = command;
+					if(command == 1) {
+						this.person.vidname = '普通用户';
+					}
+					if(command == 2) {
+						this.person.vidname = 'vip用户';
+					}
+
 				},
 				handleClose(done) {
 					this.$confirm('是否关闭').then(() => {
@@ -235,12 +355,13 @@
 						this.sexs = ['男', '女'];
 				},
 				goBack() {
-					personApp.isShow2=false;
+					personApp.isShow2 = false;
 					//kid=window.sessionStorage.getItem("kid");
-					personApp.goToPage(1,3)//调用主页的vm引擎方法
+					personApp.goToPage(1, 3) //调用主页的vm引擎方法
 				},
 				addPerson() {
 					let _this = this;
+					_this.person2.cdriver = _this.person.cdriver;
 					this.$refs['personForm'].validate(valid => {
 						if(valid) {
 							//验证通过
@@ -267,6 +388,7 @@
 												message: '新增成功'
 											});
 											_this.clearData(); //清除数据
+											_this.xingzhengchelxx();
 										}
 									}
 								});
@@ -277,7 +399,14 @@
 						}
 					});
 				}
-			}
+				
+				
+			},
+			
+				mounted(){
+					this.maxkid();
+					this.pingpai();
+				}
 		});
 	</script>
 
