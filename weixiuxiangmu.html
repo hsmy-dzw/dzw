@@ -21,7 +21,7 @@
 									<span>保养</span>
 								</template>
 								<el-menu-item-group>
-									<el-menu-item index="1-1"><i></i>1</el-menu-item>
+									<el-menu-item index="1-1" @click="textName('1')"><i></i>1</el-menu-item>
 								</el-menu-item-group>
 							</el-submenu>
 
@@ -31,7 +31,13 @@
 									<span>发动机</span>
 								</template>
 								<el-menu-item-group>
-									<el-menu-item v-for='(n,i) in fdjb' index="2-i" @click='fdjbId(n.fdjid)'><i></i>{{n.fbname}}</el-menu-item>
+									<el-menu-item index="2-1" @click="textName('狗佳动机')"><i>狗佳动机</i></el-menu-item>
+									<el-menu-item index="2-2" @click="textName('青鸟动力')"><i>青鸟动力</i></el-menu-item>
+									<el-menu-item index="2-3" @click="textName('中国重汽动力')"><i>中国重汽动力</i></el-menu-item>
+									<el-menu-item index="2-4" @click="textName('科探发动机')"><i>科探发动机</i></el-menu-item>
+									<el-menu-item index="2-5" @click="textName('西安康明斯')"><i>西安康明斯</i></el-menu-item>
+									<el-menu-item index="2-6" @click="textName('道依茨发动机')"><i>道依茨发动机</i></el-menu-item>
+									<el-menu-item index="2-7" @click="textName('大柴锡柴发动机')"><i>大柴锡柴发动机</i></el-menu-item>
 								</el-menu-item-group>
 							</el-submenu>
 
@@ -41,7 +47,7 @@
 									<span>小修</span>
 								</template>
 								<el-menu-item-group>
-									<el-menu-item index="3-1"><i></i>维修接车</el-menu-item>
+
 								</el-menu-item-group>
 							</el-submenu>
 
@@ -52,13 +58,13 @@
 								</template>
 
 								<el-menu-item-group>
-									<el-menu-item index="4-1"><i>409-大众</i></el-menu-item>
-									<el-menu-item index="4-1"><i>500-中国重汽</i></el-menu-item>
-									<el-menu-item index="4-1"><i>5004-丰田</i></el-menu-item>
-									<el-menu-item index="4-1"><i>501-陕西重卡</i></el-menu-item>
-									<el-menu-item index="4-1"><i>502-中国一汽</i></el-menu-item>
-									<el-menu-item index="4-1"><i>901-其他重卡</i></el-menu-item>
-									<el-menu-item index="4-1"><i>902-轻型型车</i></el-menu-item>
+									<el-menu-item @click="textName('大众')" index="4-1"><i>大众</i></el-menu-item>
+									<el-menu-item index="4-1" @click="textName('中国重汽')"><i>中国重汽</i></el-menu-item>
+									<el-menu-item index="4-2" @click="textName('丰田')"><i>丰田</i></el-menu-item>
+									<el-menu-item index="4-3" @click="textName('陕西重卡')"><i>陕西重卡</i></el-menu-item>
+									<el-menu-item index="4-4" @click="textName('中国一汽')"><i>中国一汽</i></el-menu-item>
+									<el-menu-item index="4-5" @click="textName('其他重卡')"><i>其他重卡</i></el-menu-item>
+									<el-menu-item index="4-6" @click="textName('中轻车型')"><i>中轻车型</i></el-menu-item>
 								</el-menu-item-group>
 							</el-submenu>
 
@@ -68,10 +74,11 @@
 									<span>钣喷</span>
 								</template>
 								<el-menu-item-group>
-									<el-menu-item index="5-1"><i class="glyphicon glyphicon-link"></i>轻度</el-menu-item>
-									<el-menu-item index="5-2"><i class="glyphicon glyphicon-link"></i>中度</el-menu-item>
-									<el-menu-item index="5-3"><i class="glyphicon glyphicon-link"></i>重度</el-menu-item>
+									<el-menu-item index="5-1" @click="textName('轻度')"> <i></i>轻度</el-menu-item>
+									<el-menu-item index="5-2" @click="textName('中度')"><i></i>中度</el-menu-item>
+									<el-menu-item index="5-3" @click="textName('重度')"><i></i>重度</el-menu-item>
 								</el-menu-item-group>
+
 							</el-submenu>
 
 						</el-menu>
@@ -81,30 +88,132 @@
 				<el-col :md='16'>
 					<el-row>
 						<el-col :md='7'>
-							<el-input placeholder='123'></el-input>
+							<el-input placeholder='123' v-model='title'></el-input>
 						</el-col>
-						<el-button icon='el-icon-search'>搜索</el-button>
-						<el-button icon='el-icon-edit' @click='dialogVisibleSHOW'>新增</el-button>
+						<el-button icon='el-icon-search' @click='pages(1,6,null)'>搜索</el-button>
+						<el-button icon=' el-icon-edit-outline' @click='dialogVisibleSHOW'>新增</el-button>
 					</el-row>
 
 					<el-row>
 						<template>
-							<el-table>
+							<el-table :data='pageInfo.list' style="width: 90%" ref='pageInfo.list'>
+								<el-table-column prop='ce.msname' label="项目类别" width="110"></el-table-column>
+								<el-table-column prop='rvid' label="项目编码" width="90"></el-table-column>
+								<el-table-column prop='rvname' label="项目昵称" width="90"></el-table-column>
+								<el-table-column prop='rvmoney' label="会员价格" width="90"></el-table-column>
+								<el-table-column label="操作">
+									<template slot-scope='tst'>
+										<el-button type='info' @click='seleName(tst.row.rvid)' icon='el-icon-edit'>编辑</el-button>
+										<el-button type='danger' @click='del(tst.row.rvid)' icon='el-icon-delete'>移除</el-button>
+										<el-button v-if='tst.row.rvstatus == 1' type='success' icon='el-icon-top' @click="sj(0,tst.row.rvid)">上架</el-button>
+										<el-button v-else-if='tst.row.rvstatus == 0' @click="sj(1,tst.row.rvid)" icon='el-icon-bottom'>下架</el-button>
+									</template>
+								</el-table-column>
 
 							</el-table>
 						</template>
+
+						<!--分也配置和设置-->
+						<el-row>
+							<el-col :span="10">
+
+								<el-pagination v-if="pageInfo.total !=0" :background="true" :pager-count="4" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageInfo.pageNum" :pager-count="3" :page-size="pageInfo.pageSize" :total="pageInfo.total" :page-sizes="[3,6]" layout="total, sizes, prev, pager, next, jumper">
+								</el-pagination>
+
+							</el-col>
+						</el-row>
 					</el-row>
 				</el-col>
 
 			</el-row>
+			<!--新增-->
+			<el-dialog title="添加" :visible.sync="dialogVisible" width="30%" :before-close="handleClose">
+				<el-form :model='reqaincie' :rules='rules' ref='reqaincie' label-width="100px">
+					<el-form-item label='项目编码' prop='rvid'>
+						<el-col :md='14'>
+							<el-input v-model='reqaincie.rvid'></el-input>
+						</el-col>
+					</el-form-item>
 
-			<el-dialog title="提示" :visible.sync="dialogVisible" width="30%" :before-close="handleClose">
-				<el-form>
+					<el-form-item label='项目类别'>
+						<el-col :md='14'>
+							<template>
+								<el-select v-model="value" placeholder="请选择">
+									<el-option v-for="item in MaintenService" :key="item.msid" :label="item.msname" :value="item.msid">
+									</el-option>
+								</el-select>
+							</template>
+						</el-col>
+					</el-form-item>
+
+					<el-form-item label='项目昵称' prop='rvname'>
+						<el-col :md='14'>
+							<el-input v-model='reqaincie.rvname'></el-input>
+						</el-col>
+					</el-form-item>
+
+					<el-form-item label='会员价格' prop='rvmoney'>
+						<el-col :md='14'>
+							<el-input v-model='reqaincie.rvmoney'> </el-input>
+						</el-col>
+					</el-form-item>
+
+					<el-form-item label='备注'>
+						<el-col :md='14'>
+							<el-input v-model='reqaincie.rvpostscriopnot'></el-input>
+						</el-col>
+					</el-form-item>
 
 				</el-form>
 				<span slot="footer" class="dialog-footer">
     <el-button @click="dialogVisible = false">取 消</el-button>
-    <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+    <el-button type="primary" @click="insert('reqaincie')">确 定</el-button>
+  </span>
+			</el-dialog>
+
+			<!--修改
+-->
+			<el-dialog title="修改" :visible.sync="dialogVisible2" width="30%" :before-close="handleClose2">
+				<el-form :model='reqaincie' :rules='rules' ref='reqaincie' label-width="100px">
+					<el-form-item label='项目编码'>
+						<el-col :md='14'>
+							<el-input v-model='reqaincie.rvid' :disabled='true'></el-input>
+						</el-col>
+					</el-form-item>
+
+					<el-form-item label='项目类别'>
+						<el-col :md='14'>
+							<template>
+								<el-select v-model="value" placeholder="请选择">
+									<el-option v-for="item in MaintenService" :key="item.msid" :label="item.msname" :value="item.msid">
+									</el-option>
+								</el-select>
+							</template>
+						</el-col>
+					</el-form-item>
+
+					<el-form-item label='项目昵称' prop='rvname'>
+						<el-col :md='14'>
+							<el-input v-model='reqaincie.rvname'></el-input>
+						</el-col>
+					</el-form-item>
+
+					<el-form-item label='会员价格' prop='rvmoney'>
+						<el-col :md='14'>
+							<el-input v-model='reqaincie.rvmoney'> </el-input>
+						</el-col>
+					</el-form-item>
+
+					<el-form-item label='备注'>
+						<el-col :md='14'>
+							<el-input v-model='reqaincie.rvpostscriopnot'></el-input>
+						</el-col>
+					</el-form-item>
+
+				</el-form>
+				<span slot="footer" class="dialog-footer">
+    <el-button @click="dialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="update('reqaincie')">确 定</el-button>
   </span>
 			</el-dialog>
 
@@ -113,21 +222,133 @@
 	<script>
 		var VmWxm = new Vue({
 			data() {
+				var validateRvid = (rule, value, callback) => {
+					if(value === '') {
+						callback(new Error('请输入项目ID'));
+					} else {
+						this.show(value);
+
+						setTimeout(() => {
+							if(this.isboot == true) {
+								callback(new Error('该项目编号已存在请重新输入!'));
+							} else {
+								callback();
+							}
+						}, 1000);
+
+					}
+				};
+
+				var validatervname = (rule, value, callback) => {
+					if(value === '') {
+						callback(new Error('请输入项目昵称'));
+					} else {
+
+						callback();
+					}
+				};
+
+				var validatervrvmoney = (rule, value, callback) => {
+					if(value === '') {
+						callback(new Error('请输入会员金额'));
+					} else {
+
+						callback();
+					}
+				};
+
 				return {
 					dialogVisible: false,
+					dialogVisible2: false,
+					isboot: false,
+					value: '',
 					fdjb: {},
 					clppb: {},
-					Type: {}
+					Type: {},
+					title: "",
+					pageInfo: {},
+					page: {
+						pageSize: 0,
+						pageNum: 0,
+						name: ''
+					},
+					reqaincie: {
+						rvid: '',
+						msid: '',
+						rvname: '',
+						rvmoney: '',
+						rvpostscriopnot: '',
+						rvdate: '',
+						rvstatus: '0',
+						cname: ''
+					},
+					MaintenService: {
+
+					},
+					rules: {
+						rvid: [{
+							required: true,
+							validator: validateRvid,
+							trigger: 'blur'
+						}],
+						rvname: [{
+							required: true,
+							validator: validatervname,
+							trigger: 'blur'
+						}],
+						rvmoney: [{
+							required: true,
+							validator: validatervrvmoney,
+							trigger: 'blur'
+						}]
+					}
 
 				};
 			},
 			methods: {
-				dialogVisibleSHOW() {
+				qk1() {
+					this.close();
 					this.dialogVisible = true;
+				},
+
+				close() {
+					this.reqaincie.rvid = '';
+					this.reqaincie.msid = '';
+					this.reqaincie.rvname = '';
+					this.reqaincie.rvmoney = '';
+					this.reqaincie.rvpostscriopnot = '';
+					this.reqaincie.rvdate = '';
+
+				},
+				dateTimes() {
+					let da = new Date();
+					let y = da.getFullYear(); // 年
+					let d = da.getMonth() + 1;
+					let m = da.getDate();
+					let h = da.getHours();
+					let hh = da.getMinutes();
+					let mm = da.get
+					let sss = da.getSeconds();
+					return y + '-' + d + '-' + m + " " + h + ':' + hh + ":" + sss;
+
+				},
+				dialogVisibleSHOW() {
+					this.dialogVisible = true
+					this.close();
 				},
 				handleClose(done) {
 					this.$confirm("确认要关闭吗？").then(_ => {
 						done();
+						this.value = '';
+					}).catch(_ => {
+
+					})
+				},
+				handleClose2(done) {
+					this.$confirm("确认要关闭吗？").then(_ => {
+						done();
+
+						this.value = '';
 					}).catch(_ => {
 
 					})
@@ -146,18 +367,224 @@
 						_this.clppb = fj.data;
 					});
 				},
-				fdjbId(id) {
-					console.log('发动机id:' + id);
-				},
-				clppbid(id) {
-					console.log('品牌id:' + id);
+				textName(val) {
+					this.value = val;
+
+					this.pages(1, 6, val);
 				},
 				clickType() {
-					
+					let _this = this;
+					$.getJSON('http://localhost:8080/api/maintenservice/listMate', (mag) => {
+						_this.MaintenService = mag.data;
+					});
+				},
+				Insert(formName) {
+					this.$refs[formName].validate((valid) => {
+						if(valid) {
+							let _this = this;
+							var numReg = /^[0-9]*$/;
+							var numRe = new RegExp(numReg);
+							if(numRe.test(this.value)) {
+								this.reqaincie.msid = this.value;
+							} else {
+								this.reqaincie.cname = this.value;
+								this.reqaincie.msid = '';
+							}
+
+							this.reqaincie.rvdate = this.dateTimes();
+							$.ajax({
+								type: "post",
+								url: "http://localhost:8080/api/Reqaincie/insert",
+								data: JSON.stringify(this.reqaincie),
+								dataType: 'json',
+								contentType: 'application/json;charset=utf-8',
+								success: function(mag) {
+									if(mag.code == "200") {
+										_this.$message({
+											showClose: true,
+											message: '新增成功!',
+											type: 'success'
+										});
+										_this.close();
+										_this.reqaincie.cname = '';
+										_this.dialogVisible = false;
+										_this.pages(1, 6, null);
+									} else {
+										_this.$message({
+											showClose: true,
+											message: '新增失败!',
+											type: 'success'
+										});
+									}
+								}
+							});
+						}
+					});
+
+				},
+				update(formName) {
+					this.$refs[formName].validate((valid) => {
+						if(valid) {
+							let _this = this;
+							var numReg = /^[0-9]*$/;
+							var numRe = new RegExp(numReg);
+							if(numRe.test(this.value)) {
+								this.reqaincie.msid = this.value;
+							} else {
+								this.reqaincie.cname = this.value;
+								this.reqaincie.msid = '';
+							}
+
+							this.reqaincie.rvdate = this.dateTimes();
+							$.ajax({
+								type: "post",
+								url: "http://localhost:8080/api/Reqaincie/update",
+								data: JSON.stringify(this.reqaincie),
+								dataType: 'json',
+								contentType: 'application/json;charset=utf-8',
+								success: function(mag) {
+									if(mag.code == "200") {
+										_this.$message({
+											showClose: true,
+											message: '修改成功!',
+											type: 'success'
+										});
+										_this.close();
+										_this.reqaincie.cname = '';
+										_this.dialogVisible2 = false;
+										_this.pages(1, 6, null);
+									} else {
+										_this.$message({
+											showClose: true,
+											message: '修改失败!',
+											type: 'success'
+										});
+									}
+								}
+							});
+						}
+					});
+
+				},
+				show(id) {
+					let _this = this;
+					$.getJSON('http://localhost:8080/api/Reqaincie/count/' + id, (mag) => {
+						if(mag.code == '500') {
+							_this.isboot = true;
+						} else if(mag.code == "200") {
+							_this.isboot = false;
+						}
+					});
+				},
+				pages(p, s, name) {
+					let _this = this;
+
+					if(this.title != '') this.page.name = this.title;
+					else this.page.name = name;
+					this.page.pageNum = p;
+					this.page.pageSize = s;
+					$.ajax({
+						url: 'http://localhost:8080/api/Reqaincie/page',
+						type: 'post',
+						data: JSON.stringify(this.page),
+						dataType: 'json',
+						contentType: 'application/json',
+						success: function(mas) {
+							_this.pageInfo = mas;
+						}
+					});
+
+				},
+				handleSizeChange(val) {
+					this.pages(this.pageInfo.pageNum, val, null);
+				},
+				handleCurrentChange(val) {
+					this.pages(val, this.pageInfo.pageSize, null);
+				},
+				del(id) {
+					let _this = this;
+					$.ajax({
+						url: 'http://localhost:8080/api/Reqaincie/delect/' + id,
+						type: 'post',
+						success: function(mas) {
+							if(mas.code == '200') {
+								_this.$message({
+									showClose: true,
+									message: '移除成功!',
+									type: 'success'
+								});
+
+								_this.pages(1, 6, null);
+							} else {
+								_this.$message({
+									showClose: true,
+									message: '移除失败!',
+									type: 'error'
+								});
+							}
+						}
+					});
+				},
+				sj(n, id) {
+					let _this = this;
+					$.ajax({
+						url: `http://localhost:8080/api/Reqaincie/update2/${id}/${n}`,
+						type: 'post',
+						success: function(mas) {
+							if(mas.code == '200') {
+								if(mas.data == '0') {
+									_this.$message({
+										showClose: true,
+										message: '上架成功',
+										type: 'success'
+									});
+
+									_this.pages(1, 6, null);
+								} else if(mas.data == '1') {
+									_this.$message({
+										showClose: true,
+										message: '下架成功!',
+										type: 'success'
+									});
+									_this.pages(1, 6, null);
+								}
+							} else {
+								_this.$message({
+									showClose: true,
+									message: '出现异常!',
+									type: 'error'
+								});
+							}
+						}
+					});
+				},
+				seleName(id) {
+					let _this = this;
+					this.dialogVisible2 = true;
+					$.ajax({
+						url: 'http://localhost:8080/api/Reqaincie/selectName/' + id,
+						type: 'post',
+						success: function(mas) {
+							console.log(JSON.stringify(mas))
+							if(mas.code == "200") {
+								_this.reqaincie.rvid = mas.data.rvid;
+								_this.reqaincie.msid = mas.data.msid;
+								_this.reqaincie.rvname = mas.data.rvname;
+								_this.reqaincie.rvmoney = mas.data.rvmoney;
+								_this.reqaincie.rvpostscriopnot = mas.data.rvid;
+								_this.reqaincie.rvdate = mas.data.rvdate;
+								_this.reqaincie.rvstatus = mas.data.rvstatus;
+								_this.value = mas.data.ce.msname;
+							}
+						}
+					});
+
+				}
+
 			},
 			mounted() {
-				this.showFdjb();
-				this.clppbBrand();
+				this.clickType();
+				this.pages(1, 6, null);
 			}
 		}).$mount("#Appwxxm");
 	</script>
