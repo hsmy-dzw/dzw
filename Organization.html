@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+
+	<body>
+		<div id="vmOrganization">
+			<el-row>
+				<el-col :span="6" :offset="8">
+					<el-input v-model="searchName" prefix-icon="el-icon-search" placeholder="按姓名模糊查询"></el-input>
+				</el-col>
+				<el-col :span="7" :offset="1">
+					<el-button @click="queryLikeName">查询</el-button>
+					<el-button @click="dialogVisible = true">添加员工</el-button>
+				</el-col>
+			</el-row>
+			<el-row>
+				<el-table :default-sort="{prop: 'pageInfo.list', order: 'descending'}" :data="this.pageInfo.list" border>
+					<el-table-column width="50" label="序号">
+						<template slot-scope="temp">
+							{{temp.$index+1}}
+						</template>
+					</el-table-column>
+					<el-table-column width="50" prop="pid" label="员工编号">
+					</el-table-column>
+					<el-table-column width="120" prop="peptname" label="部门">
+					</el-table-column>
+					<el-table-column width="100" prop="ppnamne" label="职位">
+					</el-table-column>
+					<el-table-column width="100" prop="pname" label="员工姓名">
+					</el-table-column>
+					<el-table-column width="100" prop="psex" label="性别">
+					</el-table-column>
+					<el-table-column width="100" prop="paddress" label="居住地址">
+					</el-table-column>
+					<el-table-column width="100" prop="fedeintime" label="入职时间">
+					</el-table-column>
+
+					<el-table-column width="300" label="操作">
+						<template slot-scope="temp">
+							<el-button icon="el-icon-edit" @click="showInfo(temp.row.pid)" type="primary" round>编辑</el-button>
+							<el-button icon="el-icon-delete" @click="delInfo(temp.row.pid,temp.row.pstatus)" type="danger" round>移除</el-button>
+						</template>
+					</el-table-column>
+				</el-table>
+			</el-row>
+			<el-row>
+				<el-col :span="24">
+					<el-pagination v-if="pageInfo.total!=0" :background="true" :pager-count="4" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageInfo.pageNum" :page-size="pageInfo.pageSize" :total="pageInfo.total" :page-sizes="[3,6]" layout="total, sizes, prev, pager, next, jumper">
+					</el-pagination>
+				</el-col>
+			</el-row>
+
+			<el-dialog title="添加员工" :visible.sync="dialogVisible" width="50%" center>
+				<el-form :inline="true" :model="person" ref="personForm" label-width="120px">
+					<el-form-item label="员工姓名">
+						<el-input v-model="person.pname"></el-input>
+					</el-form-item>
+					<el-form-item label="部门">
+						<el-select v-model="person.peptid" @change="liandong" style="width: 207px" placeholder="请选择">
+							<el-option v-for="item in options1" :key="item.value" :label="item.label" :value="item.value">
+							</el-option>
+						</el-select>
+					</el-form-item>
+					<el-form-item label="职位">
+						<el-select v-model="person.ppid" style="width: 207px" placeholder="请选择">
+							<el-option v-for="item in options3" :key="item.value" :label="item.label" :value="item.value">
+							</el-option>
+						</el-select>
+					</el-form-item>
+
+					<el-form-item label="性别">
+						<el-radio v-model="person.psex" label="男">男</el-radio>
+						<el-radio v-model="person.psex" label="女">女</el-radio>
+					</el-form-item>
+					<el-form-item label="账号">
+						<el-input v-model="person.account"></el-input>
+					</el-form-item>
+					<el-form-item label="密码">
+						<el-input v-model="person.pwd"></el-input>
+					</el-form-item>
+					<el-form-item label="生日">
+						<el-date-picker v-model="person.brithday" style="width: 207px;" type="date" placeholder="选择日期">
+						</el-date-picker>
+					</el-form-item>
+					<el-form-item label="身份证号">
+						<el-input v-model="person.idcard"></el-input>
+					</el-form-item>
+					<el-form-item label="地址">
+						<el-input v-model="person.paddress"></el-input>
+					</el-form-item>
+					<el-form-item label="紧急联系人">
+						<el-input v-model="person.sosname"></el-input>
+					</el-form-item>
+					<el-form-item label="联系人电话">
+						<el-input v-model="person.sosphone"></el-input>
+					</el-form-item>
+					<el-form-item label="email">
+						<el-input v-model="person.email"></el-input>
+					</el-form-item>
+					<el-form-item style="margin-left: 180px;">
+						<el-button type="primary" @click="insert">添加</el-button>
+						<el-button @click="back">返回</el-button>
+					</el-form-item>
+				</el-form>
+			</el-dialog>
+		</div>
+	</body>
+	<script type="text/javascript">
+		var vmOrganization = new Vue({
+			data: {
+				searchName: "",
+				pageInfo: "",
+				dialogVisible: false,
+				person: {
+					pid: 0,
+					ppid: "",
+					pname: "",
+					psex: "男",
+					account: "",
+					pwd: "",
+					fedeintime: "",
+					brithday: "",
+					pstatus: 0,
+					idcard: "",
+					pouttime: "",
+					paddress: "",
+					sosname: "",
+					sosphone: "",
+					email: "",
+					isadmin: 0,
+					peptname: "",
+					ppname: ""
+				},
+				options1: [],
+				options2: [],
+				options3: []
+			},
+			methods: {
+				handleSizeChange(val) {
+					this.goToPage(this.pageInfo.pageNum, val);
+				},
+				handleCurrentChange(val) {
+					this.goToPage(val, this.pageInfo.pageSize);
+				},
+				goToPage(p, s, name) {
+					let _this = this;
+					if(name == null || name == "" || name.length == 0) {
+						name = null;
+					}
+					$.getJSON(`http://localhost:8080/api/person/page/${p}/${s}/${name}`, function(data) {
+						_this.pageInfo = data;
+					})
+				},
+				queryLikeName() {
+					this.goToPage(1, this.pageInfo.pageSize, this.searchName);
+				},
+				delInfo(id, pstatus) {
+					let _this = this;
+					//					if(pstatus == 1){
+					//						this.$message({
+					//							type : "warning",
+					//							message : ""
+					//						})
+					//					}
+					this.$confirm('确定要移除吗?', '提示', {
+						confirmButtonText: '确定',
+						cancelButtonText: '取消',
+						type: 'warning',
+						center: true
+					}).then(() => {
+						$.ajax({
+							url: `http://localhost:8080/api/person/delById/${id}`,
+							type: "delete",
+							dataType: "json",
+							success(msg) {
+								if(msg.code == "200") {
+									_this.$message({
+										type: 'success',
+										message: '删除成功!'
+									});
+									_this.goToPage(1, _this.pageInfo.pageSize);
+								}
+							}
+						});
+					}).catch(() => {
+						this.$message({
+							type: 'info',
+							message: '已取消删除'
+						});
+					});
+				},
+				insert() {
+					let _this = this;
+					$.ajax({
+						url: "http://localhost:8080/api/person/insert",
+						type: "post",
+						contentType: "application/json",
+						data: JSON.stringify(_this.person),
+						dataType: "json",
+						success(data) {
+							if(data.code == "200") {
+								_this.$message({
+									type: 'success',
+									message: '添加成功!'
+								});
+								_this.back();
+								_this.goToPage(1, _this.pageInfo.pageSize);
+							} else {
+								_this.$message.error("添加失败！！");
+							}
+						}
+					});
+				},
+				deptload() {
+					let _this = this;
+					$.getJSON("http://localhost:8080/api/person/loaddept", function(data) {
+						for(var i = 0; i < data.length; i++) {
+							_this.options1.push({
+								label: data[i].peptname,
+								value: data[i].peptid
+							});
+						}
+					})
+				},
+				positionload() {
+					let _this = this;
+					$.getJSON("http://localhost:8080/api/person/loadposition", function(data) {
+						for(var i = 0; i < data.length; i++) {
+							_this.options2.push({
+								label: data[i].ppnamne,
+								value: data[i].ppid
+							});
+						}
+					})
+				},
+				back() {
+					this.person.pid = "";
+					this.person.ppid = "";
+					this.person.pname = "";
+					this.person.psex = "";
+					this.person.account = "";
+					this.person.pwd = "";
+					this.person.fedeintime = "";
+					this.person.brithday = "";
+					this.person.pstatus = "";
+					this.person.idcard = "";
+					this.person.pouttime = "";
+					this.person.paddress = "";
+					this.person.sosname = "";
+					this.person.sosphone = "";
+					this.person.email = "";
+					this.person.isadmin = "";
+					this.person.peptname = "";
+					this.person.ppname = "";
+					this.dialogVisible = false;
+				},
+				liandong() {
+					let id = this.person.peptid;
+					if(!this.isEmpty(id)) {
+						this.options3 = this.options2.filter((temp) => {
+							return temp.value == id;
+						});
+					}
+				},
+				isEmpty(val) {
+					if(val != null || val != "" || val.length != 0 || val != undefiled)
+						return false;
+					else return true;
+				}
+			},
+			mounted() {
+				this.goToPage(1, 3, null);
+				this.deptload();
+				this.positionload();
+			}
+
+		}).$mount("#vmOrganization");
+	</script>
+
+</html>

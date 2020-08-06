@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" href="css/index.css" />
+
+	</head>
+
+	<body>
+		<div id="Appwxxm">
+			<el-row>
+				<el-col :md='8'>
+
+					<el-aside>
+						<el-menu>
+							<el-submenu index="1">
+								<template slot="title">
+									<span></span>
+									<span>保养</span>
+								</template>
+								<el-menu-item-group>
+									<el-menu-item index="1-1"><i></i>1</el-menu-item>
+								</el-menu-item-group>
+							</el-submenu>
+
+							<el-submenu index="2" @click='clickType(1)'>
+								<template slot="title">
+									<span></span>
+									<span>发动机</span>
+								</template>
+								<el-menu-item-group>
+									<el-menu-item v-for='(n,i) in fdjb' index="2-i" @click='fdjbId(n.fdjid)'><i></i>{{n.fbname}}</el-menu-item>
+								</el-menu-item-group>
+							</el-submenu>
+
+							<el-submenu index="3">
+								<template slot="title">
+									<span></span>
+									<span>小修</span>
+								</template>
+								<el-menu-item-group>
+									<el-menu-item index="3-1"><i></i>维修接车</el-menu-item>
+								</el-menu-item-group>
+							</el-submenu>
+
+							<el-submenu index="4">
+								<template slot="title">
+									<span></span>
+									<span>车型</span>
+								</template>
+
+								<el-menu-item-group>
+									<el-menu-item index="4-1"><i>409-大众</i></el-menu-item>
+									<el-menu-item index="4-1"><i>500-中国重汽</i></el-menu-item>
+									<el-menu-item index="4-1"><i>5004-丰田</i></el-menu-item>
+									<el-menu-item index="4-1"><i>501-陕西重卡</i></el-menu-item>
+									<el-menu-item index="4-1"><i>502-中国一汽</i></el-menu-item>
+									<el-menu-item index="4-1"><i>901-其他重卡</i></el-menu-item>
+									<el-menu-item index="4-1"><i>902-轻型型车</i></el-menu-item>
+								</el-menu-item-group>
+							</el-submenu>
+
+							<el-submenu index="5">
+								<template slot="title">
+									<span></span>
+									<span>钣喷</span>
+								</template>
+								<el-menu-item-group>
+									<el-menu-item index="5-1"><i class="glyphicon glyphicon-link"></i>轻度</el-menu-item>
+									<el-menu-item index="5-2"><i class="glyphicon glyphicon-link"></i>中度</el-menu-item>
+									<el-menu-item index="5-3"><i class="glyphicon glyphicon-link"></i>重度</el-menu-item>
+								</el-menu-item-group>
+							</el-submenu>
+
+						</el-menu>
+					</el-aside>
+				</el-col>
+
+				<el-col :md='16'>
+					<el-row>
+						<el-col :md='7'>
+							<el-input placeholder='123'></el-input>
+						</el-col>
+						<el-button icon='el-icon-search'>搜索</el-button>
+						<el-button icon='el-icon-edit' @click='dialogVisibleSHOW'>新增</el-button>
+					</el-row>
+
+					<el-row>
+						<template>
+							<el-table>
+
+							</el-table>
+						</template>
+					</el-row>
+				</el-col>
+
+			</el-row>
+
+			<el-dialog title="提示" :visible.sync="dialogVisible" width="30%" :before-close="handleClose">
+				<el-form>
+
+				</el-form>
+				<span slot="footer" class="dialog-footer">
+    <el-button @click="dialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+  </span>
+			</el-dialog>
+
+		</div>
+	</body>
+	<script>
+		var VmWxm = new Vue({
+			data() {
+				return {
+					dialogVisible: false,
+					fdjb: {},
+					clppb: {},
+					Type: {}
+
+				};
+			},
+			methods: {
+				dialogVisibleSHOW() {
+					this.dialogVisible = true;
+				},
+				handleClose(done) {
+					this.$confirm("确认要关闭吗？").then(_ => {
+						done();
+					}).catch(_ => {
+
+					})
+				},
+				showFdjb() {
+					//发动机
+					let _this = this;
+					$.getJSON('http://localhost:8080/api/brand/fdjbBrand', (fj) => {
+						_this.fdjb = fj.data;
+					});
+				},
+				clppbBrand() {
+					//车型品牌
+					let _this = this;
+					$.getJSON('http://localhost:8080/api/clppd/clppbBrand', (fj) => {
+						_this.clppb = fj.data;
+					});
+				},
+				fdjbId(id) {
+					console.log('发动机id:' + id);
+				},
+				clppbid(id) {
+					console.log('品牌id:' + id);
+				},
+				clickType() {
+					
+			},
+			mounted() {
+				this.showFdjb();
+				this.clppbBrand();
+			}
+		}).$mount("#Appwxxm");
+	</script>
+
+</html>

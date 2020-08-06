@@ -54,7 +54,21 @@
 
 					<el-table-column width="100" prop="wb1" label="技工组">
 					</el-table-column>
-
+					
+					<el-table-column prop="wb7" label="公里数" width="100">
+					</el-table-column>
+					<el-table-column width="50"  label="类型" >
+							<template slot-scope="temp" >
+								<span v-if="temp.row.jleix==1">
+									站内
+								</span>
+								<span v-if="temp.row.jleix==2">
+									站外
+								</span>
+							</template>
+							
+							
+						</el-table-column>
 					<el-table-column>
 						<template slot="header" slot-scope="scope">
 							<el-col :span="12">
@@ -63,19 +77,30 @@
 						</template>
 						<template slot-scope="temp">
 
-							<span v-if="temp.row.wstate==0">
-								<el-button  size="mini" type="primary"  @click="showDialog(temp.row.wid)" >开始维修</el-button>
-								
+							<span v-if="temp.row.wstate==0 && temp.row.jleix==1">
+								<el-button  size="mini" type="primary"  @click="showDialog(temp.row.wid,temp.row.jleix)" >开始维修</el-button>
 								</span>
+								
+							<span v-if="temp.row.wstate==0 && temp.row.jleix==2">
+								<el-button  size="mini" type="primary"  @click="showDialog(temp.row.wid,temp.row.jleix)" >请选择地点</el-button>
+								</span>	
+								
+								<span v-if="temp.row.wstate==10 && temp.row.jleix==2">
+								<el-button  size="mini" type="primary"  @click="xiugaizt22(temp.row.wid,temp.row.wb5)" >开始维修</el-button>
+								</span>	
 							<span v-if="temp.row.wstate==1">
 								
-								 <el-button type="success"   size="mini" @click="updatewstate(temp.row.wstate,temp.row.wid,temp.row.wb1)">完成订单</el-button>
-								 <el-button type="primary" icon="el-icon-search" size="mini" @click="ff1(1,3,temp.row.wid)">查看维修详情</el-button>
+								 <el-button type="success"   size="mini" @click="updatestatuswstate(temp.row.wstate,temp.row.wid,temp.row.wb1)">完成订单</el-button>
+								 <el-button type="primary" icon="el-icon-search" size="mini" @click="ff1(1,3,temp.row.wid,temp.row.wstate)">查看维修详情</el-button>
 								</span>
 							<span v-if="temp.row.wstate==2">
-								<el-button type="primary" icon="el-icon-search" size="mini" >查看维修项目</el-button>
+								<el-button type="primary" icon="el-icon-search" size="mini" @click="ff1(1,3,temp.row.wid,temp.row.wstate)">查看维修项目</el-button>
 							</span>
-							
+							<span v-if="temp.row.wstate==3">
+								<el-button type="warning"  size="mini" @click="ff1(1,3,temp.row.wid,temp.row.wstate)">返工中</el-button>
+								<el-button type="primary" icon="el-icon-search" size="mini" @click="ff1(1,3,temp.row.wid,temp.row.wstate)">查看维修详情</el-button>
+								 <el-button type="success"   size="mini" @click="updatestatuswstate(temp.row.wstate,temp.row.wid,temp.row.wb1)">返工完成</el-button>
+							</span>
 						</template>
 					</el-table-column>
 				</el-table>
@@ -99,49 +124,84 @@
 				<!--`wid`,`gid`,`id`,`wstate`,`wlicense`,`wkname`,`wpheno`,`wleix`,
 				`wkaidate`,`wyudate`,`wwandate`,`wjiedate`,`kprice``rvname``rvmoney`-->
 				<el-table :data="this.pageInfo2.list" style="width: 100%">
+					<div>
+					<el-table-column width="100" >
+						
+						<template slot-scope="temp">
+							
+						</template>
+					</el-table-column>
+					</div>
+					
+					<div>
 					<el-table-column width="100" label="序号">
+						
 						<template slot-scope="temp">
 							{{temp.$index+1}}
 						</template>
 					</el-table-column>
-
+					</div>
+					<div>
 					<el-table-column prop="wid" label="订单号" width="100">
 					</el-table-column>
+					</div>
+					<div>
 					<el-table-column prop="wlicense" label="牌号" width="100">
-
+					
 					</el-table-column>
+					</div>
+					<div>
 					<el-table-column prop="wb1" label="维修组" width="100">
 
 					</el-table-column>
+					</div>
+					<div>
 					<el-table-column prop="rvname" label="项目类型" width="100">
 					</el-table-column>
+					</div>
+					<div>
+					<el-table-column prop="rvmoney" label="项目价格" width="100">
+					</el-table-column>
+					
+					
+					</div>
+						
+					<div v-if="this.zt==1 || this.zt==3">
 					<el-table-column  width="150">
+						
 						<template slot-scope="temp" slot="header">
-							<el-col >
+							<el-col>
 								<el-button type="primary" size="mini"  @click="showDialog2">添加项目</el-button>
 							</el-col>
 							
 						</template>
 					</el-table-column>
+					</div>
 					
-					<el-table-column label="操作" width="150">
+					<div v-if="this.zt==1 || this.zt==3">
+					<el-table-column  width="150">
 						<template slot="header" slot-scope="temp">
 							<el-col >
-								<el-button type="primary" size="mini"  @click="showDialog5">添加材料</el-button>
+								<el-button type="primary" size="mini"  @click="">添加材料</el-button>
 							</el-col>
 							
 						</template>
 						</el-table-column>
-						
+						</div>
+						<div >
 						<el-table-column label="操作" width="150">
+							
 						<template slot="header" slot-scope="temp">
+							
 							<el-col >
 								<el-button type="primary" size="mini"  @click="showDialog6">查看材料</el-button>
 							</el-col>
 							
 						</template>
-						</el-table-column>
 						
+						</el-table-column>
+						</div>
+					
 				 </el-table>
 					
 					
@@ -152,6 +212,7 @@
 						</el-pagination>
 					</el-col>
 				</el-row>
+				
 			</div>
 
 			<!--模态框-->
@@ -165,7 +226,7 @@
 			</el-dialog>
 
 			<!--模态框-->
-			<el-dialog :destroy-on-close="true" @opened="handlOpen5" title="新增客户车辆信息" :visible.sync="isShow5" :before-close="handleClose" center>
+			<el-dialog :destroy-on-close="true" @opened="handlOpen5" title="新增客户车辆信息" :visible.sync="isShow5" :before-close="handleClose" width='80%' center>
 				<div id="modalcnt5"></div>
 			</el-dialog>
 
@@ -180,6 +241,8 @@
 		var personApp = new Vue({
 			el: '#personApp',
 			data: {
+				jiage:"",
+				zt:"1",
 				wzt:"",
 				wxid: "",
 				pageInfo: {},
@@ -192,11 +255,21 @@
 
 			},
 			methods: {
-				
+				xiugaizt22(wid,oid){
+					let _this = this;
+					$.getJSON(`http://localhost:8080/api/wxb/updatewstate/1/${wid}`, function(pg) {
+
+					});
+					$.getJSON(`http://localhost:8080/api/outcar/updatezt2/${oid}`, function(pg) {
+								showAlertDialog('开始维修!');
+								_this.goToPage(1, 3);
+					});
+				},
 				tiaoz(){
 					indexApp.showView("jiechezhuye","维修接车");
 				},
-				updatewstate(zt, wid, wb1) {
+				
+				updatestatuswstate(zt, wid, wb1) {
 				
 					if(wb1 == null || wb1 === "") {
 						showAlertDialog("请选择技工组！");
@@ -210,10 +283,14 @@
 						if(zt=="1"){
 							this.wzt = "2";
 						}
+						if(zt=="3"){
+							this.wzt = "4";
+						}
+						
 						let _this = this;
 						$.getJSON(`http://localhost:8080/api/wxb/updatewstate/${this.wzt}/${wid}`, function(pg) {
 									if(pg=="1"){
-										showAlertDialog('修改成功!');
+										showAlertDialog('成功!');
 										_this.goToPage(1,3);
 									}
 									
@@ -230,7 +307,11 @@
 					}
 
 				},
-				ff1(p,s,wid) {
+				ff1(p,s,wid,zt) {
+					this.goToPage2(1,3,wid);
+					window.sessionStorage.setItem("zt", zt); 
+					this.zt=window.sessionStorage.getItem("zt");
+					
 					window.sessionStorage.setItem("wid", wid); 
 					this.loading = true;
 					let _this = this;
@@ -240,7 +321,7 @@
 					});
 				},
 				khclxxchaxun(p, s, kid) {
-
+				
 					window.sessionStorage.setItem("kid", kid); 
 					let _this = this;
 					this.loading = true;
@@ -259,7 +340,7 @@
 					$("#modalcnt6").load('chakancailiaoxx.html');
 				},
 				handlOpen5() {
-					$("#modalcnt5").load('xingzhengchailiaobiao.html');
+					$("#modalcnt5").load('zhangwaiweixiu.html');
 				},
 				handlOpen2() {
 					$("#modalcnt2").load('xinzengxianmuyemian.html');
@@ -272,9 +353,16 @@
 						done();
 					}).catch(() => {});
 				},
-				showDialog(wid) {
-					this.isShow = true;
+				showDialog(wid,zt) {
+					
 					sessionStorage.setItem('wid', wid);
+					if(zt=="1"){
+						this.isShow = true;
+					}else if(zt=="2"){
+						this.isShow5 = true;
+					}
+					
+					
 				}
 
 				,
@@ -375,6 +463,16 @@
 					wid = window.sessionStorage.getItem("wid");
 					this.ff1(val, this.pageInfo2.pageSize, wid);
 				},
+				goToPage2(p, s,wid) {
+					let _this = this;
+					this.loading = true;
+					//ajax
+					$.getJSON(`http://localhost:8080/api/wxxm/er/${p}/${s}/${wid}`, function(pg) {
+						_this.jiage = pg;
+						_this.loading = false;
+						
+					});
+				},
 				goToPage(p, s) {
 					let _this = this;
 					this.loading = true;
@@ -386,8 +484,9 @@
 				}
 			},
 			mounted() {
+				
 				this.goToPage(1, 3);
-
+				
 			},
 			filters: {
 				filterSex(val) {
