@@ -143,13 +143,14 @@
 						callback(new Error('请输入发动机编号'));
 					} else {
 						this.sle(value);
-						console.log(this.fdj);
-						if(this.fdj) {
-							callback(new Error('该编号已存在！'));
-						} else {
-							callback();
-						}
-						
+						setInterval(() => {
+							if(this.fdj) {
+								callback(new Error('该编号已存在！'));
+							} else {
+								callback();
+							}
+						}, 1000)
+
 					}
 				};
 
@@ -295,7 +296,7 @@
 				},
 				sle(id) {
 					let _this = this;
-					$.getJSON('http://localhost:8080/api/brand/updashow/' + id, (mag) => {
+					$.getJSON('http://localhost:8080/api/brand/updashow1/' + id, (mag) => {
 						console.log(mag.code);
 						if(mag.code == '200') {
 							_this.fdj = true;

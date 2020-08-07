@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" href="css/index.css" />
+	</head>
+
+	<body>
+		<div id="appSP">
+			<el-row>
+				<el-col :md='7' :offset='6'>
+					<el-input></el-input>
+				</el-col>
+				<el-button>查询</el-button>
+				<el-button @click='showDialog'>添加</el-button>
+			</el-row>
+
+			<el-dialog title="提示" :visible.sync="dialogVisible" width="50%" :before-close="handleClose">
+				<el-row>
+					<el-form :inline="true" class="demo-form-inline" label-width="90px">
+						<el-form-item label='登记门店'>
+							<el-select v-model='Mercdis.mdshop'>
+								<el-option v-for="item in spcold" :key="item.value" :label="item.label" :value="item.value">
+								</el-option>
+							</el-select>
+						</el-form-item>
+
+						<el-form-item label='厂商编码'>
+							<el-select v-model='Mercdis.mdcoding'>
+								<el-option v-for="item in csBianma" :key="item.value" :label="item.label" :value="item.value">
+								</el-option>
+							</el-select>
+						</el-form-item>
+
+						<el-form-item label='商品品牌'>
+							<el-select v-model='Mercdis.mdbrand'>
+								<el-option v-for="item in spType" :key="item.value" :label="item.label" :value="item.value">
+								</el-option>
+							</el-select>
+						</el-form-item>
+
+						<el-form-item label='商品编码'>
+							<el-input style='width: 221px;' v-model='Mercdis.mdid'></el-input>
+						</el-form-item>
+
+						<el-form-item label='商品昵称'>
+							<el-input style='width: 221px;' v-model='Mercdis.mdname'></el-input>
+						</el-form-item>
+
+						<el-form-item label='商品类型'>
+							<el-select v-model='Mercdis.mdtype'>
+								<el-option v-for="item in spBrand" :key="item.value" :label="item.label" :value="item.value">
+								</el-option>
+							</el-select>
+						</el-form-item>
+
+						<el-form-item label='数量单位'>
+							<el-select v-model='Mercdis.mdunit'>
+								<el-option v-for="item in Company" :key="item.value" :label="item.label" :value="item.value">
+								</el-option>
+							</el-select>
+						</el-form-item>
+
+						<el-form-item label='商品重量'>
+							<el-input style='width: 221px;' v-model='Mercdis.mdweigth'></el-input>
+						</el-form-item>
+
+						<el-form-item label='进货价'>
+							<el-input style='width: 221px;' v-model='Mercdis.mdmoney2'></el-input>
+						</el-form-item>
+
+					</el-form>
+				</el-row>
+				<span slot="footer" class="dialog-footer">
+    <el-button @click="dialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="Insert">确 定</el-button>
+  </span>
+			</el-dialog>
+		</div>
+	</body>
+	<script>
+		var vmSP = new Vue({
+			data() {
+				return {
+					dialogVisible: false,
+					Mercdis: {
+						mdid: '',
+						mdunit: '',
+						mdmoney: '',
+						mdname: '',
+						mdweigth: '',
+						mdimgs: '',
+						mdmoney2: '',
+						mdstatus: '0', //0上架
+						mdshop: '',
+						mdcoding: '',
+						mdbrand: '',
+						mdtype: '',
+						mdate: ''
+					},
+					spBrand: [{
+						label: '传动系统',
+						value: '传动系统'
+					}, {
+						label: '发动机',
+						value: '发动机'
+					}, {
+						label: '制动系统',
+						value: '制动系统'
+					}, {
+						label: '转向系统',
+						value: '转向系统'
+					}, {
+						label: '行驶系统',
+						value: '行驶系统'
+					}, {
+						label: '车身',
+						value: '车身'
+					}, {
+						label: '通用件与标准件',
+						value: '通用件与标准件'
+					}, {
+						label: '轮胎',
+						value: '轮胎'
+					}, {
+						label: '油品',
+						value: '油品'
+					}, {
+						label: '汽车用品',
+						value: '汽车用品'
+					}, {
+						label: '油漆',
+						value: '油漆'
+					}, {
+						label: '汽油发电机',
+						value: '汽油发电机'
+					}, {
+						label: '柴油发电机',
+						value: '柴油发电机'
+					}, {
+						label: '燃气轮机',
+						value: '燃气轮机'
+					}, {
+						label: '发电组件',
+						value: '发电组件'
+					}, {
+						label: '气缸体',
+						value: '气缸体'
+					}, {
+						label: '缸盖',
+						value: '缸盖'
+					}, {
+						label: '缸套',
+						value: '缸套'
+					}],
+					spType: [{
+						label: '米其林',
+						value: '米其林'
+					}, {
+						label: '别克',
+						value: '别克'
+					}],
+					spcold: [{
+						label: '东百老八',
+						value: '东百老八'
+					}, {
+						label: '荷兰拐哥',
+						value: '荷兰拐哥'
+					}],
+					csBianma: [{
+						label: 'A123',
+						value: 'A123'
+					}, {
+						label: 'B123',
+						value: 'B123'
+					}],
+					Company: [{
+						label: '个',
+						value: '个'
+					}]
+				};
+			},
+			methods: {
+				dateTimes() {
+					let da = new Date();
+					let y = da.getFullYear(); // 年
+					let d = da.getMonth() + 1;
+					let m = da.getDate();
+					let h = da.getHours();
+					let hh = da.getMinutes();
+					let mm = da.get
+					let sss = da.getSeconds();
+					return y + '-' + d + '-' + m + " " + h + ':' + hh + ":" + sss;
+
+				},
+				showDialog() {
+					this.dialogVisible = true;
+				},
+				handleClose(done) {
+					this.$confirm("确认要关闭吗?").then(_ => {
+						done();
+					}).catch(_ => {
+
+					})
+				},
+				Insert() {
+					let _this = this;
+					this.mercdis.mdate = this.dateTimes();
+					$.ajax({
+						type: "post",
+						url: "http://localhost:8080/api/Mercdis/insert",
+						data: JSON.stringify(this.mercdis),
+						dataType: 'json',
+						contentType: 'application/json;charset=utf-8',
+						success: function(mag) {
+							if(mag.code == "200") {
+								_this.$message({
+									showClose: true,
+									message: '新增成功!',
+									type: 'success'
+								});
+								//_this.close();
+							//	_this.reqaincie.cname = '';
+								_this.dialogVisible = false;
+								//_this.pages(1, 6, null);
+							} else {
+								_this.$message({
+									showClose: true,
+									message: '新增失败!',
+									type: 'success'
+								});
+							}
+						}
+					});
+				}
+			}
+		}).$mount("#appSP");
+	</script>
+
+</html>
