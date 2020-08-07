@@ -42,13 +42,15 @@
 				</el-form-item>
 
 				<el-form-item label="维修项目">
+					<el-col :span="6">
 					<span @click="jycl2"><el-input v-model="this.xms"></el-input></span>
+					</el-col>
 				</el-form-item>
 
 				<el-form-item label="价格" prop="kprice">
 					<el-col :span="6">
 						<el-input v-model="person.kprice" :disabled="true"></el-input>
-					</el-col>
+					
 				</el-form-item>
 
 				<el-form-item>
@@ -60,9 +62,11 @@
 
 			<el-dialog width="40%" title="项目类型" :visible.sync="innerVisible2" append-to-body>
 
-				<el-table :default-sort="{prop: 'pdate', order: 'descending'}" :data="this.pageInfo2" border ref="multipleTable" @selection-change="handleSelectionChange">
-					<el-table-column width="150" prop="wid" label="维修订单号" disable=true>
+				<el-table :default-sort="{prop: 'pdate', order: 'descending'}"  :data="this.pageInfo2" border ref="multipleTable" @selection-change="handleSelectionChange">
+					
+					<el-table-column width="100" prop="wid" label="维修订单号" v-if="false" >
 					</el-table-column>
+				
 					<el-table-column width="100" label="序号">
 						<template slot-scope="temp">
 							{{temp.$index+1}}
@@ -89,6 +93,7 @@
 		var infoApp = new Vue({
 			el: "#infoApp",
 			data: {
+				hidden : {"display" : "none"},
 				pageInfo2:"",
 				xms: "",
 				zhu: [],

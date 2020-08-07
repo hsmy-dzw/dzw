@@ -116,7 +116,7 @@
 				<el-dialog width="40%" title="项目类型" :visible.sync="innerVisible2" append-to-body>
 
 					<el-table :default-sort="{prop: 'pdate', order: 'descending'}" :data="this.pageInfo2" border ref="multipleTable" @selection-change="handleSelectionChange">
-						<el-table-column width="150" prop="wid" label="维修订单号" hidden="hidden">
+						<el-table-column width="150" prop="wid" label="维修订单号" hidden="hidden" v-if="false">
 						</el-table-column>
 						<el-table-column width="100" label="序号">
 							<template slot-scope="temp">
