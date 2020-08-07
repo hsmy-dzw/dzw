@@ -115,7 +115,10 @@
 			<div id="cnt">
 
 			</div>
-
+			<!--模态框-->
+			<el-dialog :destroy-on-close="true" @opened="handlOpen6" title="新增客户资料" :visible.sync="isShow6" :before-close="handleClose" center>
+				<div id="modalcnt6"></div>
+			</el-dialog>
 		</div>
 
 	</body>
@@ -124,6 +127,7 @@
 		var jiehce = new Vue({
 			el: "#kehuxx1",
 			data: {
+				isShow6:false,
 				valueg: 100,
 				
 				leix: "请选择业务",
@@ -177,8 +181,11 @@
 
 			},
 			methods: {
+				handlOpen6(){
+					$("#modalcnt6").load('kehuxinxiadd.html');
+				},
 				ff55(){
-					indexApp.showView("kehuxinxizhuye","客户资料");
+					this.isShow6=true;
 				},
 				addPerson2() {
 					let _this = this;

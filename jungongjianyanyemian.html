@@ -59,6 +59,7 @@
 						<el-table-column width="300"  label="操作" >
 							<template slot-scope="temp" >
 								<span><el-button type="primary" size="mini"  @click="showDialog2(temp.row.wid)">反工</el-button></span>
+								<span><el-button type="primary" size="mini"  @click="showDialog5(temp.row.wid)">竣工</el-button></span>
 								<span v-if="temp.row.wstate==4"><el-button type="primary" size="mini"  @click="fgff(temp.row.wid)">反工原因</el-button></span>
 							</template>
 							
@@ -198,7 +199,7 @@
 				fgff(wid){
 					alert(1)
 					window.sessionStorage.setItem("wid", wid);
-					this.isShow2 = true;
+					this.isShow5 = true;
 				},
 				khclxxchaxun(p,s,kid){
 					
@@ -220,10 +221,10 @@
 					$("#modalcnt6").load('cheliangxingxixiugai.html');
 				},
 				handlOpen5(){
-					$("#modalcnt5").load('xingzhengkehucheliang.html');
+					$("#modalcnt5").load('fanggongxinxi.html');
 				},
 				handlOpen2(){
-					$("#modalcnt2").load('fanggongxinxi.html');
+					$("#modalcnt2").load('fanggong.html');
 				},
 				handlOpen(){
 					$("#modalcnt").load('kehuxianqing.html');
