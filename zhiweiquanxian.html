@@ -46,40 +46,19 @@
 				updatezhiweiquanxianlist: "",
 				checkAll: false,
 				isIndeterminate: true,
-
-				roots: [{
-						"children": [{
-								"id": 2,
-								"text": "维修接车"
-							},
-							{
-								"id": 3,
-								"text": "竣工检验"
-							}
-						],
-						"id": 0,
-						"text": "维修救援"
-					},
-					{
-						"children": [{
-								"id": 4,
-								"text": "维修接车1"
-							},
-							{
-								"id": 5,
-								"text": "竣工检验1"
-							}
-						],
-						"id": 1,
-						"text": "维修救援1"
-					}
-				]
+				roots: []
 			},
 			methods: {
 				goToPage(pageNum, pageSize) {
 					let _this = this;
 					$.getJSON("http://localhost:8080/api/tl/position/getAll/" + pageNum + "/" + pageSize + "", function(pageInfo) {
 						_this.pageInfo = pageInfo;
+					})
+				},
+				getAllRoots(){
+					let _this = this;
+					$.getJSON("http://localhost:8080/api/tl/position/getAllRoots", function(roots) {
+						_this.roots = roots;
 					})
 				},
 				handleClose(done) {
@@ -100,6 +79,7 @@
 			},
 			mounted() {
 				this.goToPage(1, 3);
+				this.getAllRoots();
 			}
 
 		})
