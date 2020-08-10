@@ -7,7 +7,7 @@
 		<link rel="stylesheet" href="css/index.css" />
 		<link rel="stylesheet" href="css/bootstrap.min.css" />
 		<style type="text/css">
-		.hers{
+			.hers {
 				list-style-type: none;
 				margin: 20px 20px;
 				padding: 10px;
@@ -15,14 +15,14 @@
 				font-size: 18px;
 				border-bottom: 1px solid #CCCCCC;
 				text-align: center;
-				
 			}
-			.hh:hover{
-				border:none;
-				background-color: rgba(	135,206,250,0.4);
-				border: 1px  solid rgba(135,206,250,0.8);
+			
+			.hh:hover {
+				border: none;
+				background-color: rgba( 135, 206, 250, 0.4);
+				border: 1px solid rgba(135, 206, 250, 0.8);
 				border-radius: 5px;
-				color: rgb(30,144,255);
+				color: rgb(30, 144, 255);
 			}
 		</style>
 	</head>
@@ -55,7 +55,7 @@
 								<el-table-column label="操作">
 									<template slot-scope='tst'>
 										<el-button type='info' @click='seleName(tst.row.rvid)' icon='el-icon-edit'>编辑</el-button>
-										<el-button type='danger' @click='del(tst.row.rvid)' icon='el-icon-delete'>移除</el-button>
+										<el-button type='danger' @click='del(tst.row.rvid,tst.row.rvstatus)' icon='el-icon-delete'>移除</el-button>
 										<el-button v-if='tst.row.rvstatus == 1' type='success' icon='el-icon-top' @click="sj(0,tst.row.rvid)">上架</el-button>
 										<el-button v-else-if='tst.row.rvstatus == 0' @click="sj(1,tst.row.rvid)" icon='el-icon-bottom'>下架</el-button>
 									</template>
@@ -452,8 +452,16 @@
 				handleCurrentChange(val) {
 					this.pages(val, this.pageInfo.pageSize, null);
 				},
-				del(id) {
+				del(id, status) {
 					let _this = this;
+					if(status === 0) {
+						_this.$message({
+							showClose: true,
+							message: '已上架商品不能删除!',
+							type: 'warning'
+						});
+						return;
+					}
 					$.ajax({
 						url: 'http://localhost:8080/api/Reqaincie/delect/' + id,
 						type: 'post',
