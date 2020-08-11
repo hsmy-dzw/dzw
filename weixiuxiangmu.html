@@ -5,87 +5,38 @@
 		<meta charset="UTF-8">
 		<title></title>
 		<link rel="stylesheet" href="css/index.css" />
-
+		<link rel="stylesheet" href="css/bootstrap.min.css" />
+		<style type="text/css">
+			.hers {
+				list-style-type: none;
+				margin: 20px 20px;
+				padding: 10px;
+				cursor: pointer;
+				font-size: 18px;
+				border-bottom: 1px solid #CCCCCC;
+				text-align: center;
+			}
+			
+			.hh:hover {
+				border: none;
+				background-color: rgba( 135, 206, 250, 0.4);
+				border: 1px solid rgba(135, 206, 250, 0.8);
+				border-radius: 5px;
+				color: rgb(30, 144, 255);
+			}
+		</style>
 	</head>
 
 	<body>
 		<div id="Appwxxm">
 			<el-row>
-				<el-col :md='8'>
-
-					<el-aside>
-						<el-menu>
-							<el-submenu index="1">
-								<template slot="title">
-									<span></span>
-									<span>保养</span>
-								</template>
-								<el-menu-item-group>
-									<el-menu-item index="1-1" @click="textName('1')"><i></i>1</el-menu-item>
-								</el-menu-item-group>
-							</el-submenu>
-
-							<el-submenu index="2" @click='clickType(1)'>
-								<template slot="title">
-									<span></span>
-									<span>发动机</span>
-								</template>
-								<el-menu-item-group>
-									<el-menu-item index="2-1" @click="textName('狗佳动机')"><i>狗佳动机</i></el-menu-item>
-									<el-menu-item index="2-2" @click="textName('青鸟动力')"><i>青鸟动力</i></el-menu-item>
-									<el-menu-item index="2-3" @click="textName('中国重汽动力')"><i>中国重汽动力</i></el-menu-item>
-									<el-menu-item index="2-4" @click="textName('科探发动机')"><i>科探发动机</i></el-menu-item>
-									<el-menu-item index="2-5" @click="textName('西安康明斯')"><i>西安康明斯</i></el-menu-item>
-									<el-menu-item index="2-6" @click="textName('道依茨发动机')"><i>道依茨发动机</i></el-menu-item>
-									<el-menu-item index="2-7" @click="textName('大柴锡柴发动机')"><i>大柴锡柴发动机</i></el-menu-item>
-								</el-menu-item-group>
-							</el-submenu>
-
-							<el-submenu index="3">
-								<template slot="title">
-									<span></span>
-									<span>小修</span>
-								</template>
-								<el-menu-item-group>
-
-								</el-menu-item-group>
-							</el-submenu>
-
-							<el-submenu index="4">
-								<template slot="title">
-									<span></span>
-									<span>车型</span>
-								</template>
-
-								<el-menu-item-group>
-									<el-menu-item @click="textName('大众')" index="4-1"><i>大众</i></el-menu-item>
-									<el-menu-item index="4-1" @click="textName('中国重汽')"><i>中国重汽</i></el-menu-item>
-									<el-menu-item index="4-2" @click="textName('丰田')"><i>丰田</i></el-menu-item>
-									<el-menu-item index="4-3" @click="textName('陕西重卡')"><i>陕西重卡</i></el-menu-item>
-									<el-menu-item index="4-4" @click="textName('中国一汽')"><i>中国一汽</i></el-menu-item>
-									<el-menu-item index="4-5" @click="textName('其他重卡')"><i>其他重卡</i></el-menu-item>
-									<el-menu-item index="4-6" @click="textName('中轻车型')"><i>中轻车型</i></el-menu-item>
-								</el-menu-item-group>
-							</el-submenu>
-
-							<el-submenu index="5">
-								<template slot="title">
-									<span></span>
-									<span>钣喷</span>
-								</template>
-								<el-menu-item-group>
-									<el-menu-item index="5-1" @click="textName('轻度')"> <i></i>轻度</el-menu-item>
-									<el-menu-item index="5-2" @click="textName('中度')"><i></i>中度</el-menu-item>
-									<el-menu-item index="5-3" @click="textName('重度')"><i></i>重度</el-menu-item>
-								</el-menu-item-group>
-
-							</el-submenu>
-
-						</el-menu>
-					</el-aside>
+				<el-col :md='5' style='border-right: 1px solid #DDDDDD;height: 540px;'>
+					<ul class="list-style">
+						<li v-for='(n,i) in MaintenService' @click='textName(n.msname)' class="text-muted  hers hh">{{n.msname}}</li>
+					</ul>
 				</el-col>
 
-				<el-col :md='16'>
+				<el-col :md='15' :offset='1'>
 					<el-row>
 						<el-col :md='7'>
 							<el-input placeholder='123' v-model='title'></el-input>
@@ -104,7 +55,7 @@
 								<el-table-column label="操作">
 									<template slot-scope='tst'>
 										<el-button type='info' @click='seleName(tst.row.rvid)' icon='el-icon-edit'>编辑</el-button>
-										<el-button type='danger' @click='del(tst.row.rvid)' icon='el-icon-delete'>移除</el-button>
+										<el-button type='danger' @click='del(tst.row.rvid,tst.row.rvstatus)' icon='el-icon-delete'>移除</el-button>
 										<el-button v-if='tst.row.rvstatus == 1' type='success' icon='el-icon-top' @click="sj(0,tst.row.rvid)">上架</el-button>
 										<el-button v-else-if='tst.row.rvstatus == 0' @click="sj(1,tst.row.rvid)" icon='el-icon-bottom'>下架</el-button>
 									</template>
@@ -501,8 +452,16 @@
 				handleCurrentChange(val) {
 					this.pages(val, this.pageInfo.pageSize, null);
 				},
-				del(id) {
+				del(id, status) {
 					let _this = this;
+					if(status === 0) {
+						_this.$message({
+							showClose: true,
+							message: '已上架商品不能删除!',
+							type: 'warning'
+						});
+						return;
+					}
 					$.ajax({
 						url: 'http://localhost:8080/api/Reqaincie/delect/' + id,
 						type: 'post',
@@ -584,7 +543,7 @@
 			},
 			mounted() {
 				this.clickType();
-				this.pages(1, 6, null);
+
 			}
 		}).$mount("#Appwxxm");
 	</script>
