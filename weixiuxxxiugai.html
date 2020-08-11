@@ -193,7 +193,12 @@
 					$.getJSON(`http://localhost:8080/api/Reqaincie/querAll`, function(pg) {
 						_this.pageInfo2 = pg;
 					
-						_this.pageInfo2[0].wid=_this.person.wid;
+						for(var i = 0; i < _this.pageInfo2.length; i++) {
+						//alert(this.multipleSelection[i].rvname);
+						_this.pageInfo2[i].wid=_this.person.wid;
+
+						//this.person.wb5.append(this.multipleSelection[i].rvname);
+					}
 						
 						_this.loading = false;
 					});
