@@ -58,9 +58,12 @@
 						</el-table-column>
 						<el-table-column width="300"  label="操作" >
 							<template slot-scope="temp" >
-								<span><el-button type="primary" size="mini"  @click="showDialog2(temp.row.wid)">反工</el-button></span>
-								<span><el-button type="primary" size="mini"  @click="showDialog5(temp.row.wid)">竣工</el-button></span>
-								<span v-if="temp.row.wstate==4"><el-button type="primary" size="mini"  @click="fgff(temp.row.wid)">反工原因</el-button></span>
+								<span v-if="temp.row.wstate==4 || temp.row.wstate==2"><el-button type="primary" size="mini"  @click="showDialog2(temp.row.wid)">反工</el-button></span>
+								<span v-if="temp.row.wstate==4 || temp.row.wstate==2"><el-button type="warning" size="mini"  @click="jungong(temp.row.wid)">竣工</el-button></span>
+								
+								
+								<span v-if="temp.row.wstate==4 || temp.row.wstate==2"><el-button type="info" size="mini"  @click="fgff(temp.row.wid)">反工原因</el-button></span>
+								<span v-if="temp.row.wstate==9"><label>竣工完成</label></span>
 							</template>
 							
 							
@@ -196,8 +199,21 @@
 				
 			},
 			methods: {
+				jungong(wid){
+					if(confirm('是否竣工')){
+					let _this = this;
+					
+					//ajax
+					$.getJSON(`http://localhost:8080/api/wxb/updatestatcbyjungong/${wid}`, function(pg) {
+						showAlertDialog("竣工成功！");
+						_this.goToPage(1, 3);
+					});
+					}
+						
+					
+				},
 				fgff(wid){
-					alert(1)
+					
 					window.sessionStorage.setItem("wid", wid);
 					this.isShow5 = true;
 				},

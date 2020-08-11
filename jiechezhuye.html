@@ -100,7 +100,7 @@
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label>车辆型号：</label>
 				<div style="width: 200px; display: inline-block;">
 
-					<el-input v-model="kehuxx.cmodel" :disabled="true">
+					<el-input v-model="kehuxx.cxname" :disabled="true">
 
 				</div>
 
@@ -157,7 +157,8 @@
 					zhifupwd: "",
 					cid: "",
 					cmodel: "",
-					cnumber: ""
+					cnumber: "",
+					cxname:""
 				},
 				jcbsj: {
 					id:"",
@@ -281,6 +282,7 @@
 						$.getJSON(`http://localhost:8080/api/khb/person/kehuxingxi/${piaohao}`, function(pg) {
 										    	
 						_this.kehuxx = pg;
+						
 						
 					});			
 					}

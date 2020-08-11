@@ -93,7 +93,7 @@
 						<!--`kid``vid``id``kname``kphone``kaddres``kbirthday``kremark``kb1``kb2``kb3``kb4``kb5``kb6`-->
 						<el-table-column width="100" prop="onumber" label="车牌号码">
 						</el-table-column>
-						<el-table-column width="100" prop="otname" label="车辆类型">
+						<el-table-column width="100" prop="oname" label="车辆类型">
 						</el-table-column>
 						<el-table-column width="100" prop="oprice" label="价格">
 						</el-table-column>
@@ -101,6 +101,7 @@
 							<template slot-scope="temp">
 								<span v-if="temp.row.ostatus==1">
 									<el-button  size="mini"  @click="xuezje(temp.row.oid,temp.row.otname,temp.row.oprice)">选择</el-button>
+									<el-button  size="mini"  @click="xuezje(temp.row.oid,temp.row.oname,temp.row.oprice)">选择</el-button>
 								</span>
 								<span v-if="temp.row.ostatus==2">
 									<el-button  size="mini" type="danger" >已出勤</el-button>
@@ -205,13 +206,13 @@
 
 				},
 				pageInfo: {},
-				pageInfo2:[]
+				pageInfo2:""
 			},
 			methods: {
 				ffgg() {
-
+					this.xms="";
 					for(var i = 0; i < this.multipleSelection.length; i++) {
-						//alert(this.multipleSelection[i].rvname);
+						
 						this.xms += this.multipleSelection[i].rvname + ",";
 
 						//this.person.wb5.append(this.multipleSelection[i].rvname);
@@ -230,7 +231,7 @@
 				},
 				handleSelectionChange(val) {
 
-					this.multipleSelection = val;
+					this.multipleSelection=val ;
 					this.multipleSelection.ggwid = this.person.wid;
 					console.log(this.multipleSelection)
 				},
@@ -320,10 +321,16 @@
 						//alert(this.multipleSelection[i].rvname);
 						_this.pageInfo2[i].wid=_this.person.wid;
 
+						
+					for(var i = 0; i < _this.pageInfo2.length; i++) {
+					
+						_this.pageInfo2[i].wid=_this.person.wid;
 						//this.person.wb5.append(this.multipleSelection[i].rvname);
 					}
 						_this.loading = false;
 					});
+					
+					
 				},
 				goToPage(p, s) {
 					let _this = this;
