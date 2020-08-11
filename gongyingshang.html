@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" href="../css/index.css" />
+	</head>
+
+	<body>
+		<div id="AppGys">
+			<el-row>
+				<el-row>
+					<el-col :md='7'>
+						<el-input v-model='title'></el-input>
+					</el-col>
+					<el-button @click='pages(1,6)' icon='el-icon-search'>查询</el-button>
+					<el-button @click='showD' icon='el-icon-edit-outline' type='success'>添加</el-button>
+				</el-row>
+			</el-row>
+			<el-row>
+				<el-table :data='pageInfo.list'>
+					<el-table-column prop='scoed' label='厂商代码'></el-table-column>
+					<el-table-column prop='sname' label='厂商昵称'></el-table-column>
+					<el-table-column prop='saddress' label='厂商地址'></el-table-column>
+					<el-table-column prop='sphone' label='联系电话'></el-table-column>
+					<el-table-column label='操作'>
+						<template slot-scope='ts'>
+							<el-button @click='SelectCode(ts.row.scoed)' type='info' icon='el-icon-edit'>编辑</el-button>
+							<el-button @click='delect(ts.row.scoed)' type='danger' icon='el-icon-delete'>删除</el-button>
+						</template>
+					</el-table-column>
+
+				</el-table>
+			</el-row>
+			<!--新增-->
+			<el-dialog title="提示" :visible.sync="dialogVisible" width="50%" :before-close="handleClose">
+				<el-row>
+					<el-form :model='supplier' :inline="true" :rules='rules' ref='supplier' label-width="90px" class="demo-form-inline">
+
+						<el-form-item label='厂商代码' prop='scoed'>
+							<el-input style='width: 221px;' v-model='supplier.scoed'></el-input>
+						</el-form-item>
+
+						<el-form-item label='厂商昵称' prop='sname'>
+							<el-input style='width: 221px;' v-model='supplier.sname'></el-input>
+						</el-form-item>
+
+						<el-form-item label='地区' prop='saddress'>
+							<template>
+								<el-select v-model='supplier.saddress'>
+									<el-option v-for='item in dz' :value='item.value' :label='item.label' :key='item.value'></el-option>
+								</el-select>
+							</template>
+						</el-form-item>
+
+						<el-form-item label='联系电话' prop='sphone'>
+							<el-input style='width: 221px;' v-model='supplier.sphone'></el-input>
+						</el-form-item>
+
+					</el-form>
+				</el-row>
+				<span slot="footer" class="dialog-footer">
+    <el-button @click="dialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="insert('supplier')">确 定</el-button>
+  </span>
+			</el-dialog>
+
+			<!--修改-->
+			<el-dialog title="提示" :visible.sync="dialogVisible2" width="50%" :before-close="handleClose2">
+				<el-row>
+					<el-form :model='supplier' :inline="true" :rules='rules' ref='supplier' label-width="90px" class="demo-form-inline">
+
+						<el-form-item label='厂商代码'>
+							<el-input style='width: 221px;' v-model='supplier.scoed' :disabled='true'></el-input>
+						</el-form-item>
+
+						<el-form-item label='厂商昵称' prop='sname'>
+							<el-input style='width: 221px;' v-model='supplier.sname'></el-input>
+						</el-form-item>
+
+						<el-form-item label='地区' prop='saddress'>
+							<template>
+								<el-select v-model='supplier.saddress'>
+									<el-option v-for='item in dz' :value='item.value' :label='item.label' :key='item.value'></el-option>
+								</el-select>
+							</template>
+						</el-form-item>
+
+						<el-form-item label='联系电话' prop='sphone'>
+							<el-input style='width: 221px;' v-model='supplier.sphone'></el-input>
+						</el-form-item>
+
+					</el-form>
+				</el-row>
+				<span slot="footer" class="dialog-footer">
+    <el-button @click="dialogVisible2 = false">取 消</el-button>
+    <el-button type="primary" @click="update('supplier')">确 定</el-button>
+  </span>
+			</el-dialog>
+
+		</div>
+	</body>
+	<script>
+		var vmgys = new Vue({
+			data() {
+				var validatervsaddress = (rule, value, callback) => {
+					if(value === '') {
+						callback(new Error('请输入地址'));
+					} else {
+
+						callback();
+					}
+				};
+
+				var validatervsName = (rule, value, callback) => {
+					if(value === '') {
+						callback(new Error('请输入厂商昵称'));
+
+					} else {
+
+						callback();
+					}
+				};
+
+				var validatervsCode = (rule, value, callback) => {
+					if(value === '') {
+						callback(new Error('请输入厂商编码'));
+
+					} else {
+						setTimeout(() => {
+							this.count(value);
+							if(this.isboot) {
+								callback(new Error('该厂商编码已存在请重新输入'));
+							} else {
+								callback();
+							}
+						})
+
+					}
+				};
+
+				var validatervssphone = (rule, value, callback) => {
+					if(value === '') {
+						callback(new Error('请输入联系电话'));
+					} else {
+						setTimeout(() => {
+							if(isNaN(value)) {
+								callback(new Error('请输入数字'));
+							} else if(value.length != 11) {
+								callback(new Error('格式不正确'));
+							} else {
+								callback();
+							}
+						}, 1000)
+					}
+				};
+
+				return {
+					title: '',
+					pageInfo: {},
+					dialogVisible: false,
+					dialogVisible2: false,
+					isboot: false,
+					supplier: {
+						saddress: '',
+						sname: '',
+						scoed: '',
+						sdate: '',
+						sphone: ''
+					},
+					page: {
+						pageSize: '',
+						pageNum: '',
+						name: ''
+					},
+					dz: [{
+						label: '河南',
+						value: '河南'
+					}, {
+						label: '湖南',
+						value: '湖南'
+					}, {
+						label: '北京',
+						value: '北京'
+					}, {
+						label: '天津',
+						value: '天津'
+					}, {
+						label: '株洲',
+						value: '株洲'
+					}, {
+						label: '醴陵',
+						value: '醴陵'
+					}, {
+						label: '南京',
+						value: '南京'
+					}, {
+						label: '邵东',
+						value: '邵东'
+					}],
+					rules: {
+						saddress: [{
+							required: true,
+							validator: validatervsaddress,
+							trigger: 'change'
+						}],
+						sname: [{
+							required: true,
+							validator: validatervsName,
+							trigger: 'blur'
+						}],
+						scoed: [{
+							required: true,
+							validator: validatervsCode,
+							trigger: 'blur'
+						}],
+						sphone: [{
+							required: true,
+							validator: validatervssphone,
+							trigger: 'blur'
+						}]
+					}
+
+				};
+			},
+			methods: {
+				close() {
+
+					this.supplier.saddress = '';
+					this.supplier.sname = '';
+					this.supplier.scoed = '';
+					this.supplier.sdate = '';
+					this.supplier.sphone = '';
+				},
+				handleClose(done) {
+					this.$confirm("确认要关闭吗？").then(_ => {
+						done();
+
+						this.value = '';
+					}).catch(_ => {
+
+					})
+				},
+				handleClose2(done) {
+					this.$confirm("确认要关闭吗？").then(_ => {
+						done();
+
+						this.value = '';
+					}).catch(_ => {
+
+					})
+				},
+				showD() {
+					this.dialogVisible = true;
+					this.close();
+				},
+				dateTimes() {
+					let da = new Date();
+					let y = da.getFullYear(); // 年
+					let d = da.getMonth() + 1;
+					let m = da.getDate();
+					let h = da.getHours();
+					let hh = da.getMinutes();
+					let mm = da.get
+					let sss = da.getSeconds();
+					return y + '-' + d + '-' + m + " " + h + ':' + hh + ":" + sss;
+
+				},
+				insert(formName) {
+					this.$refs[formName].validate((t) => {
+						if(t) {
+							let _this = this;
+							this.supplier.sdate = this.dateTimes();
+							$.ajax({
+								type: "post",
+								url: "http://localhost:8080/api/Supplier/insert",
+								data: JSON.stringify(this.supplier),
+								dataType: 'json',
+								contentType: 'application/json;charset=utf-8',
+								success: function(mag) {
+									if(mag.code == "200") {
+										_this.$message({
+											showClose: true,
+											message: '新增成功!',
+											type: 'success'
+										});
+
+										_this.dialogVisible = false;
+										_this.close();
+										_this.pages(1, 6);
+
+									} else {
+										_this.$message({
+											showClose: true,
+											message: '新增失败!',
+											type: 'success'
+										});
+									}
+								}
+							});
+						}
+					})
+				},
+				delect(code) {
+					let _this = this;
+
+					$.getJSON('http://localhost:8080/api/Mercdis/countSupplier/' + code, (mag) => {
+						_this.$alert(JSON.stringify(mag))
+						if(mag.code == '500') {
+							$.ajax({
+								url: 'http://localhost:8080/api/Supplier/delect/' + mag.data,
+								type: 'post',
+								success: function(mas) {
+									if(mas.code == '200') {
+										_this.$message({
+											showClose: true,
+											message: '移除成功!',
+											type: 'success'
+										});
+
+										_this.pages(1, 6);
+									} else {
+										_this.$message({
+											showClose: true,
+											message: '移除失败!',
+											type: 'error'
+										});
+									}
+								}
+							});
+						} else if(mag.code == "200") {
+							_this.$message({
+								showClose: true,
+								message: '该供应商正在被使用不能移除!',
+								type: 'warning'
+							});
+						}
+					});
+
+				},
+				update(formName) {
+					this.$refs[formName].validate((t) => {
+						if(t) {
+							let _this = this;
+							this.supplier.sdate = this.dateTimes();
+							$.ajax({ 
+								type: "post",
+								url: "http://localhost:8080/api/Supplier/update",
+								data: JSON.stringify(this.supplier),
+								dataType: 'json',
+								contentType: 'application/json;charset=utf-8',
+								success: function(mag) {
+									if(mag.code == "200") {
+										_this.$message({
+											showClose: true,
+											message: '修改成功!',
+											type: 'success'
+										});
+
+										_this.dialogVisible2 = false;
+										_this.close();
+										_this.pages(1, 6);
+
+									} else {
+										_this.$message({
+											showClose: true,
+											message: '修改失败!',
+											type: 'success'
+										});
+									}
+								}
+							});
+						}
+					});
+				},
+				pages(p, s) {
+					let _this = this;
+					this.page.name = this.title;
+					this.page.pageNum = p;
+					this.page.pageSize = s;
+					$.ajax({
+						url: 'http://localhost:8080/api/Supplier/page',
+						type: 'post',
+						data: JSON.stringify(this.page),
+						dataType: 'json',
+						contentType: 'application/json',
+						success: function(mas) {
+							_this.pageInfo = mas;
+						}
+					});
+
+				},
+				count(id) {
+					let _this = this;
+					$.getJSON('http://localhost:8080/api/Supplier/count/' + id, (mag) => {
+						if(mag.code == '500') {
+							_this.isboot = true;
+						} else if(mag.code == "200") {
+							_this.isboot = false;
+						}
+					});
+				},
+				SelectCode(id) {
+					let _this = this;
+					$.getJSON('http://localhost:8080/api/Supplier/selectName/' + id, (mag) => {
+						if(mag.code == '500') {
+							_this.$message({
+								showClose: true,
+								message: '没有找到!',
+								type: 'warning'
+							});
+						} else if(mag.code == "200") {
+							_this.supplier = mag.data;
+							_this.dialogVisible2 = true;
+						}
+					});
+				}
+			},
+			mounted() {
+				this.pages(1, 6);
+			}
+		}).$mount("#AppGys");
+	</script>
+
+</html>

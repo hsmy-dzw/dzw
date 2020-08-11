@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" href="css/index.css" />、
+		<style>
+			.ji {
+				position: relative;
+				width: 100%;
+				top: 50px;
+				left: 400px;
+				z-index: 1000;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="appSP">
+			<el-row>
+				<el-col :md='7' :offset='6'>
+					<el-input v-model='titleName'></el-input>
+				</el-col>
+				<el-button @click='pages(1,6)' icon='el-icon-search'>查询</el-button>
+				<el-button @click='showDialog' type='success' icon='el-icon-edit-outline'>添加</el-button>
+			</el-row>
+
+			<el-row>
+				<template>
+					<el-table :data='pageInfo.list'>
+						<el-table-column label='商品编码' prop='mdid' width='95'></el-table-column>
+						<el-table-column label='商品昵称' prop='mdname' width='95'></el-table-column>
+						<el-table-column label='商品类型' prop='mdtype' width='95'></el-table-column>
+						<el-table-column label='商品品牌' prop='mdbrand' width='95'></el-table-column>
+						<el-table-column label='商品重量' prop='mdweigth' width='95'></el-table-column>
+						<el-table-column label='商品单位' prop='mdunit' width='95'></el-table-column>
+						<el-table-column label='进货价' prop='mdmoney2' width='95'></el-table-column>
+						<el-table-column label='库存' prop='mdmoney' width='90'></el-table-column>
+						<el-table-column label='登记门店' prop='mdshop' width='90'></el-table-column>
+						<el-table-column label='厂商代码' prop='scoed' width='90'></el-table-column>
+						<el-table-column label='操作'>
+							<template slot-scope='ts'>
+								<el-button @click='bj(ts.row.mdid)' type='info' icon='el-icon-edit'>编辑</el-button>
+								<el-button @click='del(ts.row.mdid,ts.row.mdstatus)' type='danger' icon='el-icon-delete'>删除</el-button>
+								<el-button v-if='ts.row.mdstatus === 0' @click='js(1,ts.row.mdid)' icon='el-icon-bottom'>下架</el-button>
+								<el-button v-else-if='ts.row.mdstatus === 1' type='success' @click='js(0,ts.row.mdid)' type='success' icon='el-icon-top' >上架</el-button>
+
+							</template>
+						</el-table-column>
+					</el-table>
+
+				</template>
+
+			</el-row>
+			<!--分也配置和设置-->
+			<el-row class='ji'>
+				<el-col :span="10">
+
+					<el-pagination v-if="pageInfo.total !=0" :background="true" :pager-count="4" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageInfo.pageNum" :pager-count="3" :page-size="pageInfo.pageSize" :total="pageInfo.total" :page-sizes="[3,6]" layout="total, sizes, prev, pager, next, jumper">
+					</el-pagination>
+
+				</el-col>
+			</el-row>
+
+			<!--新增-->
+			<el-dialog title="提示" :visible.sync="dialogVisible" width="50%" :before-close="handleClose">
+				<el-row>
+					<el-form :inline="true" :model='Mercdis' :rules='rules' ref='Mercdis' label-width="90px" class="demo-form-inline">
+						<el-form-item label='登记门店' :rules=" { required: true, message: '请选择活动资源', trigger: 'change' }">
+							<el-select v-model='Mercdis.mdshop'>
+								<el-option v-for="item in spcold" :key="item.value" :label="item.label" :value="item.value">
+								</el-option>
+							</el-select>
+						</el-form-item>
+
+						<el-form-item label='厂商编码' :rules=" { required: true, message: '请选择活动资源', trigger: 'change' }">
+							<el-select v-model='Mercdis.scoed'>
+								<el-option v-for="item in csBianma" :key="item.scoed" :label="item.scoed" :value="item.scoed">
+								</el-option>
+							</el-select>
+						</el-form-item>
+
+						<el-form-item label='商品品牌' :rules=" { required: true, message: '请选择活动资源', trigger: 'change' }">
+							<el-select v-model='Mercdis.mdbrand'>
+								<el-option v-for="item in spType" :key="item.value" :label="item.label" :value="item.value">
+								</el-option>
+							</el-select>
+						</el-form-item>
+
+						<el-form-item label='商品编码' prop='mdid'>
+							<el-input style='width: 221px;' v-model='Mercdis.mdid'></el-input>
+						</el-form-item>
+
+						<el-form-item label='商品昵称' prop='mdname'>
+							<el-input style='width: 221px;' v-model='Mercdis.mdname'></el-input>
+						</el-form-item>
+
+						<el-form-item label='商品类型' :rules=" { required: true, message: '请选择活动资源', trigger: 'change' }">
+							<el-select v-model='Mercdis.mdtype'>
+								<el-option v-for="item in spBrand" :key="item.value" :label="item.label" :value="item.value">
+								</el-option>
+							</el-select>
+						</el-form-item>
+
+						<el-form-item label='数量单位' :rules=" { required: true, message: '请选择活动资源', trigger: 'change' }">
+							<el-select v-model='Mercdis.mdunit'>
+								<el-option v-for="item in Company" :key="item.value" :label="item.label" :value="item.value">
+								</el-option>
+							</el-select>
+						</el-form-item>
+
+						<el-form-item label='商品重量' prop='mdweigth'>
+							<el-input style='width: 221px;' v-model='Mercdis.mdweigth'></el-input>
+						</el-form-item>
+
+						<el-form-item label='进货价' prop='mdmoney2'>
+							<el-input style='width: 221px;' v-model='Mercdis.mdmoney2'></el-input>
+						</el-form-item>
+
+						<el-form-item label='数量'  prop='mdmoney'>
+							<el-input style='width: 221px;' v-model='Mercdis.mdmoney'></el-input>
+						</el-form-item>
+
+					</el-form>
+				</el-row>
+				<span slot="footer" class="dialog-footer">
+    <el-button @click="dialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="Insert('Mercdis')">确 定</el-button>
+  </span>
+			</el-dialog>
+
+			<!--修改-->
+			<el-dialog title="提示" :visible.sync="dialogVisible2" width="50%" :before-close="handleClose2">
+				<el-row>
+					<el-form :inline="true" :model='Mercdis' :rules='rules' ref='Mercdis' label-width="90px" class="demo-form-inline">
+						<el-form-item label='登记门店'>
+							<el-select v-model='Mercdis.mdshop' :disabled='true'>
+								<el-option v-for="item in spcold" :key="item.value" :label="item.label" :value="item.value">
+								</el-option>
+							</el-select>
+						</el-form-item>
+
+						<el-form-item label='厂商编码'>
+							<el-select v-model='Mercdis.scoed' :disabled='true'>
+								<el-option v-for="item in csBianma" :key="item.scoed" :label="item.scoed" :value="item.scoed">
+								</el-option>
+							</el-select>
+						</el-form-item>
+
+						<el-form-item label='商品品牌' :rules=" { required: true, message: '请选择活动资源', trigger: 'change' }">
+							<el-select v-model='Mercdis.mdbrand'>
+								<el-option v-for="item in spType" :key="item.value" :label="item.label" :value="item.value">
+								</el-option>
+							</el-select>
+						</el-form-item>
+
+						<el-form-item label='商品编码' >
+							<el-input style='width: 221px;' v-model='Mercdis.mdid' :disabled='true'></el-input>
+						</el-form-item>
+
+						<el-form-item label='商品昵称' prop='mdname' >
+							<el-input style='width: 221px;' v-model='Mercdis.mdname'></el-input>
+						</el-form-item>
+
+						<el-form-item label='商品类型' :rules=" { required: true, message: '请选择活动资源', trigger: 'change' }">
+							<el-select v-model='Mercdis.mdtype'>
+								<el-option v-for="item in spBrand" :key="item.value" :label="item.label" :value="item.value">
+								</el-option>
+							</el-select>
+						</el-form-item>
+
+						<el-form-item label='数量单位' :rules=" { required: true, message: '请选择活动资源', trigger: 'change' }">
+							<el-select v-model='Mercdis.mdunit'>
+								<el-option v-for="item in Company" :key="item.value" :label="item.label" :value="item.value">
+								</el-option>
+							</el-select>
+						</el-form-item>
+
+						<el-form-item label='商品重量' prop='mdweigth'>
+							<el-input style='width: 221px;' v-model='Mercdis.mdweigth'></el-input>
+						</el-form-item>
+
+						<el-form-item label='进货价' prop='mdmoney2'>
+							<el-input style='width: 221px;' v-model='Mercdis.mdmoney2'></el-input>
+						</el-form-item>
+
+						<el-form-item label='数量' prop='mdmoney'>
+							<el-input style='width: 221px;' v-model='Mercdis.mdmoney'></el-input>
+						</el-form-item>
+
+					</el-form>
+				</el-row>
+				<span slot="footer" class="dialog-footer">
+    <el-button @click="dialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="update('Mercdis')">确 定</el-button>
+  </span>
+			</el-dialog>
+		</div>
+	</body>
+	<script>
+		var vmSP = new Vue({
+			data() {
+				var validateMdid = (rule, value, callback) => {
+					if(value === '') {
+						callback(new Error('请输入商品编码'));
+					} else {
+						this.count(value);
+						console.log(this.isboot)
+						setInterval(() => {
+							if(this.isboot) {
+								callback(new Error('该商品编码已存在!'));
+							} else {
+								callback();
+							}
+						}, 1000);
+					}
+				};
+
+				var validatervssmdmoney = (rule, value, callback) => {
+					if(value === '') {
+						callback(new Error('请输入数量'));
+					} else {
+						setTimeout(() => {
+							if(isNaN(value)) {
+								callback(new Error('请输入数字'));
+							} else if( value <=0){
+								callback(new Error('不能小于1'));
+							}else{
+								callback();
+							}
+						}, 1000)
+					}
+				};
+				
+				var validatervssmmdmoney2 = (rule, value, callback) => {
+					if(value === '') {
+						callback(new Error('请输入库存'));
+					} else {
+						setTimeout(() => {
+							if(isNaN(value)) {
+								callback(new Error('请输入数字'));
+							} else callback();
+						}, 1000)
+					}
+				};
+				
+				var validatervssmmdweigth = (rule, value, callback) => {
+					if(value === '') {
+						callback(new Error('请输入重量'));
+					} else {
+						setTimeout(() => {
+							if(isNaN(value)) {
+								callback(new Error('请输入数字'));
+							} else callback();
+						}, 1000)
+					}
+				};
+				
+				var validatervsmdname = (rule, value, callback) => {
+					if(value === '') {
+						callback(new Error('请输入商品昵称'));
+					} else {
+							callback();
+					}
+				};
+				
+
+				return {
+					dialogVisible: false,
+					dialogVisible2: false,
+					pageInfo: {},
+					titleName: '',
+					isboot: true,
+					page: {
+						pageNum: '',
+						pageSize: '',
+						name: ''
+					},
+					Mercdis: {
+						mdid: '',
+						mdunit: '',
+						mdmoney: '',
+						mdname: '',
+						mdweigth: '',
+						mdimgs: '',
+						mdmoney2: '',
+						mdstatus: '0', //0上架
+						mdshop: '',
+						mdcoding: '',
+						mdbrand: '',
+						mdtype: '',
+						mdate: ''
+					},
+					spBrand: [{
+						label: '传动系统',
+						value: '传动系统'
+					}, {
+						label: '发动机',
+						value: '发动机'
+					}, {
+						label: '制动系统',
+						value: '制动系统'
+					}, {
+						label: '转向系统',
+						value: '转向系统'
+					}, {
+						label: '行驶系统',
+						value: '行驶系统'
+					}, {
+						label: '车身',
+						value: '车身'
+					}, {
+						label: '通用件与标准件',
+						value: '通用件与标准件'
+					}, {
+						label: '轮胎',
+						value: '轮胎'
+					}, {
+						label: '油品',
+						value: '油品'
+					}, {
+						label: '汽车用品',
+						value: '汽车用品'
+					}, {
+						label: '油漆',
+						value: '油漆'
+					}, {
+						label: '汽油发电机',
+						value: '汽油发电机'
+					}, {
+						label: '柴油发电机',
+						value: '柴油发电机'
+					}, {
+						label: '燃气轮机',
+						value: '燃气轮机'
+					}, {
+						label: '发电组件',
+						value: '发电组件'
+					}, {
+						label: '气缸体',
+						value: '气缸体'
+					}, {
+						label: '缸盖',
+						value: '缸盖'
+					}, {
+						label: '缸套',
+						value: '缸套'
+					}],
+					spType: [{
+						label: '米其林',
+						value: '米其林'
+					}, {
+						label: '别克',
+						value: '别克'
+					}],
+					spcold: [{
+						label: '东百老八',
+						value: '东百老八'
+					}, {
+						label: '荷兰拐哥',
+						value: '荷兰拐哥'
+					}],
+					csBianma:{},
+					Company: [{
+						label: '个',
+						value: '个'
+					}],
+					rules: {
+						mdid: [{
+							required: true,
+							validator: validateMdid,
+							trigger: 'blur'
+						}],
+						mdmoney: [{
+							required: true,
+							validator: validatervssmdmoney,
+							trigger: 'blur'
+						}],
+						mdmoney2: [{
+							required: true,
+							validator: validatervssmmdmoney2,
+							trigger: 'blur'
+						}],
+						mdweigth: [{
+							required: true,
+							validator: validatervssmmdweigth,
+							trigger: 'blur'
+						}],
+						mdname: [{
+							required: true,
+							validator: validatervsmdname,
+							trigger: 'blur'
+						}]
+					}
+				};
+			},
+			methods: {
+				dateTimes() {
+					let da = new Date();
+					let y = da.getFullYear(); // 年
+					let d = da.getMonth() + 1;
+					let m = da.getDate();
+					let h = da.getHours();
+					let hh = da.getMinutes();
+					let mm = da.get
+					let sss = da.getSeconds();
+					return y + '-' + d + '-' + m + " " + h + ':' + hh + ":" + sss;
+
+				},
+				close() {
+					this.Mercdis.mdid = '';
+					this.Mercdis.mdunit = '';
+					this.Mercdis.mdmoney = '';
+					this.Mercdis.mdname = '';
+					this.Mercdis.mdweigth = '';
+					this.Mercdis.mdimgs = '';
+					this.Mercdis.mdmoney2 = '';
+					this.Mercdis.mdshop = '';
+					this.Mercdis.mdcoding = '';
+					this.Mercdis.mdbrand = '';
+					this.Mercdis.mdtype = '';
+					this.Mercdis.mdate = '';
+
+				},
+				showDialog() {
+					this.dialogVisible = true;
+					this.close();
+				},
+				handleClose(done) {
+					this.$confirm("确认要关闭吗?").then(_ => {
+						done();
+					}).catch(_ => {
+
+					})
+				},
+				handleClose2(done) {
+					this.$confirm("确认要关闭吗?").then(_ => {
+						done();
+					}).catch(_ => {
+
+					})
+				},
+				Insert(formName) {
+
+					this.$refs[formName].validate((ts) => {
+						if(ts) {
+							let _this = this;
+							this.Mercdis.mdate = this.dateTimes();
+							$.ajax({
+								type: "post",
+								url: "http://localhost:8080/api/Mercdis/insert",
+								data: JSON.stringify(this.Mercdis),
+								dataType: 'json',
+								contentType: 'application/json;charset=utf-8',
+								success: function(mag) {
+									if(mag.code == "200") {
+										_this.$message({
+											showClose: true,
+											message: '新增成功!',
+											type: 'success'
+										});
+										_this.close();
+										//	_this.reqaincie.cname = '';
+										_this.dialogVisible = false;
+										_this.pages(1, 6);
+									} else {
+										_this.$message({
+											showClose: true,
+											message: '新增失败!',
+											type: 'success'
+										});
+									}
+								}
+							});
+						}
+					})
+
+				},
+
+				del(id, status) {
+					let _this = this;
+					this.$confirm("确认要移除吗?").then(_ => {
+						if(status === 0) {
+							_this.$message({
+								showClose: true,
+								message: '已上架商品不能删除!',
+								type: 'warning'
+							});
+							return;
+						}
+						$.ajax({
+							url: 'http://localhost:8080/api/Mercdis/delete/' + id,
+							type: 'post',
+							success: function(mas) {
+								if(mas.code == '200') {
+									_this.$message({
+										showClose: true,
+										message: '移除成功!',
+										type: 'success'
+									});
+
+									_this.pages(1, 6);
+								} else {
+									_this.$message({
+										showClose: true,
+										message: '移除失败!',
+										type: 'error'
+									});
+								}
+							}
+						});
+					}).catch(_ => {
+
+					})
+				},
+				update(formName) {
+
+					this.$refs[formName].validate((ts) => {
+						if(ts) {
+							let _this = this;
+							this.Mercdis.mdate = this.dateTimes();
+							$.ajax({
+								type: "post",
+								url: "http://localhost:8080/api/Mercdis/update",
+								data: JSON.stringify(this.Mercdis),
+								dataType: 'json',
+								contentType: 'application/json;charset=utf-8',
+								success: function(mag) {
+									if(mag.code == "200") {
+										_this.$message({
+											showClose: true,
+											message: '修改成功!',
+											type: 'success'
+										});
+										_this.close();
+										//	_this.reqaincie.cname = '';
+										_this.dialogVisible2 = false;
+										_this.pages(1, 6);
+									} else {
+										_this.$message({
+											showClose: true,
+											message: '修改失败!',
+											type: 'error'
+										});
+									}
+								}
+							});
+						}
+					})
+				},
+				pages(p, s) {
+					this.page.PageNum = p;
+					this.page.pageSize = s;
+					this.page.name = this.titleName;
+					let _this = this;
+					$.ajax({
+						type: "post",
+						url: 'http://localhost:8080/api/Mercdis/page',
+						data: JSON.stringify(this.page),
+						dataType: 'json',
+						contentType: 'application/json',
+						success: function(g) {
+							_this.pageInfo = g;
+						}
+					});
+				},
+				handleSizeChange(val) {
+					this.pages(this.pageInfo.pageNum, val);
+				},
+				handleCurrentChange(val) {
+					this.pages(val, this.pageInfo.pageSize);
+				},
+				count(id) {
+					let _this = this;
+					$.getJSON('http://localhost:8080/api/Mercdis/count/' + id, (mag) => {
+						if(mag.code == '500') {
+							_this.isboot = false;
+						} else if(mag.code == "200") {
+							_this.isboot = true;
+						}
+					});
+				},
+				js(n, id) {
+					let _this = this;
+					$.ajax({
+						url: `http://localhost:8080/api/Mercdis/update2/${id}/${n}`,
+						type: 'post',
+						success: function(mas) {
+							if(mas.code == '200') {
+								if(mas.data == '0') {
+									_this.$message({
+										showClose: true,
+										message: '上架成功',
+										type: 'success'
+									});
+
+									_this.pages(1, 6);
+								} else if(mas.data == '1') {
+									_this.$message({
+										showClose: true,
+										message: '下架成功!',
+										type: 'success'
+									});
+									_this.pages(1, 6);
+								}
+							} else {
+								_this.$message({
+									showClose: true,
+									message: '出现异常!',
+									type: 'error'
+								});
+							}
+						}
+					});
+				},
+				bj(id) {
+					let _this = this;
+					this.dialogVisible2 = true;
+					$.ajax({
+						url: 'http://localhost:8080/api/Mercdis/showName/' + id,
+						type: 'get',
+						success: function(mas) {
+							if(mas.code == "200") {
+								_this.Mercdis = mas.data;
+							}
+						}
+					});
+				},csBian() {
+					let _this = this;
+					$.getJSON('http://localhost:8080/api/Supplier/list/', (mag) => {
+						 if(mag.code == "200") {
+							_this.csBianma = mag.data;
+						}
+					});
+				}
+			},
+			mounted() {
+				this.pages(1, 6);
+				this.csBian();
+			}
+		}).$mount("#appSP");
+	</script>
+
+</html>

@@ -1,26 +1,30 @@
 <!DOCTYPE html>
 <html>
+
 	<head>
 		<meta charset="UTF-8">
 		<title></title>
 	</head>
+
 	<body>
 		<h1>结算中心</h1>
 		<div id="jiesuanzhongxin">
 			<template>
 				<el-table :data="pageInfo.list" border style="width: 100%" :cell-style="cellStyle" :header-cell-style="rowClass">
-					<el-table-column label="编号">
+					<el-table-column label="序号">
 						<template slot-scope="temp">
 							{{temp.$index+1}}
 						</template>
 					</el-table-column>
-					<el-table-column prop="ppnamne" label="职位名称">
+					<el-table-column prop="wid" label="维修编号">
 					</el-table-column>
-					<el-table-column prop="ppid" label="职位编码">
+					<el-table-column prop="wlicense" label="车牌号">
+					</el-table-column>
+					<el-table-column prop="wb2" label="金额">
 					</el-table-column>
 					<el-table-column label="操作">
 						<template slot-scope="temp">
-							<el-button type="primary" @click="updatezhiweiquanxianbyid(temp.row.roots)">管理权限</el-button>
+							<el-button type="primary" @click="" >结算</el-button>
 						</template>
 					</el-table-column>
 				</el-table>
@@ -30,27 +34,27 @@
 				<div id="modalcnt"></div>
 			</el-dialog>
 		</div>
-		
+
 	</body>
-	
+
 	<script>
 		var jiesuanzhongxin = new Vue({
-			el:"#jiesuanzhongxin",
-			data:{
-				pageInfo:""
+			el: "#jiesuanzhongxin",
+			data: {
+				pageInfo: ""
 			},
-			methods:{
-				getWxbByOk(pageNum,pageSize){
+			methods: {
+				getWxbByOk(pageNum, pageSize) {
 					let _this = this;
 					$.getJSON("http://localhost:8080/api/wxb/getWxbByStatic/" + pageNum + "/" + pageSize + "", function(pageInfo) {
 						_this.pageInfo = pageInfo;
 					})
 				}
 			},
-			mounted(){
-				this.getWxbByOk(1,5);
+			mounted() {
+				this.getWxbByOk(1, 5);
 			}
 		});
-		
 	</script>
+
 </html>

@@ -14,10 +14,10 @@
 				<el-col :xs='10' :md='10' :gutter='10'>
 					<el-row>
 						<el-col :md='10' :xs='5'>
-							<el-input placeholder='编码/品牌/首字母' v-model='page.name'></el-input>
+							<el-input placeholder='编码/品牌/首字母' v-model='title'></el-input>
 						</el-col>
 						<el-button @click='cx1'>查询品牌</el-button>
-						<el-button @click='inde'>新增品牌</el-button>
+						<el-button @click='inde'>添加品牌</el-button>
 
 					</el-row>
 
@@ -59,7 +59,7 @@
 							<el-input v-model='pageName' placeholder='车型/发动机/编码/品牌'></el-input>
 						</el-col>
 						<el-button @click='cxbButt'>查询车型</el-button>
-						<el-button @click='showdialogVisible3'>新增车型</el-button>
+						<el-button @click='showdialogVisible3'>添加车型</el-button>
 					</el-row>
 
 					<el-row>
@@ -157,13 +157,13 @@
 				<el-form :model='cxb' :rules='rules' ref='cxb' label-width="100px" class="demo-ruleForm">
 					<el-form-item label='车辆品牌ID' prop='xid'>
 						<el-col :md='20'>
-							<el-input v-model='cxb.xid' placeholder='车辆id'></el-input>
+							<el-input v-model='cxb.xid' style='width: 221px;' placeholder='车辆id'></el-input>
 						</el-col>
 					</el-form-item>
 
 					<el-form-item label='存档昵称' prop='cxname'>
 						<el-col :md='20'>
-							<el-input v-model='cxb.cxname' placeholder='车辆品牌昵称'></el-input>
+							<el-input v-model='cxb.cxname' style='width: 221px;' placeholder='车辆品牌昵称'></el-input>
 						</el-col>
 					</el-form-item>
 
@@ -201,13 +201,13 @@
 				<el-form :model='cxb' :rules='rules' ref='cxb' label-width="100px" class="demo-ruleForm">
 					<el-form-item label='车辆品牌ID'>
 						<el-col :md='24'>
-							<el-input v-model='cxb.xid' placeholder='车辆id' :disabled='true'></el-input>
+							<el-input v-model='cxb.xid'  style='width: 221px;' placeholder='车辆id' :disabled='true'></el-input>
 						</el-col>
 					</el-form-item>
 
 					<el-form-item label='存档昵称' prop='cxname'>
 						<el-col :md='24'>
-							<el-input v-model='cxb.cxname' placeholder='车辆品牌昵称'></el-input>
+							<el-input v-model='cxb.cxname' style='width: 221px;' placeholder='车辆品牌昵称'></el-input>
 						</el-col>
 					</el-form-item>
 
@@ -318,6 +318,7 @@
 					dialogVisible4: false,
 					fdjValue: '',
 					clppbValue: '',
+					title:'',
 					pageInfo: {},
 					pageInfo2: {},
 					fdjb: {},
@@ -417,6 +418,7 @@
 					let _this = this;
 					_this.page.pageSize = s;
 					_this.page.pageNum = p;
+					_this.page.name=this.title;
 					$.ajax({
 						url: 'http://localhost:8080/api/clppd/page',
 						type: 'post',
