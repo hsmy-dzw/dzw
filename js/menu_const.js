@@ -1,0 +1,32 @@
+//页面菜单映射【自行维护】
+var menuMapping = {
+	"1": "",
+	"2": "jiechezhuye",
+	"3": "jungongjianyanyemian",
+	"4": "zhanneiweijiu",
+	"5": "",
+	"6": "kehuxinxizhuye",
+	"7": "",
+	"8": "clbrand",
+	"9": "chexingcundang",
+	"10": "weixiuxiangmu",
+	"11": "shangpinziliao",
+	"12": "gongyingshang",
+	"13": "",
+	"14": "guahao.html",
+	"15": "guahao.html",
+	"16": "",
+	"17": "guahao.html",
+	"18": "zhiweiquanxian",
+	"19": "",
+	"20": "guahao.html",
+	"21": "guahao.html",
+	"22": "guahao.html",
+	"23": "guahao.html",
+	"24": "",
+	"25": "guahao.html",
+	"26": "guahao.html",
+	"29": "hot",
+	"27": "guahao.html"
+}
+
