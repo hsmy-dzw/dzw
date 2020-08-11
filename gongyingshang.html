@@ -14,8 +14,8 @@
 					<el-col :md='7'>
 						<el-input v-model='title'></el-input>
 					</el-col>
-					<el-button @click='pages(1,6)'>查询</el-button>
-					<el-button @click='showD'>添加</el-button>
+					<el-button @click='pages(1,6)' icon='el-icon-search'>查询</el-button>
+					<el-button @click='showD' icon='el-icon-edit-outline' type='success'>添加</el-button>
 				</el-row>
 			</el-row>
 			<el-row>
@@ -26,8 +26,8 @@
 					<el-table-column prop='sphone' label='联系电话'></el-table-column>
 					<el-table-column label='操作'>
 						<template slot-scope='ts'>
-							<el-button @click='SelectCode(ts.row.scoed)'>编辑</el-button>
-							<el-button @click='delect(ts.row.scoed)'>删除</el-button>
+							<el-button @click='SelectCode(ts.row.scoed)' type='info' icon='el-icon-edit'>编辑</el-button>
+							<el-button @click='delect(ts.row.scoed)' type='danger' icon='el-icon-delete'>删除</el-button>
 						</template>
 					</el-table-column>
 
