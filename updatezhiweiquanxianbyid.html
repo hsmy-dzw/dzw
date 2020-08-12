@@ -10,20 +10,18 @@
 		<div id="updatezhiweiquanxianbyid">
 
 			<div v-for="rs in roots">
-				<div v-for="r in list">
-					<span v-if="rs.id == r.id">
-						<input @click="add" type="checkbox" @click="add(rs.id)"  :value="r.id" checked="checked"/>{{rs.text}}<br />
-						<span v-for="s in rs.children">
-							<input type="checkbox"  v-model="a"  checked :value="s.id"/>{{s.text}}
+				<!--<span v-if="rs.id == r.id">-->
+				<input type="checkbox" @click="addCid(rs.id)" v-model="a" :value="rs.id" />{{rs.text}}{{rs.id}}<br />
+				<span v-for="s in rs.children">
+							<input type="checkbox"  v-model="a"   :value="s.id"/>{{s.text}}{{s.id}}
 						</span>
-					</span>
-					<span v-if="rs.id != r.id">
-						<input type="checkbox"  @click="add(rs.id)"    :value="rs.id"/>{{rs.text}}<br />
+				<!--</span>-->
+				<!--<span v-if="rs.id != r.id">
+						<input type="checkbox"  @click="addCid(rs.id)"    :value="rs.id"/>{{rs.text}}{{rs.id}}<br />
 						<span v-for="s in rs.children">
-							<input type="checkbox"  v-model="a"  :value="s.id"/>{{s.text}}
+							<input type="checkbox"  v-model="a"  :value="s.id"/>{{s.text}}{{s.id}}
 						</span>
-					</span>
-				</div>
+					</span>-->
 
 				<!--<h1><input @click="add(rs.id)" type="checkbox"  class="fcheckbox" :value="rs.id" />{{rs.text}}</h1>
 						<span v-for="s in rs.children">
@@ -31,8 +29,7 @@
 						</span>-->
 
 			</div>
-			{{a}}
-
+			<el-button type="primary" @click="update">保存</el-button>
 		</div>
 	</body>
 
@@ -40,9 +37,10 @@
 		var updatezhiweiquanxianbyid = new Vue({
 			el: "#updatezhiweiquanxianbyid",
 			data: {
-				list: "",
+				list: [],
 				roots: [],
 				a: [],
+				ppid: null
 			},
 			methods: {
 				add(rid) {
@@ -52,23 +50,63 @@
 					let rid = [];
 					if(this.a.indexOf(fid) < 0) {
 						this.a.push(fid);
-						
 						this.roots.forEach(rrr => {
 							if(fid == rrr.id) {
 								rrr.children.forEach(rs => {
-										this.a.push(rs.id);
+									this.a.push(rs.id);
 								});
 							}
 						});
+					} else {
+						for(var i = 0; i <= this.a.length; i++) {
+							if(this.a[i] == fid) {
+								this.a.splice(i, 1);
+							}
+						}
+						this.roots.forEach(root => {
+							if(root.id == fid) {
+								root.children.forEach(rcs => {
+									for(var i = 0; i <= this.a.length; i++) {
+										if(this.a[i] == rcs.id) {
+											this.a.splice(i, 1);
+										}
+									}
+								})
+							}
+						})
+
 					}
+				},
+				update() {
+					let _this = this;
+					$.ajax("http://localhost:8080/api/tl/proot/updateByPpid/" + _this.ppid, {
+						type: "post",
+						data: JSON.stringify(_this.a),
+						dataType: 'json',
+						contentType: 'application/json',
+						success(a) {
+							alert(a);
+						}
+					});
+				},
+				getList() {
+					let _this = this;
+					$.getJSON("http://localhost:8080/api/tl/position/getById/" + _this.ppid, function(p) {
+						_this.list = p.roots;
+						_this.list.forEach(temp => {
+							_this.a.push(temp.id);
+							temp.children.forEach(s => {
+								_this.a.push(s.id);
+							})
+						})
+					})
 				}
 			},
 			mounted() {
-				this.list = zhiweiquanxian.updatezhiweiquanxianlist;
 				this.roots = zhiweiquanxian.roots;
-				this.list.forEach(temp => {
-					this.addCid(temp.id);
-				})
+				this.ppid = zhiweiquanxian.ppid;
+				this.getList();
+
 			}
 
 		});

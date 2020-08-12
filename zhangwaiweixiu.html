@@ -100,6 +100,7 @@
 						<el-table-column label="操作">
 							<template slot-scope="temp">
 								<span v-if="temp.row.ostatus==1">
+									<el-button  size="mini"  @click="xuezje(temp.row.oid,temp.row.otname,temp.row.oprice)">选择</el-button>
 									<el-button  size="mini"  @click="xuezje(temp.row.oid,temp.row.oname,temp.row.oprice)">选择</el-button>
 								</span>
 								<span v-if="temp.row.ostatus==2">
@@ -194,7 +195,8 @@
 					wb1: "",
 					wb2: "",
 					wb5: "",
-					wb7: ""
+					wb7: "",
+					jiechefeiyong:""
 
 				},
 				person2: {
@@ -315,6 +317,10 @@
 						_this.pageInfo2 = pg;
 					
 						
+						for(var i = 0; i < _this.pageInfo2.length; i++) {
+						//alert(this.multipleSelection[i].rvname);
+						_this.pageInfo2[i].wid=_this.person.wid;
+
 						
 					for(var i = 0; i < _this.pageInfo2.length; i++) {
 					
@@ -346,6 +352,7 @@
 				updatePerson() {
 					let _this = this;
 					_this.person.kprice = _this.waiqingjiag + _this.person.kprice;
+					_this.person.jiechefeiyong = _this.waiqingjiag;
 					this.$refs['personForm'].validate(valid => {
 						if(valid) {
 							//验证通过
