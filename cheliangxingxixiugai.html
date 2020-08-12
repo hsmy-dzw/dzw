@@ -16,40 +16,29 @@
 					</el-col>
 				</el-form-item>
 				
-				<el-form-item label="车辆品牌" prop="cbrand">
-					<el-col :span="6">
-						<el-input v-model="person.cbrand" ></el-input>
-					</el-col>
-				</el-form-item>
 				
-				<el-form-item label="车辆型号" prop="cmodel">
-					<el-col :span="6">
-						<el-input v-model="person.cmodel" ></el-input>
-					</el-col>
-				</el-form-item>
+						<el-form-item label="车辆型号" prop="cbrand">
+							<el-select v-model="person.cxname" placeholder="请选择" :disabled="true">
+								<el-option v-for="item in options2" :value="item.xid " :key="item.xid" :label="item.cxname">
+								</el-option>
+							</el-select>
+						</el-form-item>
+					
+					
+						<el-form-item label="车辆品牌" prop="cbrand">
+							<el-select v-model="person.pinname" placeholder="请选择" @change="jiage" :disabled="true">
+								<el-option v-for="item in options" :value="item.pid2 " :key="item.pid2" :label="item.pinname">
+								</el-option>
+							</el-select>
+						</el-form-item>
+
 				
 				<el-form-item label="驾驶人" prop="cdriver">
 					<el-col :span="6">
 						<el-input v-model="person.cdriver" ></el-input>
 					</el-col>
 				</el-form-item>
-				<el-form-item label="电话" prop="cphone">
-					
-					<el-col :span="6">
-						<!--非常重要-->
-						<el-input  v-model="person.cphone"></el-input>
-					</el-col>
-					
-					<!--<el-dropdown @command="handleCommand">
-					<span class="el-dropdown-link">
-    					选择用户类型<i class="el-icon-arrow-down el-icon--right"></i>
- 					</span>
-					<el-dropdown-menu slot="dropdown">
-						
-						<el-dropdown-item command="2">vip用户</el-dropdown-item>
-					</l-dropdown-menu>-->
 				
-				</el-form-item>
 				 <el-form-item>
 					
 					<el-button type="primary" @click="updatePerson">修改</el-button>
@@ -64,15 +53,20 @@
 		var infoApp = new Vue({
 			el: "#infoApp",
 			data: {
+				options:"",
+				options2:"",
 				ggname:"vip用户",
 				radio : "0",
 				person: {
 					kid: "",
-					
+					xid:"",
+					pid2:"",
 					cnumber: "",
 					cbrand:"",
 					cdriver: "",
-					cphone: ""
+					cphone: "",
+					pinname:"",
+					cxname:""
 				},
 				sexs: ['男','女'],
 				personRules: {
@@ -108,6 +102,28 @@
 				}
 			},
 			methods: {
+				jiage(){
+					alert(this.person.xid)
+					
+					pids=this.person.pid2;
+					let _this = this;
+					$.getJSON(`http://localhost:8080/api/cxb/querAllBypid2/${pids}`, function(pg) {
+										    	
+						_this.options2 = pg;
+						
+						
+					});		
+					
+				},
+				pingpai(){
+					let _this = this;
+					$.getJSON(`http://localhost:8080/api/clppd/querAll`, function(pg) {
+										    	
+						_this.options = pg;
+						
+						
+					});		
+				},
 				goBack() {
 					personApp.isShow6=false;//非常重要
 					
@@ -174,6 +190,7 @@
 				}
 			},
 			mounted() {
+				this.pingpai();
 				let cid = sessionStorage.getItem('cid');
 				if(cid) {
 					this.loadPeson(cid);
