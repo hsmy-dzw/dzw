@@ -29,10 +29,10 @@
 					<el-table-column prop="wb1" label="维修班组">
 					</el-table-column>
 
-					<el-table-column label="人工费用">
-						<template slot-scope="temp">
+					<el-table-column prop="kprice" label="人工费用">
+						<!--<template slot-scope="temp">
 							{{temp.row.wb2-rengongfeiyong-temp.row.jiechefeiyong}}
-						</template>
+						</template>-->
 					</el-table-column>
 
 					<el-table-column prop="jiechefeiyong" label="接车费用">
@@ -46,6 +46,22 @@
 					<el-table-column prop="rvname" label="维修项目">
 					</el-table-column>
 					<el-table-column prop="rvmoney" label="价格">
+					</el-table-column>
+				</el-table>
+			</template>
+			<h3>维修材料</h3>
+			<template>
+				<el-table :data="cailiao.list" style="width: 100%">
+					<el-table-column prop="mdname" label="材料名称">
+					</el-table-column>
+					<el-table-column prop="mdmoney" label="单价">
+					</el-table-column>
+					<el-table-column prop="num" label="数量">
+					</el-table-column>
+					<el-table-column  label="总价">
+						<template slot-scope="temp">
+							{{temp.row.mdmoney*temp.row.num}}
+						</template>
 					</el-table-column>
 				</el-table>
 			</template>
@@ -108,6 +124,22 @@
 							return;
 						}
 					}
+					if(this.zhifufunction=="支付宝支付"){
+						let _this = this;
+						location.href = "http://localhost:8080/api/tl/position/getPagePay/"+_this.weixius[0].wid +"/"+ _this.weixius[0].wb2;
+						 
+						$.getJSON("http://localhost:8080/api/wxb/updatewstate/100/"+this.weixius[0].wid,function(s){
+						})
+//						$.ajax("http://localhost:8080/api/tl/position/getPagePay",{
+//							type:"get",
+//							success(){
+//								l
+////								$.getJSON("http://localhost:8080/api/wxb/updatewstate/100/"+_this.weixius[0].wid,function(s){
+//									
+////								})
+//							}
+//						});
+					}
 				},
 				getKehu(kid){
 					let _this = this;
@@ -122,6 +154,7 @@
 				this.weixius = weixius;
 				this.weixiu = jiesuanzhongxin.weixiu;
 				this.xiangmu = jiesuanzhongxin.xiangmu;
+				this.cailiao = jiesuanzhongxin.cailiao;
 				this.xiangmu.list.forEach(x=>{
 					this.rengongfeiyong += x.rvmoney;
 				});

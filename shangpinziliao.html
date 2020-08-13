@@ -22,28 +22,28 @@
 				<el-col :md='7' :offset='6'>
 					<el-input v-model='titleName'></el-input>
 				</el-col>
-				<el-button @click='pages(1,6)' icon='el-icon-search'>查询</el-button>
+				<el-button @click='pages(1,6)' icon='el-icon-search' type='primary'>查询</el-button>
 				<el-button @click='showDialog' type='success' icon='el-icon-edit-outline'>添加</el-button>
 			</el-row>
 
 			<el-row>
 				<template>
 					<el-table :data='pageInfo.list'>
-						<el-table-column label='商品编码' prop='mdid' width='95'></el-table-column>
-						<el-table-column label='商品昵称' prop='mdname' width='95'></el-table-column>
-						<el-table-column label='商品类型' prop='mdtype' width='95'></el-table-column>
-						<el-table-column label='商品品牌' prop='mdbrand' width='95'></el-table-column>
-						<el-table-column label='商品重量' prop='mdweigth' width='95'></el-table-column>
-						<el-table-column label='商品单位' prop='mdunit' width='95'></el-table-column>
-						<el-table-column label='进货价' prop='mdmoney2' width='95'></el-table-column>
-						<el-table-column label='库存' prop='mdmoney' width='90'></el-table-column>
-						<el-table-column label='登记门店' prop='mdshop' width='90'></el-table-column>
-						<el-table-column label='厂商代码' prop='scoed' width='90'></el-table-column>
+						<el-table-column label='商品编码' prop='mdid' width='85'></el-table-column>
+						<el-table-column label='商品昵称' prop='mdname' width='85'></el-table-column>
+						<el-table-column label='商品类型' prop='mdtype' width='85'></el-table-column>
+						<el-table-column label='商品品牌' prop='mdbrand' width='85'></el-table-column>
+						<el-table-column label='商品重量' prop='mdweigth' width='85'></el-table-column>
+						<el-table-column label='商品单位' prop='mdunit' width='85'></el-table-column>
+						<el-table-column label='进货价' prop='mdmoney2' width='85'></el-table-column>
+						<el-table-column label='库存' prop='mdmoney' width='85'></el-table-column>
+						<el-table-column label='登记门店' prop='mdshop' width='85'></el-table-column>
+						<el-table-column label='厂商代码' prop='scoed' width='85'></el-table-column>
 						<el-table-column label='操作'>
 							<template slot-scope='ts'>
 								<el-button @click='bj(ts.row.mdid)' type='info' icon='el-icon-edit'>编辑</el-button>
 								<el-button @click='del(ts.row.mdid,ts.row.mdstatus)' type='danger' icon='el-icon-delete'>删除</el-button>
-								<el-button v-if='ts.row.mdstatus === 0' @click='js(1,ts.row.mdid)' icon='el-icon-bottom'>下架</el-button>
+								<el-button v-if='ts.row.mdstatus === 0' @click='js(1,ts.row.mdid)' type='warning' icon='el-icon-bottom'>下架</el-button>
 								<el-button v-else-if='ts.row.mdstatus === 1' type='success' @click='js(0,ts.row.mdid)' type='success' icon='el-icon-top' >上架</el-button>
 
 							</template>

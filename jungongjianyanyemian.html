@@ -58,11 +58,11 @@
 						</el-table-column>
 						<el-table-column width="300"  label="操作" >
 							<template slot-scope="temp" >
-								<span v-if="temp.row.wstate==4 || temp.row.wstate==2"><el-button type="primary" size="mini"  @click="showDialog2(temp.row.wid)">反工</el-button></span>
-								<span v-if="temp.row.wstate==4 || temp.row.wstate==2"><el-button type="warning" size="mini"  @click="jungong(temp.row.wid)">竣工</el-button></span>
+								<span v-if="temp.row.wstate==4 || temp.row.wstate==2 || temp.row.wstate==99"><el-button type="warning" size="mini"  @click="showDialog2(temp.row.wid)">反工</el-button></span>
+								<span v-if="temp.row.wstate==4 || temp.row.wstate==2 || temp.row.wstate==99"><el-button type="primary" size="mini"  @click="jungong(temp.row.wid)">竣工</el-button></span>
 								
 								
-								<span v-if="temp.row.wstate==4 || temp.row.wstate==2"><el-button type="info" size="mini"  @click="fgff(temp.row.wid)">反工原因</el-button></span>
+								<span v-if="temp.row.wstate==99 "><el-button type="info" size="mini"  @click="fgff(temp.row.wid)">反工原因</el-button></span>
 								<span v-if="temp.row.wstate==9"><label>竣工完成</label></span>
 							</template>
 							

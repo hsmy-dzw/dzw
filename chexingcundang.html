@@ -16,19 +16,19 @@
 						<el-col :md='10' :xs='5'>
 							<el-input placeholder='编码/品牌/首字母' v-model='title'></el-input>
 						</el-col>
-						<el-button @click='cx1'>查询品牌</el-button>
-						<el-button @click='inde'>添加品牌</el-button>
+						<el-button @click='cx1' type='primary'>查询品牌</el-button>
+						<el-button @click='inde' type='success'>添加品牌</el-button>
 
 					</el-row>
 
 					<el-row>
 						<template>
 							<el-table :data="pageInfo.list" style="width: 90%">
-								<el-table-column prop="pid2" label="品牌ID" width="80">
+								<el-table-column prop="pid2" label="品牌ID" width="65">
 								</el-table-column>
-								<el-table-column prop="pszm" label="首字母" width="80">
+								<el-table-column prop="pszm" label="首字母" width="65">
 								</el-table-column>
-								<el-table-column prop="pinname" label="品牌昵称" width="80">
+								<el-table-column prop="pinname" label="品牌昵称" width="65">
 								</el-table-column>
 								<el-table-column label="操作">
 									<template slot-scope='stast'>
@@ -58,8 +58,8 @@
 						<el-col :md='10' :xs='10' :offset='4'>
 							<el-input v-model='pageName' placeholder='车型/发动机/编码/品牌'></el-input>
 						</el-col>
-						<el-button @click='cxbButt'>查询车型</el-button>
-						<el-button @click='showdialogVisible3'>添加车型</el-button>
+						<el-button @click='cxbButt' type='primary'>查询车型</el-button>
+						<el-button @click='showdialogVisible3' type='success'>添加车型</el-button>
 					</el-row>
 
 					<el-row>
@@ -76,7 +76,7 @@
 								<el-table-column label="操作">
 									<template slot-scope='cxb1'>
 										<el-button size='small' @click='updaShow(cxb1.row.xid)' type='info'>编辑</el-button>
-										<el-button size='small' @click='CxbDle(cxb1.row.xid)' tyep='danger'>移除</el-button>
+										<el-button size='small' @click='CxbDle(cxb1.row.xid)' type='danger'>移除</el-button>
 									</template>
 								</el-table-column>
 							</el-table>

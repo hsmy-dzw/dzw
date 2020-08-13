@@ -41,14 +41,14 @@
 						<el-col :md='7'>
 							<el-input placeholder='项目类别' v-model='title'></el-input>
 						</el-col>
-						<el-button icon='el-icon-search' @click='pages(1,6,null)'>搜索</el-button>
-						<el-button icon=' el-icon-edit-outline' @click='dialogVisibleSHOW'>添加</el-button>
+						<el-button icon='el-icon-search' type='primary'  @click='pages(1,6,null)'>搜索</el-button>
+						<el-button icon=' el-icon-edit-outline' type='success' @click='dialogVisibleSHOW'>添加</el-button>
 					</el-row>
 
 					<el-row>
 						<template>
-							<el-table :data='pageInfo.list' style="width: 90%" ref='pageInfo.list'>
-								<el-table-column prop='ce.msname' label="项目类别" width="110"></el-table-column>
+							<el-table :data='pageInfo.list' style="width: 100%" ref='pageInfo.list'>
+								<el-table-column prop='ce.msname' label="项目类别" width="90"></el-table-column>
 								<el-table-column prop='rvid' label="项目编码" width="90"></el-table-column>
 								<el-table-column prop='rvname' label="项目昵称" width="90"></el-table-column>
 								<el-table-column prop='rvmoney' label="项目价格" width="90"></el-table-column>
@@ -57,7 +57,7 @@
 										<el-button type='info' @click='seleName(tst.row.rvid)' icon='el-icon-edit'>编辑</el-button>
 										<el-button type='danger' @click='del(tst.row.rvid,tst.row.rvstatus)' icon='el-icon-delete'>移除</el-button>
 										<el-button v-if='tst.row.rvstatus == 1' type='success' icon='el-icon-top' @click="sj(0,tst.row.rvid)">上架</el-button>
-										<el-button v-else-if='tst.row.rvstatus == 0' @click="sj(1,tst.row.rvid)" icon='el-icon-bottom'>下架</el-button>
+										<el-button v-else-if='tst.row.rvstatus == 0' @click="sj(1,tst.row.rvid)" icon='el-icon-bottom' type='warning'>下架</el-button>
 									</template>
 								</el-table-column>
 

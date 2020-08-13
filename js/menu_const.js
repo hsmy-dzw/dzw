@@ -13,20 +13,22 @@ var menuMapping = {
 	"11": "shangpinziliao",
 	"12": "gongyingshang",
 	"13": "",
-	"14": "guahao.html",
+	"14": "jiesuanzhongxin",
 	"15": "guahao.html",
 	"16": "",
 	"17": "guahao.html",
 	"18": "zhiweiquanxian",
 	"19": "",
-	"20": "guahao.html",
-	"21": "guahao.html",
-	"22": "guahao.html",
-	"23": "guahao.html",
+	"20": "Organization",
+	"21": "岗位定义",
+	"22": "离职登记",
+	"23": "通讯名录",
 	"24": "",
-	"25": "guahao.html",
-	"26": "guahao.html",
-	"29": "hot",
-	"27": "guahao.html"
+	"25": "技工星级",
+	"26": "班组技工",
+	"27": "outCar",
+	//首页  每日收益
+	"29": "hot"
+
 }
 

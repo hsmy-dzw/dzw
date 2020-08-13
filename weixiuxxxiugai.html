@@ -47,7 +47,7 @@
 					</el-col>
 				</el-form-item>
 
-				<el-form-item label="价格" prop="kprice">
+				<el-form-item label="班组价格" prop="kprice">
 					<el-col :span="6">
 						<el-input v-model="person.kprice" :disabled="true"></el-input>
 					
@@ -95,7 +95,7 @@
 			data: {
 				hidden : {"display" : "none"},
 				pageInfo2:"",
-				xms: "",
+				xms:"",
 				zhu: [],
 				multipleSelection: [],
 				isIndeterminate: true,
@@ -143,7 +143,8 @@
 					wjiedate: "",
 					kprice: "",
 					wb1: "",
-					wb2: ""
+					wb2: "",
+					bangzhujiage:""
 
 				},
 				person2: {
@@ -261,8 +262,14 @@
 				jiage() {
 					if(this.person.wb1 == '一组') {
 						this.person.kprice = 1000;
-					} else {
+					} else if(this.person.wb1 == '二组'){
 						this.person.kprice = 2000;
+					} else if(this.person.wb1 == '三组'){
+						this.person.kprice = 3000;
+					} else if(this.person.wb1 == '四组'){
+						this.person.kprice = 4000;
+					} else if(this.person.wb1 == '五组'){
+						this.person.kprice = 5000;
 					}
 
 				},
@@ -273,7 +280,14 @@
 				},
 
 				updatePerson() {
-					let _this = this;
+					if(this.person.wb1==""){
+						alert("班组不能为空！");
+						return;
+					}else if(this.xms==""){
+						alert("项目不能为空！");
+						return;
+					}else{
+						let _this = this;
 					this.$refs['personForm'].validate(valid => {
 						if(valid) {
 							//验证通过
@@ -311,6 +325,10 @@
 							this.$alert('请按格式正确填写信息', '系统提示');
 						}
 					});
+					}
+					
+					
+					
 				},
 
 				loadPeson(wid) {
