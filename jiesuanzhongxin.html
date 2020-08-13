@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+
+	<body>
+		<h1>结算中心</h1>
+		<div id="jiesuanzhongxin">
+			<template>
+				<el-table :data="pageInfo.list" border style="width: 100%" :cell-style="cellStyle" :header-cell-style="rowClass">
+					<el-table-column label="序号">
+						<template slot-scope="temp">
+							{{temp.$index+1}}
+						</template>
+					</el-table-column>
+					<el-table-column prop="wid" label="维修编号">
+					</el-table-column>
+					<el-table-column prop="wlicense" label="车牌号">
+					</el-table-column>
+					<el-table-column prop="wb2" label="金额">
+					</el-table-column>
+					<el-table-column label="操作">
+						<template slot-scope="temp">
+							<span v-if="temp.row.wstate == 9">
+								<el-button type="primary" @click="startjiesuan(temp.row.wid)" >结算</el-button>
+							</span>
+							<span v-if="temp.row.wstate == 100">
+								<el-button type="primary" @click="startjiesuan(temp.row.wid)" >查看</el-button>
+								已结算
+							</span>
+							<!--<el-button type="primary" @click="startjiesuan(temp.row.wid)" >结算</el-button>-->
+						</template>
+					</el-table-column>
+				</el-table>
+			</template>
+			<!--模态框-->
+			<el-dialog :destroy-on-close="true" width = "80%" @opened="handlOpen" title="结算" :visible.sync="isShow" :before-close="handleClose" center>
+				<div id="modalcnt"></div>
+			</el-dialog>
+		</div>
+
+	</body>
+
+	<script>
+		var jiesuanzhongxin = new Vue({
+			el: "#jiesuanzhongxin",
+			data: {
+				pageInfo: "",
+				isShow:false,
+				jieche:"",
+				xiangmu:"",
+				cailiao:"",
+				weixiu:""
+			},
+			methods: {
+				getWxbByOk(pageNum, pageSize) {
+					let _this = this;
+					$.getJSON("http://localhost:8080/api/wxb/getWxbByStatic/" + pageNum + "/" + pageSize + "", function(pageInfo) {
+						_this.pageInfo = pageInfo;
+					})
+				},
+				startjiesuan(wid){
+					this.pageInfo.list.forEach(wx=>{
+						if(wid == wx.wid){
+							this.weixiu = wx;
+						}
+					})
+					let _this = this;
+					$.getJSON(`http://localhost:8080/api/wxxm/1/3/${wid}`, function(pg) {
+						 _this.xiangmu = pg;
+						
+					});
+					$.getJSON(`http://localhost:8080/api/clxqb/1/3/${wid}`, function(pg) {
+						 _this.cailiao = pg;
+					});
+					this.isShow = true;
+					
+					
+					
+					
+				},
+				handleClose(done) {
+					this.$confirm('确认关闭？')
+						.then(_ => {
+							jiesuanmotai.weixius = "";
+							jiesuanmotai.xiangmu = "";
+							done();
+						})
+						.catch(_ => {});
+				},
+				handlOpen() {
+					$("#modalcnt").load('jiesuanmotai.html');
+				},
+			},
+			mounted() {
+				this.getWxbByOk(1, 100);
+			}
+		});
+	</script>
+
+</html>

@@ -14,21 +14,21 @@
 				<el-col :xs='10' :md='10' :gutter='10'>
 					<el-row>
 						<el-col :md='10' :xs='5'>
-							<el-input placeholder='编码/品牌/首字母' v-model='page.name'></el-input>
+							<el-input placeholder='编码/品牌/首字母' v-model='title'></el-input>
 						</el-col>
-						<el-button @click='cx1'>查询品牌</el-button>
-						<el-button @click='inde'>新增品牌</el-button>
+						<el-button @click='cx1' type='primary'>查询品牌</el-button>
+						<el-button @click='inde' type='success'>添加品牌</el-button>
 
 					</el-row>
 
 					<el-row>
 						<template>
 							<el-table :data="pageInfo.list" style="width: 90%">
-								<el-table-column prop="pid2" label="品牌ID" width="80">
+								<el-table-column prop="pid2" label="品牌ID" width="65">
 								</el-table-column>
-								<el-table-column prop="pszm" label="首字母" width="80">
+								<el-table-column prop="pszm" label="首字母" width="65">
 								</el-table-column>
-								<el-table-column prop="pinname" label="品牌昵称" width="80">
+								<el-table-column prop="pinname" label="品牌昵称" width="65">
 								</el-table-column>
 								<el-table-column label="操作">
 									<template slot-scope='stast'>
@@ -58,8 +58,8 @@
 						<el-col :md='10' :xs='10' :offset='4'>
 							<el-input v-model='pageName' placeholder='车型/发动机/编码/品牌'></el-input>
 						</el-col>
-						<el-button @click='cxbButt'>查询车型</el-button>
-						<el-button @click='showdialogVisible3'>新增车型</el-button>
+						<el-button @click='cxbButt' type='primary'>查询车型</el-button>
+						<el-button @click='showdialogVisible3' type='success'>添加车型</el-button>
 					</el-row>
 
 					<el-row>
@@ -76,7 +76,7 @@
 								<el-table-column label="操作">
 									<template slot-scope='cxb1'>
 										<el-button size='small' @click='updaShow(cxb1.row.xid)' type='info'>编辑</el-button>
-										<el-button size='small' @click='CxbDle(cxb1.row.xid)' tyep='danger'>移除</el-button>
+										<el-button size='small' @click='CxbDle(cxb1.row.xid)' type='danger'>移除</el-button>
 									</template>
 								</el-table-column>
 							</el-table>
@@ -105,7 +105,7 @@
 						</el-col>
 					</el-form-item>
 
-					<el-form-item label='车辆品牌昵称' prop='pinname'>
+					<el-form-item label='品牌昵称' prop='pinname'>
 						<el-col :md='20'>
 							<el-input v-model='clppb.pinname' placeholder='车辆品牌昵称'></el-input>
 						</el-col>
@@ -133,7 +133,7 @@
 						</el-col>
 					</el-form-item>
 
-					<el-form-item label='车辆品牌昵称' prop='pinname'>
+					<el-form-item label='品牌昵称' prop='pinname'>
 						<el-col :md='20'>
 							<el-input v-model='clppb.pinname' placeholder='车辆品牌昵称'></el-input>
 						</el-col>
@@ -157,17 +157,17 @@
 				<el-form :model='cxb' :rules='rules' ref='cxb' label-width="100px" class="demo-ruleForm">
 					<el-form-item label='车辆品牌ID' prop='xid'>
 						<el-col :md='20'>
-							<el-input v-model='cxb.xid' placeholder='车辆id'></el-input>
+							<el-input v-model='cxb.xid' style='width: 221px;' placeholder='车辆id'></el-input>
 						</el-col>
 					</el-form-item>
 
 					<el-form-item label='存档昵称' prop='cxname'>
 						<el-col :md='20'>
-							<el-input v-model='cxb.cxname' placeholder='车辆品牌昵称'></el-input>
+							<el-input v-model='cxb.cxname' style='width: 221px;' placeholder='车辆品牌昵称'></el-input>
 						</el-col>
 					</el-form-item>
 
-					<el-form-item label='车辆品牌' prop='pid2'>
+					<el-form-item label='车辆品牌' >
 						<el-col>
 							<template>
 								<el-select v-model="cxb.pid2" placeholder="请选择">
@@ -178,7 +178,7 @@
 						</el-col>
 					</el-form-item>
 
-					<el-form-item label='发动机品牌' prop='fdjid'>
+					<el-form-item label='发动机品牌' >
 						<el-col>
 							<template>
 								<el-select v-model="cxb.fdjid" placeholder="请选择">
@@ -201,17 +201,17 @@
 				<el-form :model='cxb' :rules='rules' ref='cxb' label-width="100px" class="demo-ruleForm">
 					<el-form-item label='车辆品牌ID'>
 						<el-col :md='24'>
-							<el-input v-model='cxb.xid' placeholder='车辆id' :disabled='true'></el-input>
+							<el-input v-model='cxb.xid'  style='width: 221px;' placeholder='车辆id' :disabled='true'></el-input>
 						</el-col>
 					</el-form-item>
 
 					<el-form-item label='存档昵称' prop='cxname'>
 						<el-col :md='24'>
-							<el-input v-model='cxb.cxname' placeholder='车辆品牌昵称'></el-input>
+							<el-input v-model='cxb.cxname' style='width: 221px;' placeholder='车辆品牌昵称'></el-input>
 						</el-col>
 					</el-form-item>
 
-					<el-form-item label='车辆品牌' prop='pid2' :md='24'>
+					<el-form-item label='车辆品牌'  :md='24'>
 						<el-col>
 							<template>
 								<el-select v-model="cxb.pid2" placeholder="请选择">
@@ -222,7 +222,7 @@
 						</el-col>
 					</el-form-item>
 
-					<el-form-item label='发动机品牌' prop='fdjid' :md='24'>
+					<el-form-item label='发动机品牌'  :md='24'>
 						<el-col>
 							<template>
 								<el-select v-model="cxb.fdjid" placeholder="请选择">
@@ -308,23 +308,7 @@
 					}
 				};
 
-				var validatePid2 = (rule, value, callback) => {
-					if(value === '') {
-						callback(new Error('请选择车辆品牌'));
-					} else {
 
-						callback();
-					}
-				};
-
-				var validateFdjid = (rule, value, callback) => {
-					if(value === '') {
-						callback(new Error('请选择发动机品牌'));
-					} else {
-
-						callback();
-					}
-				};
 				return {
 					status: false,
 					status2: false,
@@ -334,6 +318,7 @@
 					dialogVisible4: false,
 					fdjValue: '',
 					clppbValue: '',
+					title:'',
 					pageInfo: {},
 					pageInfo2: {},
 					fdjb: {},
@@ -356,11 +341,7 @@
 						cxname: ''
 					},
 					rules: {
-						pid2: [{
-							required: true,
-							validator: validatePid2,
-							trigger: 'blur'
-						}],
+						
 						pszm: [{
 							required: true,
 							validator: validatePszm,
@@ -381,11 +362,6 @@
 							validator: validatePid2,
 							trigger: 'change',
 							type: 'number'
-						}],
-						fdjid: [{
-							required: true,
-							message: "行业类型不能为空",
-							trigger: ["blur", 'change']
 						}],
 						cxname: [{
 							required: true,
@@ -442,6 +418,7 @@
 					let _this = this;
 					_this.page.pageSize = s;
 					_this.page.pageNum = p;
+					_this.page.name=this.title;
 					$.ajax({
 						url: 'http://localhost:8080/api/clppd/page',
 						type: 'post',
@@ -476,6 +453,7 @@
 										_this.dialogVisible = false;
 										_this.close();
 										_this.pages(1, 6);
+										_this.clppbBrand();
 									} else {
 										_this.$message({
 											showClose: true,
@@ -519,6 +497,7 @@
 											});
 
 											_this.pages(1, 6);
+											_this.pages2(1,6);
 										} else {
 											_this.$message({
 												showClose: true,
@@ -585,6 +564,7 @@
 										_this.dialogVisible2 = false;
 										_this.close();
 										_this.pages(1, 6);
+										_this.clppbBrand();
 									} else {
 										_this.$message({
 											showClose: true,
@@ -717,6 +697,7 @@
 								});
 
 								_this.pages2(1, 6);
+								
 							} else {
 								_this.$message({
 									showClose: true,

@@ -1,0 +1,462 @@
+﻿<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+
+	<body>
+		<div id="infoApp">
+
+			<div id="bddt" style="margin-left: 15px;">
+			
+			</div>
+			<el-row>	&nbsp;</el-row>
+			<el-form :model="person" ref="personForm" label-width="100px">
+				<!--//`wid`,`gid`,`id`,`wstate`,`wlicense`,`wkname`,`wpheno`,`wleix`,`wkaidate`,`wyudate`,`wwandate`,`wjiedate`,`kprice`-->
+				
+				<el-row>
+					<el-col :span="6">
+						<!--非常重要-->
+						<el-form-item label="维修单号" prop="wlicense">
+							<el-input v-model.number="person.wid" :disabled="true"></el-input>
+						</el-form-item>
+					</el-col>
+
+					<el-col :span="6" :offset='1'>
+						<!--非常重要-->
+						<el-form-item label="车牌号码" prop="wlicense">
+							<el-input v-model="person.wlicense" :disabled="true"></el-input>
+						</el-form-item>
+					</el-col>
+
+					<el-col :span="6" :offset='1'>
+						<el-form-item label="客户姓名" prop="wkname">
+
+							<el-input v-model="person.wkname" :disabled="true"></el-input>
+
+						</el-form-item>
+					</el-col>
+				</el-row>
+				<el-row>
+					<el-col :span="6">
+						<!--非常重要-->
+						<el-form-item label="技工组" prop="wb1">
+							<el-select v-model="person.wb1" placeholder="请选择" @change="jiage">
+								<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value ">
+								</el-option>
+							</el-select>
+						</el-form-item>
+					</el-col>
+
+					<el-col :span="6" :offset='1'>
+
+						<!--非常重要-->
+						<el-form-item label="维修项目">
+							<span @click="jycl2"><el-input v-model="this.xms"></el-input></span>
+						</el-form-item>
+					</el-col>
+
+					<el-col :span="6" :offset='1'>
+						<el-form-item label="班组价格" prop="kprice">
+							<el-input v-model="this.person.kprice" :disabled="true"></el-input>
+
+						</el-form-item>
+					</el-col>
+				</el-row>
+
+				<el-row>
+					<el-col :span="6">
+						<!--非常重要-->
+						<el-form-item label="救援车辆选择" prop="wlicense">
+							<span @click="jycl"><el-input  v-model="oname"></el-input></span>
+						</el-form-item>
+					</el-col>
+
+					<el-col :span="6" :offset='1'>
+						<el-form-item label="出勤价格">
+
+							<el-input v-model="this.waiqingjiag" :disabled="true"></el-input>
+
+						</el-form-item>
+					</el-col>
+				</el-row>
+
+				<el-dialog width="40%" title="外勤车辆" :visible.sync="innerVisible" append-to-body>
+					<el-table :default-sort="{prop: 'pdate', order: 'descending'}" :data="this.pageInfo.list" border>
+
+						<el-table-column width="100" label="序号">
+							<template slot-scope="temp">
+								{{temp.$index+1}}
+							</template>
+						</el-table-column>
+						<!--`kid``vid``id``kname``kphone``kaddres``kbirthday``kremark``kb1``kb2``kb3``kb4``kb5``kb6`-->
+						<el-table-column width="100" prop="onumber" label="车牌号码">
+						</el-table-column>
+						<el-table-column width="100" prop="otname" label="车辆类型">
+						</el-table-column>
+						<el-table-column width="100" prop="oprice" label="价格">
+						</el-table-column>
+						<el-table-column label="操作">
+							<template slot-scope="temp">
+								<span v-if="temp.row.ostatus==1">
+									<el-button  size="mini"  @click="xuezje(temp.row.oid,temp.row.otname,temp.row.oprice)">选择</el-button>
+									
+								</span>
+								<span v-if="temp.row.ostatus==2">
+									<el-button  size="mini" type="danger" >已出勤</el-button>
+								</span>
+
+							</template>
+						</el-table-column>
+
+					</el-table>
+
+				</el-dialog>
+
+				<el-dialog width="40%" title="项目类型" :visible.sync="innerVisible2" append-to-body>
+
+					<el-table :default-sort="{prop: 'pdate', order: 'descending'}" :data="this.pageInfo2" border ref="multipleTable" @selection-change="handleSelectionChange">
+						<el-table-column width="150" prop="wid" label="维修订单号" hidden="hidden" v-if="false">
+						</el-table-column>
+						<el-table-column width="100" label="序号">
+							<template slot-scope="temp">
+								{{temp.$index+1}}
+							</template>
+						</el-table-column>
+						<!--`kid``vid``id``kname``kphone``kaddres``kbirthday``kremark``kb1``kb2``kb3``kb4``kb5``kb6`-->
+						<el-table-column width="150" prop="rvname" label="维修项目名称">
+						</el-table-column>
+
+						<el-table-column width="100" prop="rvmoney" label="价格">
+						</el-table-column>
+						<el-table-column type="selection" width="55">
+						</el-table-column>
+
+					</el-table>
+					<el-col :span="6" :offset='8'>
+						<el-button type="primary" size="mini" @click="ffgg">保存</el-button>
+					</el-col>
+				</el-dialog>
+
+				<el-row>
+					<el-col :span="6" :offset='10'>
+						<el-button type="primary" @click="updatePerson">保存</el-button>
+						<el-button type="danger" @click="goBack">取消</el-button>
+
+					</el-col>
+
+				</el-row>
+
+			</el-form>
+		</div>
+	</body>
+
+	<script>
+		var infoApp = new Vue({
+					el: "#infoApp",
+					data: {
+						zd:"",
+						xms: "",
+						zhu: [],
+						multipleSelection: [],
+						isIndeterminate: true,
+						checked: false,
+						waiqingjiag: "",
+						price: "",
+						oname: "",
+						innerVisible: false,
+						innerVisible2: false,
+						options: [{
+							value: '一组',
+							label: '一组'
+						}, {
+							value: '二组',
+							label: '二组'
+						}, {
+							value: '三组',
+							label: '三组'
+						}, {
+							value: '四组',
+							label: '四组'
+						}, {
+							value: '五组',
+							label: '五组'
+						}],
+
+						person: {
+							//`wid`,`gid`,`id`,`wstate`,`wlicense`,`wkname`,`wpheno`,`wleix`,`wkaidate`,`wyudate`,`wwandate`,`wjiedate`,`kprice`
+							wid: "",
+							wlicense: "",
+							wkname: "",
+							wpheno: "",
+							wkaidate: "",
+							wjiedate: "",
+							kprice: "",
+							wb1: "",
+							wb2: "",
+							wb5: "",
+							wb7: "",
+							jiechefeiyong: "",
+							bangzhujiage:""
+
+						},
+						person2: {
+							wxname: "",
+							wid: "",
+							rvid: ""
+
+						},
+						pageInfo: {},
+						pageInfo2: ""
+					},
+					methods: {
+						ffgg() {
+							this.xms = "";
+							for(var i = 0; i < this.multipleSelection.length; i++) {
+
+								this.xms += this.multipleSelection[i].rvname + ",";
+
+								//this.person.wb5.append(this.multipleSelection[i].rvname);
+							}
+
+							this.innerVisible2 = false;
+						},
+						toggleSelection(rows) {
+							if(rows) {
+								rows.forEach(row => {
+									this.$refs.multipleTable.toggleRowSelection(row);
+								});
+							} else {
+								this.$refs.multipleTable.clearSelection();
+							}
+						},
+						handleSelectionChange(val) {
+
+							this.multipleSelection = val;
+							this.multipleSelection.ggwid = this.person.wid;
+							console.log(this.multipleSelection)
+						},
+						jycl2() {
+							this.goToPage2();
+							this.innerVisible2 = true;
+						},
+						xuezje(oid, name, price) {
+							sessionStorage.setItem('oid', oid);
+							this.oname = name;
+
+							this.price = price;
+							this.person.wb5 = oid;
+
+							this.gls();
+							this.innerVisible = false;
+						},
+
+						handleClose(done) {
+							this.$confirm('是否关闭').then(() => {
+								done();
+							}).catch(() => {});
+						},
+						handlOpen() {
+							$("#modalcnt").load('wqcl.html');
+						},
+						jycl() {
+							this.innerVisible = true;
+						},
+						gls() {
+							gls = window.localStorage.gls;
+							w = gls.indexOf("公"); //w will be 2
+							glss = gls.substring(0, w);
+							this.person.wb7 = parseInt(glss);
+
+							this.waiqingjiag = glss * 10 + this.price;
+
+						},
+						addPerson() {
+							
+							let _this = this;
+				
+							_this.person2.wid = _this.person.wid;
+
+							$.ajax('http://localhost:8080/api/wxxm/person', {
+								type: 'post',
+								data: JSON.stringify(this.multipleSelection),
+								dataType: 'json',
+								contentType: 'application/json',
+								success(msg) {
+
+								}
+							});
+
+						},
+						ztaixiugai() {
+							wid = sessionStorage.getItem('wid');
+							$.getJSON(`http://localhost:8080/api/wxb/updatewstate/10/${wid}`, function(pg) {
+
+							});
+						},
+						ff2() {
+							this.person2.rvid = this.person.wxname;
+
+						},
+						jiage() {
+							if(this.person.wb1 == '一组') {
+								this.person.kprice = 1000;
+							} else if(this.person.wb1 == '二组'){
+								this.person.kprice = 2000;
+							}else if(this.person.wb1 == '三组'){
+								this.person.kprice = 3000;
+							}else if(this.person.wb1 == '四组'){
+								this.person.kprice = 4000;
+							}else if(this.person.wb1 == '五组'){
+								this.person.kprice = 5000;
+
+							}
+							
+
+						},
+						goBack() {
+							personApp.isShow5 = false;
+							//kid=window.sessionStorage.getItem("kid");
+							personApp.goToPage(1, 3) //调用主页的vm引擎方法
+						},
+						goToPage2() {
+							let _this = this;
+							this.loading = true;
+							//ajax
+							$.getJSON(`http://localhost:8080/api/Reqaincie/querAll`, function(pg) {
+										_this.pageInfo2 = pg;
+
+										for(var i = 0; i < _this.pageInfo2.length; i++) {
+											//alert(this.multipleSelection[i].rvname);
+											_this.pageInfo2[i].wid = _this.person.wid;
+
+//											for(var i = 0; i < _this.pageInfo2.length; i++) {
+//
+//												_this.pageInfo2[i].wid = _this.person.wid;
+												//this.person.wb5.append(this.multipleSelection[i].rvname);
+											}
+											_this.loading = false;
+										});
+
+								},
+								goToPage(p, s) {
+									let _this = this;
+									this.loading = true;
+									//ajax
+									$.getJSON(`http://localhost:8080/api/outcar/page/${p}/${s}`, function(pg) {
+										_this.pageInfo = pg;
+										_this.loading = false;
+									});
+								},
+								update2() {
+									oid = sessionStorage.getItem('oid');
+
+									$.getJSON(`http://localhost:8080/api/outcar/updatezt/${oid}`, function(pg) {
+
+									});
+
+								},
+								updatePerson() {
+									
+									gls = window.localStorage.gls;
+								
+									if(this.xms==""){
+										alert("项目不能为空！");
+										return;
+									}else if(this.person.wb1==""){
+										alert("班组不能为空！");
+										return;
+									}else if(this.oname==""){
+										alert("外勤车辆不能为空！");
+										return;
+									}else if(gls=="" ){
+										alert("终点不能为空！");
+										return;
+									}else{
+									window.localStorage.gls="";
+									let _this = this;
+									//_this.person.kprice = _this.waiqingjiag + _this.person.kprice;
+									_this.person.jiechefeiyong = _this.waiqingjiag;
+									
+									this.$refs['personForm'].validate(valid => {
+										if(valid) {
+											//验证通过
+											//自定义加载块
+											const loading = this.$loading({
+												lock: true,
+												text: '努力更新中....',
+												spinner: 'el-icon-loading',
+												background: 'rgba(0, 0, 0, 0.5)'
+											});
+											//延迟2秒，模拟网络延迟
+											setTimeout(() => {
+												//传送对象
+												$.ajax('http://localhost:8080/api/wxb/person', {
+													type: 'put',
+													data: JSON.stringify(this.person),
+													dataType: 'json',
+													contentType: 'application/json',
+													success(msg) {
+														if(msg.code == "200") {
+															_this.addPerson();
+															_this.ztaixiugai();
+															loading.close(); //关闭加载块【非常重要】
+															_this.$message({
+																type: 'success',
+																message: '更新成功'
+															});
+															_this.update2();
+															 
+															_this.goBack();
+															
+														}
+													}
+												});
+											}, 2000);
+										} else {
+											//验证失败
+											this.$alert('请按格式正确填写信息', '系统提示');
+										}
+									});
+									 
+									}
+									
+									
+								},
+
+								loadPeson(wid) {
+
+									//自定义加载块
+									const loading = this.$loading({
+										lock: true,
+										text: '努力更新中....',
+										spinner: 'el-icon-loading',
+										background: 'rgba(0, 0, 0, 0.5)'
+									});
+									let _this = this;
+									setTimeout(() => {
+										$.getJSON(`http://localhost:8080/api/wxb/person/${wid}`, function(person) {
+											loading.close();
+											_this.person = person;
+
+										});
+									}, 500);
+								}
+						},
+						mounted() {
+							$('#bddt').load("百度地图.html");
+							this.goToPage(1, 3);
+							
+							let wid = sessionStorage.getItem('wid');
+							if(wid) {
+								this.loadPeson(wid);
+							}
+
+						}
+					});
+	</script>
+	
+
+	

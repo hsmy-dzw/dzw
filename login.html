@@ -26,7 +26,7 @@
 								<el-input type="text" placeholder="请输入账号" v-model="form.username" />
 							</el-form-item>
 							<el-form-item label="密码" prop="password">
-								<el-input type="password" placeholder="请输入密码" v-model="form.password" />
+								<el-input type="password" placeholder="请输入密码" v-model="form.passwords" />
 							</el-form-item>
 							<el-form-item>
 								<el-button type="primary" v-on:click="onSubmit('loginForm')">登录</el-button>
@@ -63,7 +63,7 @@
 			data: {
 				form: {
 					username: '',
-					password: ''
+					passwords: ''
 				},
 				// 表单验证，需要在 el-form-item 元素中增加 prop 属性
 				rules: {
@@ -72,7 +72,7 @@
 						message: '账号不可为空',
 						trigger: 'click'
 					}],
-					password: [{
+					passwords: [{
 						required: true,
 						message: '密码不可为空',
 						trigger: 'blur'
@@ -87,25 +87,31 @@
 					let _this = this;
 					this.$refs[formName].validate((valid) => {
 						if(valid) {
-							location.href = 'index.html';
-							//							$.ajax({
-							//								url : `http://localhost:8080/api/users/login`,
-							//								type : "post",
-							//								contentType : "application/json",
-							//								dataType : "json",
-							//								data : JSON.stringify(),
-							//								"success" : function(data){
-							//									window.sessionStorage.setItem(data);
-							//									_this.$alert("登录成功");
-							//									location.href = 'index.html';
-							//								}
-							//							});
+							jQuery.getJSON(`http://127.0.0.1:8080/api/person/loginIn/${_this.form.username}/${_this.form.passwords}`, function(rs) {
+								if(rs.code == "200") {
+									location.href = 'index.html';
+									window.sessionStorage.setItem("users",JSON.stringify(rs.user));
+									window.sessionStorage.setItem("tree",JSON.stringify(rs.tree));
+									
+									
+									//存入本地缓存
+									//							window.sessionStorage.setItem("users", JSON.stringify(rs.data));
+								} 
+								if(rs.code == "301"){
+									alert(rs.msg);
+								}
+								if(rs.code == "302"){
+									alert(rs.msg);
+								}
+							});
 						} else {
 							this.dialogVisible = true;
 							return false;
 						}
 					});
-				}
+				},
+				
+				
 			}
 		});
 	</script>

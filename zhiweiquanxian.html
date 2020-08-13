@@ -24,7 +24,7 @@
 					</el-table-column>
 					<el-table-column label="操作">
 						<template slot-scope="temp">
-							<el-button type="primary" @click="updatezhiweiquanxianbyid(temp.row.roots)">管理权限</el-button>
+							<el-button type="primary" @click="updatezhiweiquanxianbyid(temp.row.ppid)">管理权限</el-button>
 						</template>
 					</el-table-column>
 				</el-table>
@@ -46,34 +46,8 @@
 				updatezhiweiquanxianlist: "",
 				checkAll: false,
 				isIndeterminate: true,
-
-				roots: [{
-						"children": [{
-								"id": 2,
-								"text": "维修接车"
-							},
-							{
-								"id": 3,
-								"text": "竣工检验"
-							}
-						],
-						"id": 0,
-						"text": "维修救援"
-					},
-					{
-						"children": [{
-								"id": 4,
-								"text": "维修接车1"
-							},
-							{
-								"id": 5,
-								"text": "竣工检验1"
-							}
-						],
-						"id": 1,
-						"text": "维修救援1"
-					}
-				]
+				roots: [],
+				ppid:null
 			},
 			methods: {
 				goToPage(pageNum, pageSize) {
@@ -82,16 +56,24 @@
 						_this.pageInfo = pageInfo;
 					})
 				},
+				getAllRoots(){
+					let _this = this;
+					$.getJSON("http://localhost:8080/api/tl/position/getAllRoots", function(roots) {
+						_this.roots = roots;
+					})
+				},
 				handleClose(done) {
 					this.$confirm('确认关闭？')
 						.then(_ => {
 							this.updatezhiweiquanxianlist = null;
+							this.ppid = null;
 							done();
 						})
 						.catch(_ => {});
 				},
 				updatezhiweiquanxianbyid(ppid) {
-					this.updatezhiweiquanxianlist = ppid;
+					
+					this.ppid = ppid;
 					this.isShow = true;
 				},
 				handlOpen() {
@@ -99,7 +81,8 @@
 				},
 			},
 			mounted() {
-				this.goToPage(1, 3);
+				this.goToPage(1, 4);
+				this.getAllRoots();
 			}
 
 		})

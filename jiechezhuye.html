@@ -23,8 +23,11 @@
 
 					</el-dropdown-menu>
 				</el-dropdown>-->
+				
+				 
+		    	<el-button type="primary" size="mini" :span="12"  @click="ff55">编辑车辆</el-button>
 				<el-button type="primary" size="mini" :span="12"  @click="urlyinr" >接车</el-button>
-				<label style="margin-left: 800px;">站内维修</label>&nbsp;&nbsp;&nbsp;<el-tooltip :content="'Switch valueg: ' + valueg" placement="top" >
+				<label style="margin-left: 700px;">站内维修</label>&nbsp;&nbsp;&nbsp;<el-tooltip :content="'Switch valueg: ' + valueg" placement="top" >
 					<el-switch v-model="valueg" 
 						active-color="#13ce66" 
 						inactive-color="#13ce66" 
@@ -52,7 +55,7 @@
 			</div>
 			<br />
 			<br />
-
+			
 			<div style="display: inline-block;" v-if="this.value[0]!=null">、 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				<label>姓名：</label>
 				<div style="width: 100px; display: inline-block;">
@@ -97,7 +100,7 @@
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label>车辆型号：</label>
 				<div style="width: 200px; display: inline-block;">
 
-					<el-input v-model="kehuxx.cmodel" :disabled="true">
+					<el-input v-model="kehuxx.cxname" :disabled="true">
 
 				</div>
 
@@ -112,7 +115,10 @@
 			<div id="cnt">
 
 			</div>
-
+			<!--模态框-->
+			<el-dialog :destroy-on-close="true" @opened="handlOpen6" title="新增客户资料" :visible.sync="isShow6" :before-close="handleClose" center>
+				<div id="modalcnt6"></div>
+			</el-dialog>
 		</div>
 
 	</body>
@@ -121,6 +127,7 @@
 		var jiehce = new Vue({
 			el: "#kehuxx1",
 			data: {
+				isShow6:false,
 				valueg: 100,
 				
 				leix: "请选择业务",
@@ -150,7 +157,8 @@
 					zhifupwd: "",
 					cid: "",
 					cmodel: "",
-					cnumber: ""
+					cnumber: "",
+					cxname:""
 				},
 				jcbsj: {
 					id:"",
@@ -168,11 +176,18 @@
 					wstate:"",
 					wlicense:"",
 					wkname:"",
-					wpheno:""
+					wpheno:"",
+					id:""
 				}
 
 			},
 			methods: {
+				handlOpen6(){
+					$("#modalcnt6").load('kehuxinxiadd.html');
+				},
+				ff55(){
+					this.isShow6=true;
+				},
 				addPerson2() {
 					let _this = this;
 					_this.jcbsj.kid = _this.kehuxx.kid;
@@ -182,6 +197,7 @@
 					_this.jcbsj.jnumber = _this.kehuxx.cnumber;
 					_this.jcbsj.jliex = _this.zhi;
 					_this.jcbsj.jb1 = _this.kehuxx.kphone;
+					
 					$.ajax('http://localhost:8080/api/jieche/person', {
 						type: 'post',
 						data: JSON.stringify(this.jcbsj),
@@ -209,6 +225,7 @@
 					_this.wxb1.wlicense = _this.kehuxx.cnumber;
 					_this.wxb1.wkname = _this.kehuxx.kname;
 					_this.wxb1.wpheno = _this.kehuxx.kphone;
+				
 					
 					$.ajax('http://localhost:8080/api/wxb/person', {
 						type: 'post',
@@ -252,21 +269,22 @@
 					$.getJSON(`http://localhost:8080/api/khb/person/maxid`, function(pg) {
 						//				    	
 						_this.jcbsj.id = pg;
-
+						
 					});
 
 				},
 				
 				kehuxingxichaxun() {
-
+					
 					let _this = this;
 					piaohao = this.value[0];
 					if(piaohao!=null){
 						$.getJSON(`http://localhost:8080/api/khb/person/kehuxingxi/${piaohao}`, function(pg) {
-						//				    	
+										    	
 						_this.kehuxx = pg;
-
-					});
+						
+						
+					});			
 					}
 					
 
@@ -283,7 +301,8 @@
 					$.getJSON(`http://localhost:8080/api/khclb/person/cp`, function(pg) {
 
 						_this.states = pg;
-
+						
+						
 						_this.list = _this.states.map(item => {
 							return {
 								//						value: `value:${item}`,
