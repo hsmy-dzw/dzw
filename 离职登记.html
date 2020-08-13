@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+
+	<body>
+		<div id="vmLzdj">
+			<el-row>
+				<el-col :span="6" :offset="8">
+					<el-input v-model="searchName" prefix-icon="el-icon-search" placeholder="按姓名模糊查询"></el-input>
+				</el-col>
+				<el-col :span="7" :offset="1">
+					<el-button @click="queryLikeName">查询</el-button>
+					<el-button @click="dialogVisible = true">添加离职员工</el-button>
+				</el-col>
+			</el-row>
+			<el-row>
+				<el-table :default-sort="{prop: 'pageInfo.list', order: 'descending'}" :data="this.pageInfo.list" border>
+					<el-table-column width="50" label="序号">
+						<template slot-scope="temp">
+							{{temp.$index+1}}
+						</template>
+					</el-table-column>
+					<el-table-column width="50" prop="pid" label="员工编号">
+					</el-table-column>
+					<el-table-column width="100" prop="pname" label="员工姓名">
+					</el-table-column>
+					<el-table-column width="120" prop="peptname" label="部门">
+					</el-table-column>
+					<el-table-column width="100" prop="ppnamne" label="职位">
+					</el-table-column>
+					<el-table-column width="100" prop="psex" label="性别">
+					</el-table-column>
+					<el-table-column width="100" prop="paddress" label="居住地址">
+					</el-table-column>
+					<el-table-column width="100" prop="pouttime" label="离职时间">
+					</el-table-column>
+
+					<el-table-column width="300" label="操作">
+						<template slot-scope="temp">
+							<!--<el-button icon="el-icon-edit" @click="showInfo(temp.row.pid)" type="primary" round>编辑</el-button>-->
+							<el-button icon="el-icon-delete" @click="delInfo(temp.row.pid,temp.row.pstatus)" type="danger" round>移除</el-button>
+						</template>
+					</el-table-column>
+				</el-table>
+			</el-row>
+			<el-row>
+				<el-col :span="24">
+					<el-pagination v-if="pageInfo.total!=0" :background="true" :pager-count="7" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageInfo.pageNum" :page-size="pageInfo.pageSize" :total="pageInfo.total" :page-sizes="[3,6]" layout="total, sizes, prev, pager, next, jumper">
+					</el-pagination>
+				</el-col>
+			</el-row>
+			<!--
+            	作者：杨磊
+            	时间：2020-08-10
+            	描述：添加离职员工窗体
+            -->
+			<el-dialog title="添加员工" :visible.sync="dialogVisible" :before-close="clearData" width="50%" @open="queryPersons" center>
+				<el-table :default-sort="{prop: 'pageInfo.list', order: 'descending'}" :data="this.pageInfo1.list" border>
+					<el-table-column width="200" prop="pname" label="员工姓名" align="center">
+					</el-table-column>
+					<el-table-column width="200" prop="peptname" label="部门" align="center">
+					</el-table-column>
+					<el-table-column width="200" prop="ppnamne" label="职位" align="center">
+					</el-table-column>
+					<el-table-column width="117" label="操作" align="center">
+						<template slot-scope="temp">
+							<el-button @click="selected(temp.row)">选择</el-button>
+						</template>
+					</el-table-column>
+				</el-table>
+				<el-row>
+					<el-col :span="24">
+						<el-pagination v-if="pageInfo1.total!=0" :background="true" :pager-count="7" @size-change="handleSizeChange1" @current-change="handleCurrentChange1" :current-page="pageInfo1.pageNum" :page-size="pageInfo1.pageSize" :total="pageInfo1.total" :page-sizes="[3,6]" layout="total, sizes, prev, pager, next, jumper">
+						</el-pagination>
+					</el-col>
+				</el-row>
+				<el-row style="margin-top: 20px;">
+					<el-col :span="24">
+						员工姓名：
+						<el-input v-model="person.pname" style="width: 200px" :disabled="true"></el-input>
+						离职原因 ：
+						<el-input v-model="person.isAdmin" type="textarea" style="width: 200px;"></el-input>
+					</el-col>
+				</el-row>
+				<el-row>
+					<el-col :span="24">
+						<el-button type="success" @click="updateStatus">保存</el-button>
+					</el-col>
+				</el-row>
+			</el-dialog>
+			
+		</div>
+	</body>
+	<script type="text/javascript">
+		var vmLzdj = new Vue({
+			data : {
+				pageInfo : [],
+				dialogVisible : false,
+				pageInfo1 : [],
+				searchName : "",
+				person : {}
+			},
+			methods : {
+				handleSizeChange(val) {
+					this.goToPage(this.pageInfo.pageNum, val);
+				},
+				handleCurrentChange(val) {
+					this.goToPage(val, this.pageInfo.pageSize);
+				},
+				goToPage(p, s, name) {
+					let _this = this;
+					if(name == null || name == "" || name.length == 0) {
+						name = null;
+					}
+					$.getJSON(`http://localhost:8080/api/person/lizhi/queryPage/${p}/${s}/${name}`, function(data) {
+						_this.pageInfo = data;
+					})
+				},
+				handleSizeChange1(val) {
+					this.goToPage1(this.pageInfo1.pageNum, val);
+				},
+				handleCurrentChange1(val) {
+					this.goToPage1(val, this.pageInfo1.pageSize);
+				},
+				goToPage1(p, s, name) {
+					let _this = this;
+					if(name == null || name == "" || name.length == 0) {
+						name = null;
+					}
+					$.getJSON(`http://localhost:8080/api/person/page/${p}/${s}/${name}`, function(data) {
+						_this.pageInfo1 = data;
+					})
+				},
+				queryLikeName() {
+					this.goToPage(1, this.pageInfo.pageSize, this.searchName);
+				},
+				delInfo(id, pstatus) {
+					let _this = this;
+					this.$confirm('确定要移除吗?', '提示', {
+						confirmButtonText: '确定',
+						cancelButtonText: '取消',
+						type: 'warning',
+						center: true
+					}).then(() => {
+						$.ajax({
+							url: `http://localhost:8080/api/person/delById/${id}`,
+							type: "delete",
+							dataType: "json",
+							success(msg) {
+								if(msg.code == "200") {
+									_this.$message({
+										type: 'success',
+										message: '删除成功!'
+									});
+									_this.goToPage(1, _this.pageInfo.pageSize);
+								}
+							}
+						});
+					}).catch(() => {
+						this.$message({
+							type: 'info',
+							message: '已取消删除'
+						});
+					});
+				},
+				queryPersons(){
+					this.goToPage1(1,3,null);
+				},
+				selected(row){
+					this.person = row;
+				},
+				updateStatus(){
+					if(this.person.pname == "" || this.person.pname == null || this.person.isAdmin == null || this.person.pname == 0 || this.person.pname==""){
+						this.$alert("格式不正确，不予保存");
+						return;
+					}
+					let _this = this;
+					this.person.pstatus = 1;
+					$.ajax({
+						url : "http://localhost:8080/api/person/updatePersonStatus",
+						contentType : "application/json",
+						type : "put",
+						data : JSON.stringify(_this.person),
+						dataType : "json",
+						success(data){
+							if(data.code == "200"){
+								_this.$message({
+									type : "success",
+									message : "离职人员登记成功"
+								});
+								_this.clearData();
+							}else {
+								_this.message.error("离职人员登记失败");
+								_this.clearData();
+							}
+						}
+					});
+					
+					
+				},
+				clearData(){
+					this.person.pstatus = 0;
+					this.person.pname = "";
+					this.person.isAdmin = "";
+					this.dialogVisible = false;
+				}
+			},
+			mounted(){
+				this.goToPage(1,3,null);
+			}
+		}).$mount("#vmLzdj");
+	</script>
+
+</html>
