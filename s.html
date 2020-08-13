@@ -6,4 +6,10 @@
 	</head>
 	<body>
 	</body>
+	<script type="text/javascript" src="js/jquery-1.12.4.js" ></script>
+	<script>
+		$.getJSON("http://localhost:8080/api/wxb/updatewstates/100/"+window.sessionStorage.getItem("zhifuid")+"/"+window.sessionStorage.getItem("zhifufanshi"),function(s){
+		})
+		location.href = 'index.html';
+	</script>
 </html>

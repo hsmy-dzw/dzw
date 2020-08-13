@@ -21,9 +21,9 @@
 					<el-table-column prop="wpheno" label="车主电话">
 					</el-table-column>
 
-					<el-table-column prop="wkaidate" label="开始时间">
+					<el-table-column prop="wkaidate" label="开始时间" width="200">
 					</el-table-column>
-					<el-table-column prop="wjiedate" label="结束时间">
+					<el-table-column prop="wwandate" label="结束时间" width="200">
 					</el-table-column>
 
 					<el-table-column prop="wb1" label="维修班组">
@@ -58,7 +58,7 @@
 					</el-table-column>
 					<el-table-column prop="num" label="数量">
 					</el-table-column>
-					<el-table-column  label="总价">
+					<el-table-column label="总价">
 						<template slot-scope="temp">
 							{{temp.row.mdmoney*temp.row.num}}
 						</template>
@@ -68,13 +68,14 @@
 
 			<div class="row" v-if="weixiu.wstate != 100">
 				<template>
-					<el-radio v-model="zhifufunction" label="余额支付">余额支付</el-radio>
-					<el-radio v-model="zhifufunction" label="现金支付">现金支付</el-radio>
-					<el-radio v-model="zhifufunction" label="支付宝支付">支付宝支付</el-radio>
+					<el-radio v-model="weixiu.wb3" label="余额支付">余额支付</el-radio>
+					<el-radio v-model="weixiu.wb3" label="现金支付">现金支付</el-radio>
+					<el-radio v-model="weixiu.wb3" label="支付宝支付">支付宝支付</el-radio>
 				</template>
 			</div>
 			<div class="row" v-if="weixiu.wstate != 100">
-				<span v-if="zhifufunction == '余额支付'"	>
+				<span v-if="weixiu.wb3 == '余额支付'">
+				当前余额：{{kehu.kb5}}
 				请输入密码：<input type="password" v-model="kehumima" />
 					
 				</span>
@@ -82,7 +83,7 @@
 			<br />
 			<div class="row">
 				<div class="col-md-10">
-					<h4 style="display: inline-block;">总消费：</h4><span style="font-size: 18px; color: red;" >¥{{weixiu.wb2}}</span> </div>
+					<h4 style="display: inline-block;">总消费：</h4><span style="font-size: 18px; color: red;">¥{{weixiu.wb2}}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span v-if="weixiu.wstate == 100"> {{weixiu.wb3}}</span> </div>
 
 				<div class="col-md-2" v-if="weixiu.wstate != 100">
 					<el-button type="primary" @click="zhifu()">结算</el-button>
@@ -101,51 +102,75 @@
 				xiangmu: "",
 				cailiao: "",
 				zhifufunction: "",
-				rengongfeiyong:null,
-				kehu:"",
-				kehumima:""
+				rengongfeiyong: null,
+				kehu: "",
+				kehumima: ""
 			},
 			methods: {
-				zhifu(){
-					if(this.zhifufunction=="余额支付"){
-						if(this.kehumima==this.kehu.zhifupwd){
-							if(this.kehu.kb5<this.weixius[0].wb2){
+				open() {
+					this.$notify.success({
+						title: 'Info',
+						message: '结算成功！',
+						showClose: false
+					});
+					jiesuanzhongxin.isShow = false;
+					jiesuanzhongxin.goToPage(1,5);
+				},
+				zhifu() {
+					let _this = this;
+					if(this.weixiu.wb3 == "余额支付") {
+						if(this.kehumima == this.kehu.zhifupwd) {
+							if(this.kehu.kb5 < this.weixius[0].wb2) {
 								alert("余额不足！")
 								return;
-							}else{
-								this.kehu.kb5 = this.kehu.kb5-this.weixius[0].wb2;
-								alert("结算成功！");
-								$.getJSON("http://localhost:8080/api/wxb/updatewstate/100/"+this.weixius[0].wid,function(s){
-									
+							} else {
+								this.kehu.kb5 = this.kehu.kb5 - this.weixius[0].wb2;
+								this.updateKehu();
+								$.getJSON("http://localhost:8080/api/wxb/updatewstate/100/" + this.weixius[0].wid, function(s) {
+									_this.open();
 								})
 							}
-						}else{
-							alert("密码错误！");
+						} else {
+							this.$message.error('密码错误');
 							return;
 						}
 					}
-					if(this.zhifufunction=="支付宝支付"){
+					if(this.weixiu.wb3 == "支付宝支付") {
 						let _this = this;
-						location.href = "http://localhost:8080/api/tl/position/getPagePay/"+_this.weixius[0].wid +"/"+ _this.weixius[0].wb2;
-						 
-						$.getJSON("http://localhost:8080/api/wxb/updatewstate/100/"+this.weixius[0].wid,function(s){
-						})
-//						$.ajax("http://localhost:8080/api/tl/position/getPagePay",{
-//							type:"get",
-//							success(){
-//								l
-////								$.getJSON("http://localhost:8080/api/wxb/updatewstate/100/"+_this.weixius[0].wid,function(s){
-//									
-////								})
-//							}
-//						});
+						alert(this.zhifufunction);
+						window.sessionStorage.setItem("zhifuid", _this.weixius[0].wid);
+						window.sessionStorage.setItem("zhifufanshi", _this.weixiu.wb3);
+						alert(window.sessionStorage.getItem("zhifufanshi"));
+						location.href = "http://localhost:8080/api/tl/position/getPagePay/" + _this.weixius[0].wid + "/" + _this.weixius[0].wb2;
+
+						//						$.ajax("http://localhost:8080/api/tl/position/getPagePay",{
+						//							type:"get",
+						//							success(){
+						//								l
+						////								$.getJSON("http://localhost:8080/api/wxb/updatewstate/100/"+_this.weixius[0].wid,function(s){
+						//									
+						////								})
+						//							}
+						//						});
 					}
 				},
-				getKehu(kid){
+				getKehu(kid) {
 					let _this = this;
-					$.getJSON("http://localhost:8080/api/khb/person/5", function(kh) {
+					$.getJSON("http://localhost:8080/api/khb/person/" + kid, function(kh) {
 						_this.kehu = kh;
 					})
+				},
+				updateKehu() {
+					let _this = this;
+					$.ajax('http://localhost:8080/api/khb/person', {
+						type: 'put',
+						data: JSON.stringify(_this.kehu),
+						dataType: 'json',
+						contentType: 'application/json',
+						success(msg) {
+
+						}
+					});
 				}
 			},
 			mounted() {
@@ -155,10 +180,11 @@
 				this.weixiu = jiesuanzhongxin.weixiu;
 				this.xiangmu = jiesuanzhongxin.xiangmu;
 				this.cailiao = jiesuanzhongxin.cailiao;
-				this.xiangmu.list.forEach(x=>{
-					this.rengongfeiyong += x.rvmoney;
-				});
-				this.getKehu(5);
+				this.weixius[0].wb2 = this.weixius[0].wb2 + this.weixius[0].jiechefeiyong;
+				//				this.xiangmu.list.forEach(x=>{
+				//					this.rengongfeiyong += x.rvmoney;
+				//				});
+				this.getKehu(this.weixius[0].kid);
 
 			}
 		});

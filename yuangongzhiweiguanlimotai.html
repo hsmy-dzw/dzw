@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+
+	<body>
+		<div id="yuangongzhiweiguanlimotai">
+			<template>
+				<el-select v-model="p.ppid" placeholder="请选择" @change="updatezhiwei()">
+					<el-option v-for="item in positions" :key="item.ppid" :label="item.ppnamne" :value="item.ppid">
+					</el-option>
+				</el-select>
+			</template>
+		</div>
+
+	</body>
+
+	<script>
+		var yuangongzhiweiguanlimotai = new Vue({
+			el: "#yuangongzhiweiguanlimotai",
+			data: {
+				positions:"",
+				p:""
+			},
+			methods: {
+				getzhiwei(){
+					let _this = this;
+					$.getJSON("http://localhost:8080/api/position/page/1/100/null",function(p){
+						_this.positions = p.list;
+					})
+				},
+				updatezhiwei(){
+					let _this = this;
+					$.ajax({
+						url : "http://localhost:8080/api/person/updateById",
+						type : "put",
+						contentType : "application/json",
+						data : JSON.stringify(_this.p),
+						dataType : "json",
+						success(data){
+							if(data.code == "200") {
+								_this.$message({
+									type: 'success',
+									message: '更新成功!'
+								});
+								_this.back();
+								_this.goToPage(1, _this.pageInfo.pageSize);
+							} else {
+								_this.$message.error("更新失败！！");
+							}
+						}
+					});
+				}
+			},
+			mounted(){
+				this.p = yuangongzhiweiguanli.p;
+				this.getzhiwei();
+			}
+		});
+	</script>
+
+</html>

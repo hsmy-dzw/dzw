@@ -26,10 +26,10 @@
 						</el-table-column>
 						<el-table-column width="50"  label="类型" >
 							<template slot-scope="temp" >
-								<span v-if="temp.row.jleix==1">
+								<span v-if="temp.row.jliex==1">
 									站内
 								</span>
-								<span v-if="temp.row.jleix==2">
+								<span v-if="temp.row.jliex==2">
 									站外
 								</span>
 							</template>
@@ -52,10 +52,12 @@
 						</el-table-column>
 						<el-table-column width="160" prop="wb1" label="维修组" >
 						</el-table-column>
-						<el-table-column width="160" prop="wb2" label="总价格" sortable>
+						<!--<el-table-column width="160" prop="wb2" label="总价格" sortable>
 						</el-table-column>
 						<el-table-column width="100" prop="wid" label="订单号">
-						</el-table-column>
+						</el-table-column>-->
+							
+						
 						<el-table-column width="300"  label="操作" >
 							<template slot-scope="temp" >
 								<span v-if="temp.row.wstate==4 || temp.row.wstate==2 || temp.row.wstate==99"><el-button type="warning" size="mini"  @click="showDialog2(temp.row.wid)">反工</el-button></span>

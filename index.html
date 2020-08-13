@@ -6,10 +6,17 @@
 		<title>后台管理页面参考</title>
 		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
 		<link rel="stylesheet" href="css/index.css" />
+			<link rel="icon" href="https://jscdn.com.cn/highcharts/images/favicon.ico">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<script src="https://code.highcharts.com.cn/jquery/jquery-1.8.3.min.js"></script>
+		<script src="https://code.highcharts.com.cn/highcharts/highcharts.js"></script>
+		<script src="https://code.highcharts.com.cn/highcharts/highcharts-3d.js"></script>
+		<script src="https://code.highcharts.com.cn/highcharts/modules/exporting.js"></script>
+		<script src="https://img.hcharts.cn/highcharts-plugins/highcharts-zh_CN.js"></script>
 		<style>
 			.el-header,
 			.el-footer {
-				background: gainsboro;
+				background: rgba(225,225,225,0.0);
 				font-size: 30px;
 			}
 			
@@ -29,7 +36,7 @@
 				<el-header style='height:10%;'>
 					<el-row>
 						<el-col :span="6">
-							<h1>德召文汽修管理系统</h1>
+							<h2 style="color: black">德召文汽修管理系统</h2>
 						</el-col>
 						<el-col :span="2" :offset="16">
 							<el-dropdown :hide-on-click="false">
@@ -37,7 +44,7 @@
 							    <i class="glyphicon glyphicon-user"></i><i class="el-icon-arrow-down el-icon--right"></i>
 							  </span>
 								<el-dropdown-menu slot="dropdown">
-									<el-dropdown-item>用户名：张三</el-dropdown-item>
+									<el-dropdown-item>用户名：{{user.pname}}</el-dropdown-item>
 									<el-dropdown-item><span @click="exitLogin">退出登录</span></el-dropdown-item>
 								</el-dropdown-menu>
 							</el-dropdown>
@@ -45,17 +52,17 @@
 					</el-row>
 				</el-header>
 				<el-container>
-					<el-aside width="220px" style="border: 1px solid #CCCCCC;">
+					<el-aside width="220px" style="border-right: 1px solid #CCCCCC; margin-top: 20px;">
 						<el-menu style="height:100vh;width:218px;float:left;overflow-y:auto;">
 							<span v-for="(obj,i) in tree">
 								<el-submenu  :index="i">
 									<template slot="title">
-										<span class="glyphicon glyphicon-wrench"></span>
+										<span class="el-icon-caret-right"></span>
 										<span>{{obj.text}}</span>
 									</template>
 									<el-menu-item-group>
 										<span v-for="(obj1,j) in obj.children">
-											<el-menu-item  :index="i-j" @click="showView(obj1.id,obj1.text)"><i class="glyphicon glyphicon-link"></i>{{obj1.text}}</el-menu-item>
+											<el-menu-item  :index="i-j" @click="showView(obj1.id,obj1.text)"><i class="el-icon-caret-left"></i>{{obj1.text}}</el-menu-item>
 										</span>
 									</el-menu-item-group>
 								</el-submenu>
@@ -143,16 +150,16 @@
 							</el-submenu>-->
 						</el-menu>
 					</el-aside>
-					<el-main>
-						<el-row>
-							<el-tabs v-model="editableTabsValue" @tab-click="goTabs" @tab-remove="removeTab" closable type="card">
-								<el-tab-pane :key="item.name" v-for="(item, index) in editableTabs" :label="item.title" :name="item.name">
+					<el-main >
+						<el-row >
+							<el-tabs  style="border: none;"  v-model="editableTabsValue" @tab-click="goTabs" @tab-remove="removeTab" closable type="card" >
+								<el-tab-pane  :key="item.name" v-for="(item, index) in editableTabs" :label="item.title" :name="item.name">
 									{{item.content}}
 								</el-tab-pane>
 							</el-tabs>
 						</el-row>
-						<el-row>
-							<div id="cnt"></div>
+						<el-row >
+							<div id="cnt" ></div>
 						</el-row>
 					</el-main>
 				</el-container>
@@ -182,7 +189,11 @@
 				tabIndex: 1,
 				editableTabs: [],
 				tree: [],
-				menuMapping : {}
+				menuMapping : {},
+				money:null,
+				jie:null,
+				jun:null,
+				user:""
 			},
 			methods: {
 				showView(url, ti) {
@@ -211,7 +222,7 @@
 						cancelButtonText: '取消',
 						type: 'warning'
 					}).then(() => {
-						window.sessionStorage.setItem("user", "");
+						window.sessionStorage.setItem("users", null);
 						location.href = "login.html";
 					}).cath(() => {});
 				},
@@ -253,11 +264,15 @@
 				}
 			},
 			mounted() {
+				let _this = this;
 				this.menuMapping = menuMapping;
 				this.showView(29, '首页');
 				this.getFunTree();
+				this.user = JSON.parse(window.sessionStorage.getItem("users"));
+				
 				this.tree = JSON.parse(window.sessionStorage.getItem("tree"));
 				console.log(JSON.parse(window.sessionStorage.getItem("tree")));
+				
 				
 			}
 		}).$mount('#indxApp');

@@ -7,29 +7,39 @@
 	</head>
 
 	<body>
-		<div id="updatezhiweiquanxianbyid">
+		<div id="updatezhiweiquanxianbyid" class="container">
 
-			<div v-for="rs in roots">
-				<!--<span v-if="rs.id == r.id">-->
-				<input type="checkbox" @click="addCid(rs.id)" v-model="a" :value="rs.id" />{{rs.text}}{{rs.id}}<br />
-				<span v-for="s in rs.children">
-							<input type="checkbox"  v-model="a"   :value="s.id"/>{{s.text}}{{s.id}}
-						</span>
-				<!--</span>-->
-				<!--<span v-if="rs.id != r.id">
+			<div class="row">
+				<div v-for="rs in roots" style="width: 500px; display: inline-block; box-shadow: 0px 0px 8px 0px rgba(0,0,0,0.1);margin: 20px;  padding: 20px;" >
+					<!--<span v-if="rs.id == r.id">-->
+					<div style="display: block; font-size: 16px;">
+						<div class="col-md-10">{{rs.text}}</div>
+						<div class="col-md-2"><input type="checkbox" @click="addCid(rs.id)" v-model="a" :value="rs.id" /></div>
+						
+					</div>
+					<br />
+					<br />
+					<span v-for="s in rs.children">
+					<span style="margin: 13px;">{{s.text}}<input type="checkbox"  v-model="a" style="margin-left: 10px;"  :value="s.id"/></span>
+					</span>
+					<!--</span>-->
+					<!--<span v-if="rs.id != r.id">
 						<input type="checkbox"  @click="addCid(rs.id)"    :value="rs.id"/>{{rs.text}}{{rs.id}}<br />
 						<span v-for="s in rs.children">
 							<input type="checkbox"  v-model="a"  :value="s.id"/>{{s.text}}{{s.id}}
 						</span>
 					</span>-->
 
-				<!--<h1><input @click="add(rs.id)" type="checkbox"  class="fcheckbox" :value="rs.id" />{{rs.text}}</h1>
+					<!--<h1><input @click="add(rs.id)" type="checkbox"  class="fcheckbox" :value="rs.id" />{{rs.text}}</h1>
 						<span v-for="s in rs.children">
 							<input type="checkbox"  v-model="a" :value="s.id" />{{s.text}}
 						</span>-->
 
+				</div>
 			</div>
-			<el-button type="primary" @click="update">保存</el-button>
+			<div class="row">
+				<div class="col-md-8"></div><el-button type="primary" @click="update" class="col-md-2">保存</el-button>
+			</div>
 		</div>
 	</body>
 
@@ -85,7 +95,8 @@
 						dataType: 'json',
 						contentType: 'application/json',
 						success(a) {
-							alert(a);
+							zhiweiquanxian.isShow = false;
+							zhiweiquanxian.goToPage(1, 3);
 						}
 					});
 				},

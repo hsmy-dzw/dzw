@@ -40,6 +40,14 @@
 			<el-dialog :destroy-on-close="true" width = "80%" @opened="handlOpen" title="结算" :visible.sync="isShow" :before-close="handleClose" center>
 				<div id="modalcnt"></div>
 			</el-dialog>
+			
+			<el-row>
+					<el-col :span="24">
+						<el-pagination :background="true" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageInfo.pageNum" :page-size="pageInfo.pageSize" :total="pageInfo.total" :page-sizes="[3,6]" layout="total, sizes, prev, pager, next, jumper">
+						</el-pagination>
+					</el-col>
+			</el-row>
+			
 		</div>
 
 	</body>
@@ -56,11 +64,19 @@
 				weixiu:""
 			},
 			methods: {
+				
+				
 				getWxbByOk(pageNum, pageSize) {
 					let _this = this;
 					$.getJSON("http://localhost:8080/api/wxb/getWxbByStatic/" + pageNum + "/" + pageSize + "", function(pageInfo) {
 						_this.pageInfo = pageInfo;
 					})
+				},
+				handleSizeChange(val) {
+					this.getWxbByOk(this.pageInfo.pageNum, val,);
+				},
+				handleCurrentChange(val) {
+					this.getWxbByOk(val, this.pageInfo.pageSize);
 				},
 				startjiesuan(wid){
 					this.pageInfo.list.forEach(wx=>{
@@ -84,19 +100,19 @@
 				},
 				handleClose(done) {
 					this.$confirm('确认关闭？')
-						.then(_ => {
+						.then(() => {
 							jiesuanmotai.weixius = "";
 							jiesuanmotai.xiangmu = "";
 							done();
 						})
-						.catch(_ => {});
+						.catch(() => {});
 				},
 				handlOpen() {
 					$("#modalcnt").load('jiesuanmotai.html');
 				},
 			},
 			mounted() {
-				this.getWxbByOk(1, 100);
+				this.getWxbByOk(1, 6);
 			}
 		});
 	</script>

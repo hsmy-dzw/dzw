@@ -1,11 +1,123 @@
 <!DOCTYPE html>
 <html>
+
 	<head>
 		<meta charset="UTF-8">
 		<title></title>
+
 	</head>
+
 	<body>
-		<h1>今日收费： 100000000000000000000</h1>
+		<div id="hot" class="container">
+
+			<!--<div id="row">-->
+				<h3 class="col-md-4">今日收费： {{money}}</h3>
+				<h3 class="col-md-4">今日接车： {{jie}}</h3>
+				<h3 class="col-md-4">今日竣工： {{jun}}</h3>
+			<!--</div>-->
+		<div class="row"></div>
+			<div id="container"></div>
+			<div id="sliders">
+				<!--<table>
+					<tr>
+						<td>α 角（内旋转角）</td>
+						<td><input id="alpha" type="range" min="0" max="45" value="15" /> <span id="alpha-value" class="value"></span></td>
+					</tr>
+					<tr>
+						<td>β 角（外旋转角）</td>
+						<td><input id="beta" type="range" min="-45" max="45" value="15" /> <span id="beta-value" class="value"></span></td>
+					</tr>
+					<tr>
+						<td>深度</td>
+						<td><input id="depth" type="range" min="20" max="100" value="50" /> <span id="depth-value" class="value"></span></td>
+					</tr>
+				</table>	-->
+			</div>
+
+		</div>
+
+		<script>
+		</script>
 	</body>
-	
+	<script>
+		var list = [];
+		var hot = new Vue({
+			el: "#hot",
+			data: {
+				money: "",
+				jie: "",
+				jun: "",
+				meiyue:[]
+			},
+			mounted() {
+				let _this = this;
+				$.getJSON("http://localhost:8080/api/wxb/getNowM", function(money) {
+					_this.money = money;
+				})
+				$.getJSON("http://localhost:8080/api/wxb/getNowJie", function(money) {
+					_this.jie = money;
+				})
+				$.getJSON("http://localhost:8080/api/wxb/getNowJ", function(money) {
+					_this.jun = money;
+				})
+				
+				$.getJSON("http://localhost:8080/api/wxb/getyue", function(money) {
+					window.sessionStorage.setItem("meiyue",JSON.stringify(money));
+				})
+
+				var chart = new Highcharts.Chart({
+					chart: {
+						renderTo: 'container',
+						type: 'column',
+						options3d: {
+							enabled: true,
+							alpha: 0,
+							beta: 30,
+							depth: 50,
+							viewDistance: 25
+						}
+					},
+					title: {
+						text: '德召文2020每月营收'
+					},
+					subtitle: {
+						text: '可通过滑动下方滑块测试'
+					},
+					plotOptions: {
+						column: {
+							depth: 25
+						}
+					},
+					series: [{
+						name: '每月营收',
+						data: JSON.parse(window.sessionStorage.getItem("meiyue"))
+					}],
+					xAxis: {
+//						type: 'category',
+						categories: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月']
+					}
+				});
+				
+				chart.series[0].data=_this.meiyue;
+				// 将当前角度信息同步到 DOM 中
+				var alphaValue = document.getElementById('alpha-value'),
+					betaValue = document.getElementById('beta-value'),
+					depthValue = document.getElementById('depth-value');
+
+				function showValues() {
+					alphaValue.innerHTML = chart.options.chart.options3d.alpha;
+					betaValue.innerHTML = chart.options.chart.options3d.beta;
+					depthValue.innerHTML = chart.options.chart.options3d.depth;
+				}
+				// 监听 sliders 的变化并更新图表
+				$('#sliders input').on('input change', function() {
+					chart.options.chart.options3d[this.id] = this.value;
+					showValues();
+					chart.redraw(false);
+				});
+				showValues();
+			}
+		});
+	</script>
+
 </html>

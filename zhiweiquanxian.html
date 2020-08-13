@@ -30,9 +30,16 @@
 				</el-table>
 			</template>
 			<!--模态框-->
-			<el-dialog :destroy-on-close="true" @opened="handlOpen" title="职位权限管理" :visible.sync="isShow" :before-close="handleClose" center>
+			<el-dialog :destroy-on-close="true" width="80%" @opened="handlOpen" title="职位权限管理" :visible.sync="isShow" :before-close="handleClose" center>
 				<div id="modalcnt"></div>
 			</el-dialog>
+			
+			<el-row>
+					<el-col :span="24">
+						<el-pagination :background="true" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageInfo.pageNum" :page-size="pageInfo.pageSize" :total="pageInfo.total" :page-sizes="[3,6]" layout="total, sizes, prev, pager, next, jumper">
+						</el-pagination>
+					</el-col>
+			</el-row>
 		</div>
 	</body>
 
@@ -52,9 +59,15 @@
 			methods: {
 				goToPage(pageNum, pageSize) {
 					let _this = this;
-					$.getJSON("http://localhost:8080/api/tl/position/getAll/" + pageNum + "/" + pageSize + "", function(pageInfo) {
+					$.getJSON("http://localhost:8080/api/tl/position/getAlls/" + pageNum + "/" + pageSize + "", function(pageInfo) {
 						_this.pageInfo = pageInfo;
 					})
+				},
+				handleSizeChange(val) {
+					this.getWxbByOk(this.pageInfo.pageNum, val,);
+				},
+				handleCurrentChange(val) {
+					this.getWxbByOk(val, this.pageInfo.pageSize);
 				},
 				getAllRoots(){
 					let _this = this;
@@ -64,12 +77,12 @@
 				},
 				handleClose(done) {
 					this.$confirm('确认关闭？')
-						.then(_ => {
+						.then(() => {
 							this.updatezhiweiquanxianlist = null;
 							this.ppid = null;
 							done();
 						})
-						.catch(_ => {});
+						.catch(() => {});
 				},
 				updatezhiweiquanxianbyid(ppid) {
 					
@@ -81,7 +94,7 @@
 				},
 			},
 			mounted() {
-				this.goToPage(1, 4);
+				this.goToPage(1, 6);
 				this.getAllRoots();
 			}
 

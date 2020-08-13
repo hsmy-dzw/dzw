@@ -16,7 +16,7 @@ var menuMapping = {
 	"14": "jiesuanzhongxin",
 	"15": "guahao.html",
 	"16": "",
-	"17": "guahao.html",
+	"17": "yuangongzhiweiguanli",
 	"18": "zhiweiquanxian",
 	"19": "",
 	"20": "Organization",
