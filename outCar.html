@@ -41,17 +41,17 @@
 			</el-row>
 			<el-row>
 				<el-col :span="24">
-					<el-pagination v-if="pageInfo.total!=0" :background="true" :pager-count="4" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageInfo.pageNum" :page-size="pageInfo.pageSize" :total="pageInfo.total" :page-sizes="[3,6]" layout="total, sizes, prev, pager, next, jumper">
+					<el-pagination v-if="pageInfo.total!=0" :background="true" :pager-count="7" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageInfo.pageNum" :page-size="pageInfo.pageSize" :total="pageInfo.total" :page-sizes="[3,6]" layout="total, sizes, prev, pager, next, jumper">
 					</el-pagination>
 				</el-col>
 			</el-row>
 
-			<el-dialog title="提示" :visible.sync="dialogVisible" width="30%" >
+			<el-dialog title="提示" :visible.sync="dialogVisible	" width="30%" >
 				<el-form :model="outcar" ref="outcarForm" label-width="80px">
 					<el-form-item label="车牌号" >
 						<el-input  v-model="outcar.onumber"></el-input>
 					</el-form-item>
-					<el-form-item label="车型">
+					<el-form-item label="车型" >
 						<el-select v-model="outcar.otname" @change="liandong" placeholder="请选择">
 					    	<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
 					    </el-option>
@@ -66,7 +66,7 @@
 				  	</el-form-item>
 				</el-form>
 			</el-dialog>
-			<el-dialog title="收货地址" :visible.sync="dialogVisible1">
+			<el-dialog title="修改" :visible.sync="dialogVisible1">
 				<el-form :model="outcar" ref="outcarForm1" label-width="80px">
 					<el-form-item label="车牌号" >
 						<el-input  v-model="outcar.onumber"></el-input>
@@ -81,7 +81,7 @@
 						<el-input v-model="outcar.oprice" :disabled="true"></el-input>
 					</el-form-item>	
 					<el-form-item>
-				    	<el-button type="primary" @click="updateById">新增</el-button>
+				    	<el-button type="primary" @click="updateById">修改</el-button>
 				    	<el-button @click="">重置</el-button>
 				  	</el-form-item>
 				</el-form>
@@ -101,22 +101,22 @@
 				},
 				options : [
 					{
-						value : "1",
+						value : "大卡车",
 						label : "大卡车",
 						price : 300
 					},
 					{
-						value : "2",
+						value : "小拖车",
 						label : "小拖车",
 						price : 50
 					},
 					{
-						value : "3",
+						value : "小卡车",
 						label : "小卡车",
 						price : 200
 					},
 					{
-						value : "4",
+						value : "大拖车",
 						label : "大拖车",
 						price : 100
 					}
@@ -194,13 +194,12 @@
 												type: 'success',
 												message: '新增成功'
 											});
-											_this.clearData(); //清除数据
+											_this.dialogVisible = false;
 											_this.outcar.oid = "";
 											_this.outcar.onumber = "";
 											_this.outcar.otname = "";
 											_this.outcar.oprice = "";
 											_this.outcar.ostatus = "";
-											_this.dialogVisible1 = false;
 											_this.goToPage(1,_this.pageInfo.pageSize);
 										}
 									}
