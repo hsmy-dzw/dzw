@@ -28,6 +28,22 @@
 					</el-col>
 				</el-form-item>
 				
+						<el-form-item label="车辆型号" prop="cbrand">
+							<el-select v-model="person.cxname" placeholder="请选择" :disabled="true">
+								<el-option v-for="item in options2" :value="item.xid " :key="item.xid" :label="item.cxname">
+								</el-option>
+							</el-select>
+						</el-form-item>
+					
+					
+						<el-form-item label="车辆品牌" prop="cbrand">
+							<el-select v-model="person.pinname" placeholder="请选择" @change="jiage" :disabled="true">
+								<el-option v-for="item in options" :value="item.pid2 " :key="item.pid2" :label="item.pinname">
+								</el-option>
+							</el-select>
+						</el-form-item>
+
+				
 				<el-form-item label="驾驶人" prop="cdriver">
 					<el-col :span="6">
 						<el-input v-model="person.cdriver" ></el-input>
@@ -35,6 +51,7 @@
 				</el-form-item>
 				
 				
+				 <el-form-item>
 					
 					<el-button type="primary" @click="updatePerson">修改</el-button>
 					<el-button type="danger" @click="goBack">取消</el-button>
@@ -48,11 +65,14 @@
 		var infoApp = new Vue({
 			el: "#infoApp",
 			data: {
+				options:"",
+				options2:"",
 				ggname:"vip用户",
 				radio : "0",
 				person: {
 					kid: "",
-					
+					xid:"",
+					pid2:"",
 					cnumber: "",
 					cbrand:"",
 					cdriver: "",
@@ -94,6 +114,28 @@
 				}
 			},
 			methods: {
+				jiage(){
+					alert(this.person.xid)
+					
+					pids=this.person.pid2;
+					let _this = this;
+					$.getJSON(`http://localhost:8080/api/cxb/querAllBypid2/${pids}`, function(pg) {
+										    	
+						_this.options2 = pg;
+						
+						
+					});		
+					
+				},
+				pingpai(){
+					let _this = this;
+					$.getJSON(`http://localhost:8080/api/clppd/querAll`, function(pg) {
+										    	
+						_this.options = pg;
+						
+						
+					});		
+				},
 				goBack() {
 					personApp.isShow6=false;//非常重要
 					
@@ -160,6 +202,7 @@
 				}
 			},
 			mounted() {
+				this.pingpai();
 				let cid = sessionStorage.getItem('cid');
 				if(cid) {
 					this.loadPeson(cid);
